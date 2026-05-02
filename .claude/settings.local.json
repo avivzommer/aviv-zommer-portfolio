@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "WebFetch(domain:www.azommer.com)",
+      "Bash(python3 -c ':*)",
+      "Bash(python3)",
+      "WebFetch(domain:rodolphecelestin.design)",
+      "WebFetch(domain:www.dousanmiao.com)",
+      "WebFetch(domain:www.benshih.design)",
+      "Bash(grep -n \"^.*[A-Za-z].*$\" '/Users/aviv.zommer/Avivs PC/Portfolio/baloop-he.html')",
+      "mcp__5ea37b0b-9fc7-464c-ac78-e9a45e9881b8__get_metadata",
+      "mcp__5ea37b0b-9fc7-464c-ac78-e9a45e9881b8__get_screenshot",
+      "Bash(curl -s -o \"SysAid/anim-frame-1.png\" \"https://www.figma.com/api/mcp/asset/076d4bf0-49b7-4563-aeb1-7bee7fb72021\")",
+      "Bash(curl -s -o \"SysAid/anim-frame-2.png\" \"https://www.figma.com/api/mcp/asset/08029fac-d435-4c42-8304-0b5dbc1338d8\")",
+      "Bash(curl -s -o \"SysAid/anim-frame-3.png\" \"https://www.figma.com/api/mcp/asset/5bb87c64-4748-438a-ae8c-e2edb077b8c3\")",
+      "Bash(curl -s -o \"SysAid/anim-frame-4.png\" \"https://www.figma.com/api/mcp/asset/1a517ba9-a172-48a3-b5e1-ecab1881a110\")",
+      "Bash(curl -L --retry 3 -o '/Users/aviv.zommer/Avivs PC/Portfolio/SysAid/anim-frame-1.png' \"https://www.figma.com/api/mcp/asset/076d4bf0-49b7-4563-aeb1-7bee7fb72021\")",
+      "Bash(curl -L --retry 3 -o '/Users/aviv.zommer/Avivs PC/Portfolio/SysAid/anim-frame-2.png' \"https://www.figma.com/api/mcp/asset/08029fac-d435-4c42-8304-0b5dbc1338d8\")",
+      "Bash(curl -L --retry 3 -o '/Users/aviv.zommer/Avivs PC/Portfolio/SysAid/anim-frame-3.png\" \"https://www.figma.com/api/mcp/asset/5bb87c64-4748-438a-ae8c-e2edb077b8c3\" 2>&1 | tail -3 && \\\\ *)",
+      "Bash(python3 -c ' *)",
+      "mcp__Figma__get_metadata",
+      "mcp__Figma__get_screenshot",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k,':',str\\(v\\)[:80]\\) for k,v in d.items\\(\\) if 'figma' in k.lower\\(\\) or 'token' in k.lower\\(\\) or 'api' in k.lower\\(\\)]\")",
+      "Bash(env)"
+    ]
+  }
+}

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviv Zommer — Work Layout D</title>
+  <meta name="description" content="Senior Product Designer focused on complex B2B SaaS products, AI, and thoughtful product experiences.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #ffffff;
+      --fg:        #0f0f0f;
+      --mid:       #6e6e73;
+      --faint:     #b0b0b5;
+      --surface:   #f5f5f7;
+      --border:    #e8e8ec;
+      --font:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --nav-h:     64px;
+      --max-w:     1160px;
+      --pad-x:     48px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    img  { display: block; max-width: 100%; }
+    a    { color: inherit; text-decoration: none; }
+    ul   { list-style: none; }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+    }
+
+    /* ─── Nav ────────────────────────────────────────────── */
+    #nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 200;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--pad-x);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    #nav.scrolled { border-bottom-color: var(--border); }
+    .nav-logo { font-size: 15px; font-weight: 500; letter-spacing: -0.015em; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { font-size: 14px; font-weight: 400; color: var(--mid); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-links .cta { color: var(--fg); font-weight: 500; }
+
+    /* ─── Label ──────────────────────────────────────────── */
+    .label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    /* ─── Chips ──────────────────────────────────────────── */
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 100px;
+      font-size: 11.5px;
+      color: var(--mid);
+      background: var(--surface);
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+
+    /* ─── Reveal ─────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ─── Cursor tooltip ─────────────────────────────────── */
+    #cursor-tip {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      background: var(--fg);
+      color: var(--bg);
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translate(-50%, calc(-100% - 14px));
+      transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: left, top;
+    }
+    #cursor-tip.visible {
+      opacity: 1;
+      transform: translate(-50%, calc(-100% - 18px));
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════════════════ */
+    #hero {
+      display: flex;
+      align-items: center;
+      min-height: 60vh;
+      padding-top: var(--nav-h);
+    }
+    .hero-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      padding: 48px 0;
+      width: 100%;
+    }
+    .hero-headline {
+      font-size: 56px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      margin: 0;
+    }
+    .hero-phrase {
+      display: inline-block;
+      vertical-align: bottom;
+      opacity: 0;
+      transform: translateY(40%);
+      animation: phrase-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes phrase-rise { to { opacity: 1; transform: translateY(0); } }
+    .hero-word {
+      display: inline-block;
+      background: var(--surface);
+      border-radius: 5px;
+      padding: 0 6px 2px;
+      font-style: normal;
+    }
+    .hero-details {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: details-rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 1.0s forwards;
+    }
+    @keyframes details-rise { to { opacity: 1; transform: none; } }
+    .hero-name { font-size: 15px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .hero-role { font-size: 14px; color: var(--mid); }
+
+    /* ═══════════════════════════════════════════════════════
+       SELECTED WORK — Option D: Editorial stacked list
+    ═══════════════════════════════════════════════════════ */
+    #work {
+      padding: 96px 0;
+      border-top: 1px solid var(--border);
+    }
+    .work-header { margin-bottom: 40px; }
+
+    /* Stacked card list */
+    .work-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Each project: card with gray background */
+    .work-item {
+      display: block;
+      padding: 48px;
+      background: var(--surface);
+      border-radius: 20px;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+    }
+
+    /* Company meta row */
+    .work-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .work-meta-icon {
+      width: 15px;
+      height: 15px;
+      object-fit: contain;
+    }
+    .work-meta-co {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg);
+    }
+    .work-meta-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .work-meta-chips {
+      display: flex;
+      gap: 6px;
+    }
+    .work-meta-chips .chip {
+      height: 22px;
+      padding: 0 9px;
+      font-size: 10.5px;
+      background: transparent;
+      border: 1px solid var(--border);
+    }
+
+    /* Project title */
+    .work-item-title {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      max-width: 80%;
+      margin-bottom: 36px;
+    }
+
+    /* Image */
+    .work-item-img {
+      width: 100%;
+      margin-bottom: 28px;
+    }
+    .work-item-img img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .work-item:hover .work-item-img img {
+      transform: scale(1.018);
+    }
+
+    /* CTA link at bottom */
+    .work-read-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg);
+      letter-spacing: -0.01em;
+    }
+    .work-read-cta svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .work-item:hover .work-read-cta svg {
+      transform: translate(3px, -3px);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       ABOUT PREVIEW
+    ═══════════════════════════════════════════════════════ */
+    #about {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+    }
+    .about-inner {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 88px;
+      align-items: start;
+    }
+    .about-photo-col {
+      position: sticky;
+      top: calc(var(--nav-h) + 36px);
+    }
+    .about-photo {
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .about-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: grayscale(6%);
+    }
+    .about-text-col { display: flex; flex-direction: column; }
+    .about-label { margin-bottom: 28px; }
+    .about-heading {
+      font-size: clamp(32px, 3.2vw, 44px);
+      font-weight: 500;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 28px;
+    }
+    .about-bio {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--mid);
+      margin-bottom: 52px;
+    }
+    .mentoring-block {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 40px;
+    }
+    .mentoring-label { margin-bottom: 14px; }
+    .mentoring-text {
+      font-size: 15px;
+      line-height: 1.72;
+      color: var(--mid);
+      margin-bottom: 32px;
+    }
+    .adplist-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 620px;
+      margin-bottom: 44px;
+    }
+    .about-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: 1px solid var(--fg);
+      padding-bottom: 1px;
+      transition: opacity 0.2s;
+      width: fit-content;
+    }
+    .about-more:hover { opacity: 0.55; }
+    .about-more svg { flex-shrink: 0; }
+
+    /* ═══════════════════════════════════════════════════════
+       CONTACT CTA
+    ═══════════════════════════════════════════════════════ */
+    #contact {
+      padding: 144px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .contact-inner { max-width: 620px; margin: 0 auto; }
+    .contact-label { margin-bottom: 20px; }
+    .contact-heading {
+      font-size: clamp(40px, 5.5vw, 68px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .contact-sub {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--mid);
+      margin-bottom: 52px;
+    }
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 26px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      transition: opacity 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-dark { background: var(--fg); color: var(--bg); }
+    .btn-dark:hover { opacity: 0.78; }
+    .btn-light { background: var(--surface); color: var(--fg); }
+    .btn-light:hover { background: #e8e8ec; }
+
+    /* ═══════════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════════ */
+    footer { padding: 44px 0; border-top: 1px solid var(--border); }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+    .footer-name { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 5px; }
+    .footer-desc { font-size: 12.5px; line-height: 1.6; color: var(--faint); max-width: 360px; }
+    .footer-links { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
+    .footer-links a { font-size: 13px; color: var(--mid); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--fg); }
+
+    /* ═══════════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      :root { --pad-x: 32px; }
+      .hero-inner { padding: 52px 0; }
+      .about-inner { grid-template-columns: 1fr; gap: 48px; }
+      .about-photo-col { position: static; max-width: 320px; }
+    }
+
+    @media (max-width: 720px) {
+      :root { --pad-x: 24px; }
+      #nav { padding: 0 24px; }
+      .nav-links { gap: 20px; }
+      .nav-links li.hide-sm { display: none; }
+      .hero-inner { padding: 36px 0; }
+      #work, #about, #contact { padding: 80px 0; }
+      .work-item { padding: 32px; border-radius: 16px; }
+      .work-meta-chips { display: none; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .footer-links { flex-wrap: wrap; gap: 16px; }
+    }
+
+  /* ── Password gate ── */
+  #pw-gate {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(15,15,15,0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: opacity 0.4s;
+  }
+  .pw-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pw-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fg);
+    margin: 0;
+  }
+  #pw-form {
+    display: flex;
+    gap: 8px;
+  }
+  #pw-input {
+    flex: 1;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #pw-input:focus { border-color: var(--mid); }
+  #pw-form button {
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px;
+    background: var(--fg);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+  }
+  #pw-form button:hover { opacity: 0.75; }
+  #pw-error {
+    font-size: 12px;
+    color: #c0392b;
+    margin: 0;
+    display: none;
+  }
+  @keyframes pw-shake {
+    0%,100% { transform: translateX(0); }
+    20%,60%  { transform: translateX(-6px); }
+    40%,80%  { transform: translateX(6px); }
+  }
+  .pw-shake { animation: pw-shake 0.4s ease; }
+
+  </style>
+</head>
+<body>
+
+<!-- ─── Password gate ───────────────────────────────────── -->
+<div id="pw-gate" style="display:none">
+  <div class="pw-box">
+    <p class="pw-label">This portfolio is password protected</p>
+    <form id="pw-form" autocomplete="off">
+      <input id="pw-input" type="password" placeholder="Enter password" autocomplete="new-password" />
+      <button type="submit" aria-label="Submit password">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+    <p id="pw-error">Incorrect password</p>
+  </div>
+</div>
+
+<!-- Cursor tooltip -->
+<div id="cursor-tip" aria-hidden="true">Read case study</div>
+
+<!-- ─── Navigation ─────────────────────────────────────── -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo">Aviv Zommer</a>
+  <ul class="nav-links">
+    <li class="hide-sm"><a href="#work">Work</a></li>
+    <li class="hide-sm"><a href="#about">About</a></li>
+    <li><a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+    <li><a href="#contact" class="cta">Say hello</a></li>
+  </ul>
+</nav>
+
+
+<!-- ─── Hero ───────────────────────────────────────────── -->
+<section id="hero" aria-label="Introduction">
+  <div class="container">
+    <div class="hero-inner">
+
+      <h1 class="hero-headline">
+        <span class="hero-phrase" style="animation-delay:0.08s">I connect what <em class="hero-word">businesses</em> need, </span><span class="hero-phrase" style="animation-delay:0.36s">what <em class="hero-word">users</em> value, </span><span class="hero-phrase" style="animation-delay:0.64s">and what <em class="hero-word">AI</em> can unlock</span>
+      </h1>
+
+      <div class="hero-details">
+        <div class="hero-id">
+          <p class="hero-name">Aviv Zommer</p>
+          <p class="hero-role">Product Design @ SysAid</p>
+        </div>
+        <div class="chips">
+          <span class="chip">10 years of experience</span>
+          <span class="chip">B2B SaaS &amp; AI products</span>
+          <span class="chip">Complex systems design</span>
+          <span class="chip">Background in brand and marketing</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── Selected Work ──────────────────────────────────── -->
+<section id="work" aria-label="Selected Work">
+  <div class="container">
+
+    <div class="work-header reveal">
+      <p class="label">Selected Work</p>
+    </div>
+
+    <div class="work-list">
+
+      <!-- SysAid -->
+      <a href="sysaid.html" class="work-item reveal" style="transition-delay:.04s">
+        <div class="work-meta">
+          <img src="./sysaid-logo.svg" alt="" class="work-meta-icon">
+          <span class="work-meta-co">SysAid</span>
+          <div class="work-meta-sep"></div>
+          <div class="work-meta-chips">
+            <span class="chip">B2B SaaS</span>
+            <span class="chip">Product-led growth</span>
+            <span class="chip">Post-launch user feedback</span>
+          </div>
+        </div>
+        <h2 class="work-item-title">Brought SysAid's first self-serve Advanced trial to a traditionally sales-led product</h2>
+        <div class="work-item-img">
+          <img src="./sysaid-screenshot.png" alt="SysAid product interface" loading="lazy">
+        </div>
+        <span class="work-read-cta">
+          Read case study
+          <svg viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 11L11 2M11 2H4.5M11 2V8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <!-- groundcover -->
+      <a href="groundcover.html" class="work-item reveal" style="transition-delay:.08s">
+        <div class="work-meta">
+          <img src="./groundcover-logo.svg" alt="" class="work-meta-icon">
+          <span class="work-meta-co">groundcover</span>
+          <div class="work-meta-sep"></div>
+          <div class="work-meta-chips">
+            <span class="chip">Observability</span>
+            <span class="chip">Data ingestion</span>
+            <span class="chip">Rapid iteration</span>
+          </div>
+        </div>
+        <h2 class="work-item-title">Simplified how users control data ingestion in a complex observability product</h2>
+        <div class="work-item-img">
+          <img src="./groundcover-screenshot.png" alt="groundcover product interface" loading="lazy">
+        </div>
+        <span class="work-read-cta">
+          Read case study
+          <svg viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 11L11 2M11 2H4.5M11 2V8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <!-- Baloop -->
+      <a href="baloop.html" class="work-item reveal" style="transition-delay:.12s">
+        <div class="work-meta">
+          <img src="./baloop-logo.svg" alt="" class="work-meta-icon">
+          <span class="work-meta-co">Baloop</span>
+          <div class="work-meta-sep"></div>
+          <div class="work-meta-chips">
+            <span class="chip">Social impact</span>
+            <span class="chip">Action research</span>
+            <span class="chip">Motivation design</span>
+          </div>
+        </div>
+        <h2 class="work-item-title">Turned field research into a support system for youth mentors under emotional strain</h2>
+        <div class="work-item-img">
+          <img src="./baloop-screenshot.png" alt="Baloop product interface" loading="lazy">
+        </div>
+        <span class="work-read-cta">
+          Read case study
+          <svg viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 11L11 2M11 2H4.5M11 2V8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── About Preview ──────────────────────────────────── -->
+<section id="about" aria-label="About Aviv">
+  <div class="container">
+    <div class="about-inner">
+
+      <div class="about-photo-col reveal">
+        <div class="about-photo">
+          <img src="./aviv-portrait.jpeg" alt="Aviv Zommer" loading="lazy">
+        </div>
+      </div>
+
+      <div class="about-text-col">
+        <p class="label about-label reveal">About</p>
+        <h2 class="about-heading reveal" style="transition-delay:.06s">Hi, I'm Aviv.</h2>
+        <p class="about-bio reveal" style="transition-delay:.10s">
+          I'm a Senior Product Designer focused on complex B2B SaaS products, helping teams connect business goals, user needs, and what AI can unlock through thoughtful UX/UI. My work sits at the intersection of strategy, systems, and storytelling. With a background across brand, marketing, and product design, I bring a cross-disciplinary perspective to building products that are clear, useful, and aligned with real business value. I care deeply about both precision and empathy, and I bring that same mindset to mentoring designers in the community.
+        </p>
+
+        <div class="mentoring-block reveal" style="transition-delay:.14s">
+          <p class="label mentoring-label">Mentoring</p>
+          <p class="mentoring-text">
+            Beyond the work, I mentor product designers through ADPList and Startup Designers, helping them navigate complex career transitions, sharpen their craft, and find their voice in product work.
+          </p>
+          <div class="adplist-wrap">
+            <a target="_blank" rel="noreferrer" href="https://adplist.org/mentors/aviv-zommer?session=" style="height: 60px; width: 100%; border-radius: 8px; display: flex; color: rgb(255, 255, 255); align-items: center; text-decoration: none; border-color: rgb(5, 5, 27); justify-content: center; background-color: rgb(5, 5, 27);"><svg fill="none" width="36" height="36" viewBox="0 0 41 41" xmlns="http://www.w3.org/2000/svg"><rect width="41" height="41" rx="16" fill="var(--default)"></rect><path d="M20.5037 7.43127C17.9183 7.43127 15.3908 8.19796 13.2411 9.63438C11.0913 11.0708 9.41579 13.1124 8.42636 15.5011C7.43694 17.8898 7.17806 20.5182 7.68246 23.054C8.18687 25.5899 9.4319 27.9191 11.2601 29.7474C13.0883 31.5756 15.4176 32.8206 17.9534 33.325C20.4892 33.8294 23.1177 33.5705 25.5064 32.5811C27.895 31.5917 29.9367 29.9162 31.3731 27.7664C32.8095 25.6167 33.5762 23.0892 33.5762 20.5037C33.5762 17.0367 32.1989 13.7117 29.7474 11.2601C27.2958 8.80855 23.9708 7.43127 20.5037 7.43127ZM20.5037 31.5651C18.316 31.5651 16.1774 30.9163 14.3584 29.7009C12.5394 28.4855 11.1216 26.7579 10.2844 24.7367C9.44722 22.7155 9.22817 20.4915 9.65497 18.3458C10.0818 16.2001 11.1353 14.2292 12.6822 12.6822C14.2292 11.1353 16.2001 10.0818 18.3458 9.65496C20.4915 9.22816 22.7155 9.44721 24.7367 10.2844C26.7579 11.1216 28.4855 12.5394 29.7009 14.3584C30.9163 16.1774 31.5651 18.316 31.5651 20.5037C31.5651 23.4374 30.3997 26.2509 28.3253 28.3253C26.2509 30.3997 23.4374 31.5651 20.5037 31.5651Z" fill="white"></path><path d="M15.2653 20.2422C15.3587 20.3365 15.47 20.4113 15.5925 20.4624C15.715 20.5134 15.8465 20.5397 15.9792 20.5397C16.112 20.5397 16.2434 20.5134 16.3659 20.4624C16.4885 20.4113 16.5997 20.3365 16.6932 20.2422L19.0563 17.8792C19.5003 17.4288 19.7711 16.8361 19.8209 16.2055C19.8707 15.575 19.6963 14.9472 19.3284 14.4327C18.9606 13.9182 18.4229 13.5501 17.8102 13.3932C17.1975 13.2363 16.549 13.3008 15.9792 13.5753C15.4085 13.2839 14.7522 13.2071 14.1296 13.3588C13.507 13.5105 12.9596 13.8806 12.5869 14.4019C12.2143 14.9231 12.0411 15.5609 12.0989 16.199C12.1568 16.8372 12.4418 17.4334 12.9022 17.8792L15.2653 20.2422ZM14.32 15.4758C14.381 15.4119 14.4544 15.3611 14.5356 15.3264C14.6169 15.2916 14.7043 15.2737 14.7926 15.2737C14.881 15.2737 14.9684 15.2916 15.0497 15.3264C15.1309 15.3611 15.2042 15.4119 15.2653 15.4758C15.3587 15.5701 15.47 15.6449 15.5925 15.6959C15.715 15.747 15.8465 15.7733 15.9792 15.7733C16.112 15.7733 16.2434 15.747 16.3659 15.6959C16.4885 15.6449 16.5997 15.5701 16.6932 15.4758C16.7549 15.4132 16.8285 15.3635 16.9096 15.3295C16.9908 15.2956 17.0778 15.2781 17.1658 15.2781C17.2537 15.2781 17.3408 15.2956 17.422 15.3295C17.5031 15.3635 17.5767 15.4132 17.6384 15.4758C17.7023 15.5369 17.7531 15.6102 17.7879 15.6914C17.8226 15.7727 17.8405 15.8601 17.8405 15.9484C17.8405 16.0368 17.8226 16.1242 17.7879 16.2055C17.7531 16.2867 17.7023 16.36 17.6384 16.4211L15.9792 18.1104L14.32 16.4814C14.2561 16.4204 14.2053 16.347 14.1705 16.2658C14.1358 16.1846 14.1179 16.0971 14.1179 16.0088C14.1179 15.9204 14.1358 15.833 14.1705 15.7518C14.2053 15.6705 14.2561 15.5972 14.32 15.5362V15.4758Z" fill="white"></path><path d="M24.3155 20.2422C24.409 20.3365 24.5202 20.4113 24.6427 20.4624C24.7653 20.5134 24.8967 20.5397 25.0294 20.5397C25.1622 20.5397 25.2936 20.5134 25.4162 20.4624C25.5387 20.4113 25.6499 20.3365 25.7434 20.2422L28.1065 17.8792C28.5505 17.4288 28.8213 16.8361 28.8711 16.2055C28.9209 15.575 28.7465 14.9472 28.3786 14.4327C28.0108 13.9182 27.4731 13.5501 26.8604 13.3932C26.2477 13.2363 25.5993 13.3008 25.0294 13.5753C24.4588 13.2839 23.8024 13.2071 23.1798 13.3588C22.5573 13.5105 22.0098 13.8806 21.6372 14.4019C21.2645 14.9231 21.0913 15.5609 21.1492 16.199C21.207 16.8372 21.4921 17.4334 21.9524 17.8792L24.3155 20.2422ZM23.3703 15.4758C23.4313 15.4119 23.5046 15.3611 23.5859 15.3264C23.6671 15.2916 23.7545 15.2737 23.8429 15.2737C23.9312 15.2737 24.0187 15.2916 24.0999 15.3264C24.1811 15.3611 24.2545 15.4119 24.3155 15.4758C24.409 15.5701 24.5202 15.6449 24.6427 15.6959C24.7653 15.747 24.8967 15.7733 25.0294 15.7733C25.1622 15.7733 25.2936 15.747 25.4162 15.6959C25.5387 15.6449 25.6499 15.5701 25.7434 15.4758C25.8052 15.4132 25.8787 15.3635 25.9599 15.3295C26.041 15.2956 26.1281 15.2781 26.216 15.2781C26.304 15.2781 26.391 15.2956 26.4722 15.3295C26.5533 15.3635 26.6269 15.4132 26.6886 15.4758C26.7525 15.5369 26.8034 15.6102 26.8381 15.6914C26.8729 15.7727 26.8908 15.8601 26.8908 15.9484C26.8908 16.0368 26.8729 16.1242 26.8381 16.2055C26.8034 16.2867 26.7525 16.36 26.6886 16.4211L25.0294 18.1104L23.3703 16.4814C23.3064 16.4204 23.2555 16.347 23.2208 16.2658C23.186 16.1846 23.1681 16.0971 23.1681 16.0088C23.1681 15.9204 23.186 15.833 23.2208 15.7518C23.2555 15.6705 23.3064 15.5972 23.3703 15.5362V15.4758Z" fill="white"></path><path d="M27.5427 21.5093C27.276 21.5093 27.0202 21.6153 26.8317 21.8039C26.6431 21.9924 26.5371 22.2482 26.5371 22.5149C26.5371 25.2903 23.8321 27.5428 20.5037 27.5428C17.1752 27.5428 14.4703 25.2903 14.4703 22.5149C14.4703 22.2482 14.3643 21.9924 14.1757 21.8039C13.9871 21.6153 13.7314 21.5093 13.4647 21.5093C13.198 21.5093 12.9422 21.6153 12.7536 21.8039C12.5651 21.9924 12.4591 22.2482 12.4591 22.5149C12.4591 26.3964 16.0691 29.5539 20.5037 29.5539C24.9383 29.5539 28.5483 26.3964 28.5483 22.5149C28.5483 22.2482 28.4423 21.9924 28.2538 21.8039C28.0652 21.6153 27.8094 21.5093 27.5427 21.5093Z" fill="white"></path></svg><p style="font-weight: 700; font-size: 16px; line-height: 24px; margin-bottom: 0px;">Book a session with me on ADPList</p></a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── Contact CTA ────────────────────────────────────── -->
+<section id="contact" aria-label="Contact">
+  <div class="container">
+    <div class="contact-inner">
+      <p class="label contact-label reveal">Contact</p>
+      <h2 class="contact-heading reveal" style="transition-delay:.06s">Say hello.</h2>
+      <p class="contact-sub reveal" style="transition-delay:.10s">
+        I'm always open to thoughtful conversations about product design, complex B2B SaaS, AI, and new opportunities.
+      </p>
+      <div class="contact-actions reveal" style="transition-delay:.14s">
+        <a href="mailto:avivzommmer@gmail.com" class="btn btn-dark">Email</a>
+        <a href="https://www.linkedin.com/in/avivzommer/" class="btn btn-light" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://adplist.org/mentors/aviv-zommer" class="btn btn-light" target="_blank" rel="noopener">Mentoring</a>
+        <a href="./resume/aviv-zommer-resume.pdf" class="btn btn-light" target="_blank" rel="noopener">Resume</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── Footer ─────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <p class="footer-name">Aviv Zommer</p>
+        <p class="footer-desc">Senior Product Designer focused on complex B2B SaaS, AI, and thoughtful product experiences.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="mailto:avivzommmer@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/avivzommer/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://adplist.org/mentors/aviv-zommer" target="_blank" rel="noopener">Mentoring</a>
+        <a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  // Nav border on scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -32px 0px' });
+  revealEls.forEach(el => io.observe(el));
+
+  // Hero fires immediately
+  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
+
+  // Cursor tooltip
+  const tip = document.getElementById('cursor-tip');
+  let tipX = 0, tipY = 0;
+
+  document.addEventListener('mousemove', e => {
+    tipX = e.clientX;
+    tipY = e.clientY;
+    tip.style.left = tipX + 'px';
+    tip.style.top  = tipY + 'px';
+  }, { passive: true });
+
+  document.querySelectorAll('.work-item').forEach(item => {
+    item.addEventListener('mouseenter', () => tip.classList.add('visible'));
+    item.addEventListener('mouseleave', () => tip.classList.remove('visible'));
+  });
+</script>
+
+<script>
+/* ── Password gate ── */
+(function(){
+  var gate  = document.getElementById('pw-gate');
+  var form  = document.getElementById('pw-form');
+  var input = document.getElementById('pw-input');
+  var err   = document.getElementById('pw-error');
+  var box   = document.querySelector('.pw-box');
+  if(sessionStorage.getItem('auth')==='1'){
+    gate.style.display='none';
+    return;
+  }
+  gate.style.display='flex';
+  document.body.style.overflow='hidden';
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(input.value==='1029'){
+      sessionStorage.setItem('auth','1');
+      gate.style.opacity='0';
+      document.body.style.overflow='';
+      setTimeout(function(){ gate.style.display='none'; },400);
+    } else {
+      input.value='';
+      err.style.display='block';
+      box.classList.remove('pw-shake');
+      void box.offsetWidth; /* reflow to restart animation */
+      box.classList.add('pw-shake');
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

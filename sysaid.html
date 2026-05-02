@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SysAid | Aviv Zommer</title>
+  <meta name="description" content="Case study: Brought SysAid's first self-serve Advanced trial to a traditionally sales-led product.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Reset ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #ffffff;
+      --fg:      #0f0f0f;
+      --mid:     #6e6e73;
+      --faint:   #b0b0b5;
+      --surface: #f5f5f7;
+      --border:  #e8e8ec;
+      --font:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --nav-h:   64px;
+      --max-w:   1080px;
+      --pad-x:   48px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img  { display: block; max-width: 100%; }
+    a    { color: inherit; text-decoration: none; }
+    ul   { list-style: none; }
+    video { display: block; width: 100%; }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+    }
+
+    /* ─── Nav ────────────────────────────────────────────── */
+    #nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 200;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--pad-x);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    #nav.scrolled { border-bottom-color: var(--border); }
+    .nav-logo { font-size: 15px; font-weight: 500; letter-spacing: -0.015em; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { font-size: 14px; color: var(--mid); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-links .cta { color: var(--fg); font-weight: 500; }
+
+    /* ─── Shared ─────────────────────────────────────────── */
+    .label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 100px;
+      font-size: 11.5px;
+      font-weight: 400;
+      color: var(--mid);
+      background: var(--surface);
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+
+    /* ─── Reveal ─────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.75s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ─── Section divider ────────────────────────────────── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ─── Single-column section layout ──────────────────── */
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 48px;
+      max-width: 720px;
+    }
+    .section-title {
+      font-size: clamp(24px, 2.6vw, 32px);
+      font-weight: 500;
+      letter-spacing: -0.035em;
+      line-height: 1.18;
+    }
+
+    .body-text {
+      font-size: 16px;
+      line-height: 1.82;
+      color: var(--mid);
+      max-width: 680px;
+    }
+    .body-text p + p { margin-top: 1.1em; }
+    .body-text strong { color: var(--fg); font-weight: 500; }
+
+    /* ─── Constraint cards ───────────────────────────────── */
+    .constraint-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 36px;
+    }
+    .constraint-card {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 20px 22px;
+    }
+    .constraint-num {
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      margin-bottom: 4px;
+    }
+    .constraint-desc {
+      font-size: 12.5px;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+
+    /* ─── Image pair ─────────────────────────────────────── */
+    .img-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    /* ─── Media frame ────────────────────────────────────── */
+    .media-frame {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 24px;
+    }
+    .media-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════════════════════ */
+    #hero {
+      padding-top: calc(var(--nav-h) + 72px);
+      padding-bottom: 88px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--mid);
+      margin-bottom: 52px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--fg); }
+    .back-link svg { flex-shrink: 0; }
+
+    .hero-company {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .hero-company img {
+      height: 20px;
+      width: auto;
+      opacity: 0.7;
+    }
+    .hero-company-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mid);
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 3.8vw, 52px);
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      max-width: 820px;
+      margin-bottom: 28px;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      line-height: 1.72;
+      color: var(--mid);
+      max-width: 620px;
+      margin-bottom: 32px;
+    }
+
+    .hero-media {
+      margin-top: 56px;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       SECTIONS
+    ════════════════════════════════════════════════════════ */
+    .cs-section {
+      padding: 96px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ════════════════════════════════════════════════════════
+       WORKSTREAMS - same layout as groundcover
+    ════════════════════════════════════════════════════════ */
+    section[aria-label="Design workstreams"] { padding-bottom: 0; }
+    section[aria-label="What launched"] { padding-bottom: 0; }
+
+    .iter-intro-text {
+      font-size: 15px;
+      line-height: 1.78;
+      color: var(--mid);
+      max-width: 600px;
+      margin-top: 24px;
+    }
+
+    .iter-f-chapter {
+      margin-top: 80px;
+    }
+    .iter-f-chapter:first-of-type { margin-top: 56px; }
+
+    .iter-f-eyebrow {
+      margin-bottom: 20px;
+    }
+    .iter-f-big-num {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--faint);
+      display: block;
+      margin-bottom: 10px;
+    }
+    .iter-f-title {
+      font-size: clamp(22px, 2.4vw, 30px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+    .iter-f-body {
+      font-size: 15px;
+      line-height: 1.78;
+      color: var(--mid);
+      max-width: 600px;
+    }
+
+    .iter-f-band {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      background: #f5f5f7;
+      margin-top: 48px;
+      padding: 80px 0;
+    }
+    .iter-f-band-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 72px;
+    }
+    .iter-f-item {}
+    .iter-f-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
+    .iter-f-caption {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+    .iter-f-caption-text {
+      font-size: 15px;
+      line-height: 1.68;
+      color: var(--mid);
+    }
+    .iter-f-caption-text strong { color: var(--fg); font-weight: 500; }
+
+    /* ─── Onboarding carousel ────────────────────────────── */
+    .ob-wrap {
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
+    .ob-track {
+      display: flex;
+      transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94);
+      will-change: transform;
+    }
+    .ob-slide {
+      min-width: 100%;
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 0;
+    }
+    .ob-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .ob-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--mid);
+      transition: background 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .ob-btn:hover { background: var(--border); color: var(--fg); }
+    .ob-dots { display: flex; gap: 7px; align-items: center; }
+    .ob-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .ob-dot.active { background: var(--fg); transform: scale(1.25); }
+    .ob-caption-text { display: none; }
+    .ob-caption-text.active { display: block; }
+
+    /* ════════════════════════════════════════════════════════
+       OUTCOME
+    ════════════════════════════════════════════════════════ */
+    .outcome-f-intro {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+    }
+    .outcome-f-body { font-size: 15px; line-height: 1.78; color: var(--mid); }
+
+    .impact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .impact-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .impact-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--fg);
+      margin-top: 8px;
+      flex-shrink: 0;
+    }
+    .impact-text {
+      font-size: 15px;
+      line-height: 1.72;
+      color: var(--mid);
+    }
+    .impact-text strong { color: var(--fg); font-weight: 500; }
+
+    .outcome-f-band {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      background: #f5f5f7;
+      margin-top: 72px;
+      padding: 80px 0 88px;
+    }
+    .outcome-f-band-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 72px;
+    }
+    .outcome-f-screen img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
+    .outcome-f-caption {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding-top: 16px;
+      margin-top: 16px;
+    }
+    .outcome-f-text {
+      font-size: 15px;
+      line-height: 1.68;
+      color: var(--mid);
+    }
+    .outcome-f-text strong { color: var(--fg); font-weight: 500; }
+
+    /* ─── Next project ───────────────────────────────────── */
+    .next-project-section {
+      border-top: 1px solid var(--border);
+    }
+    .next-project-grid {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 96px var(--pad-x);
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 72px;
+      align-items: center;
+    }
+    .next-project-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .next-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--faint);
+      display: block;
+      margin-bottom: 24px;
+    }
+    .next-project-title {
+      font-size: clamp(52px, 6.5vw, 80px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+      margin-bottom: 24px;
+    }
+    .next-project-desc {
+      font-size: 15px;
+      line-height: 1.72;
+      color: var(--mid);
+      margin-bottom: 36px;
+      max-width: 380px;
+    }
+    .next-project-visual a { display: block; }
+    .next-project-visual img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .next-project-visual:hover img { transform: translateY(-8px); }
+
+    /* ─── Buttons ────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 26px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      transition: opacity 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-dark { background: var(--fg); color: var(--bg); }
+    .btn-dark:hover { opacity: 0.78; }
+    .btn-light { background: var(--surface); color: var(--fg); }
+    .btn-light:hover { background: #e8e8ec; }
+
+    /* ─── Contact ────────────────────────────────────────── */
+    #contact {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .contact-inner { max-width: 620px; margin: 0 auto; }
+    .contact-label { margin-bottom: 20px; }
+    .contact-heading {
+      font-size: clamp(40px, 5.5vw, 68px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .contact-sub {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--mid);
+      margin-bottom: 48px;
+    }
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────── */
+    footer {
+      padding: 44px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+    .footer-name { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 5px; }
+    .footer-desc { font-size: 12.5px; line-height: 1.6; color: var(--faint); max-width: 360px; }
+    .footer-links { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
+    .footer-links a { font-size: 13px; color: var(--mid); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--fg); }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .next-project-grid { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    @media (max-width: 1024px) {
+      :root { --pad-x: 32px; }
+      .outcome-f-intro { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    @media (max-width: 720px) {
+      :root { --pad-x: 24px; }
+      #nav { padding: 0 24px; }
+      .nav-links li.hide-sm { display: none; }
+      .nav-links { gap: 20px; }
+      #hero { padding-top: calc(var(--nav-h) + 48px); padding-bottom: 64px; }
+      .cs-section { padding: 72px 0; }
+      .img-pair { grid-template-columns: 1fr; gap: 14px; }
+      .constraint-grid { grid-template-columns: 1fr 1fr; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .footer-links { flex-wrap: wrap; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Nav ──────────────────────────────────────────────── -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo">Aviv Zommer</a>
+  <ul class="nav-links">
+    <li class="hide-sm"><a href="index.html#work">Work</a></li>
+    <li class="hide-sm"><a href="index.html#about">About</a></li>
+    <li><a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+    <li><a href="index.html#contact" class="cta">Say hello</a></li>
+  </ul>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="container">
+
+    <a href="index.html#work" class="back-link reveal">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Selected Work
+    </a>
+
+    <div class="hero-company reveal" style="transition-delay:.04s">
+      <img src="./sysaid-logo.svg" alt="SysAid">
+      <span class="hero-company-name">SysAid</span>
+    </div>
+
+    <h1 class="hero-title reveal" style="transition-delay:.08s">
+      Brought SysAid's first self-serve Advanced trial to a traditionally sales-led product
+    </h1>
+
+    <p class="hero-sub reveal" style="transition-delay:.12s">
+      License Manager Advanced is SysAid's SaaS spend intelligence module. Getting IT teams to evaluate it without a sales conversation meant designing an entirely new kind of first impression, one that showed the problem clearly enough to create urgency, without giving the solution away for free.
+    </p>
+
+    <div class="chips reveal" style="transition-delay:.16s">
+      <span class="chip">B2B SaaS</span>
+      <span class="chip">Product-Led Sales</span>
+      <span class="chip">License Manager</span>
+      <span class="chip">Cross-functional leadership</span>
+      <span class="chip">Post-launch measurement</span>
+    </div>
+
+    <div class="hero-media reveal" style="transition-delay:.2s">
+      <div class="media-frame">
+        <img src="./sysaid-screenshot.png" alt="SysAid License Manager product interface">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     WHY THIS PROJECT EXISTED
+════════════════════════════════════════════════════════ -->
+<section class="cs-section" aria-label="Why this project existed">
+  <div class="container">
+
+    <div class="section-header reveal">
+      <span class="label">Context</span>
+      <h2 class="section-title">Why this project existed</h2>
+    </div>
+
+    <div class="reveal" style="transition-delay:.06s">
+      <div class="body-text">
+        <p>SysAid is an enterprise ITSM platform that has grown entirely through direct sales for its whole history. Every new customer started with a sales conversation, a demo, and a procurement cycle. The product had never had to make a first impression on its own.</p>
+        <p>License Manager Advanced is a module within SysAid that discovers SaaS applications running across an organization and surfaces cost savings. The business wanted to introduce a <strong>PLS motion</strong>: a free 14-day trial that lets prospects evaluate the product autonomously, get to value on their own terms, and then make a qualified, informed call to sales. Not self-serve conversion, but self-serve evaluation.</p>
+        <p>The design problem was unusual: <strong>you can't interview trial users before they've used the product.</strong> There's no discovery phase with them. You design, you launch, and you watch what happens in the recordings.</p>
+      </div>
+
+      <div class="constraint-grid">
+        <div class="constraint-card">
+          <div class="constraint-num">1st</div>
+          <div class="constraint-desc">First self-serve trial in SysAid's history, with no prior baseline to design from</div>
+        </div>
+        <div class="constraint-card">
+          <div class="constraint-num">PLS</div>
+          <div class="constraint-desc">Product-Led Sales: trial generates qualified leads for sales, not self-serve conversions</div>
+        </div>
+        <div class="constraint-card">
+          <div class="constraint-num">Live</div>
+          <div class="constraint-desc">Post-launch measurement via session recordings, as traditional user research wasn't possible</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MY DESIGN CHALLENGE
+════════════════════════════════════════════════════════ -->
+<section class="cs-section" aria-label="Design challenge">
+  <div class="container">
+
+    <div class="section-header reveal">
+      <span class="label">My role</span>
+      <h2 class="section-title">My design challenge</h2>
+    </div>
+
+    <div class="reveal" style="transition-delay:.06s">
+      <div class="body-text">
+        <p>I led design across three parallel workstreams: the trial start experience, the in-trial limitation UI, and the trial end and expiry experience. The core tension in all three was the same: <strong>the product's value is discovery.</strong> Finding SaaS applications your organization didn't know it was running. The trial had to demonstrate that value clearly without giving it away fully. Show enough to create urgency; not so much that there's no reason to upgrade.</p>
+        <p>The harder part of the job wasn't the UI. <strong>Sales needed to believe the trial wouldn't bypass them</strong>: it would generate better-qualified leads, not self-serve conversions that skipped the conversation entirely. That required showing the sales team the design logic: the trial reveals the problem, but sales closes the solution. Aligning marketing on who the trial was targeting, and what message prospects would arrive with, was a major workstream alongside the product design itself.</p>
+        <p>Without access to trial users before launch, the primary research tool was <strong>session recordings</strong>: watching real users navigate the trial post-launch, where they hesitated, where they dropped off, what they actually clicked versus what we expected. Design, launch, observe, iterate.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     DESIGN INSIGHT
+════════════════════════════════════════════════════════ -->
+<section class="cs-section" aria-label="Design insight">
+  <div class="container">
+
+    <div class="section-header reveal">
+      <span class="label">Design insight</span>
+      <h2 class="section-title">The insight that shaped the entire design</h2>
+    </div>
+
+    <div class="reveal" style="transition-delay:.06s">
+      <div class="body-text">
+        <p>The key realization: <strong>the limitation and the value demonstration are the same design surface.</strong></p>
+        <p>License Manager runs a full scan of your SaaS environment. During the trial, users see only the top 20 applications, but they can see that 241 apps were discovered in total. The paywall isn't a wall. It's a reveal. The user understands exactly what they're missing and why it matters before they're ever asked to upgrade.</p>
+        <p>This is the opposite of feature-gating. Feature-gating hides value until you pay. This approach <strong>shows the full scope of the problem</strong>: 241 applications running in your organization, and then shows you 20 of them. The gap is the pitch. You already know what you have; you just can't see it yet.</p>
+        <p>This shaped every design decision downstream. The limit banner, the trial end experience, and the upgrade prompt all reinforce the same message: <em>you have a visibility problem, and we can already tell you how big it is.</em></p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     DESIGN WORKSTREAMS
+════════════════════════════════════════════════════════ -->
+<section class="cs-section" aria-label="Design workstreams">
+  <div class="container">
+
+    <div class="section-header reveal">
+      <span class="label">Design workstreams</span>
+      <h2 class="section-title">Three flows, designed in parallel</h2>
+    </div>
+
+    <p class="iter-intro-text reveal" style="transition-delay:.06s">The trial experience was built across three parallel workstreams rather than sequential iterations. Each had a distinct design challenge, but all three were anchored to the same central insight: make the limitation visible, make the value undeniable, make the path to sales feel like the natural next step.</p>
+
+    <!-- Workstream 01 -->
+    <div class="iter-f-chapter reveal" style="transition-delay:.08s">
+      <div class="iter-f-eyebrow">
+        <span class="iter-f-big-num">Workstream 01</span>
+        <h3 class="iter-f-title">Trial start experience</h3>
+      </div>
+      <p class="iter-f-body">Two screens make up the trial start experience. The first is a within-product marketing page that prospects see before committing to the trial. It shows the full value proposition: cost savings, compliance visibility, shadow IT detection, with a scrollable preview of the actual product. The decision to start the trial is informed, not blind. The second screen is a 3-step onboarding wizard that runs immediately after clicking "Start trial now." Step 1 asks how the user wants to discover their applications: connect Microsoft Entra ID (the recommended path, which automatically surfaces the top 20 apps in minutes), deploy a browser extension, or add apps manually. The goal was to get users to their first real data as fast as possible, without tutorials or forced configuration.</p>
+    </div>
+
+  </div>
+
+  <div class="iter-f-band reveal" style="transition-delay:.1s">
+    <div class="iter-f-band-inner">
+
+      <div class="iter-f-item">
+        <img class="iter-f-img" src="./sysaid/figma-start-paywall.png" alt="License Manager Advanced trial entry page with product value preview">
+        <div class="iter-f-caption">
+          <p class="iter-f-caption-text"><strong>The trial entry page.</strong> Before starting the 14-day trial, prospects see the full value proposition alongside a live preview of the product. The decision to start is informed before they've clicked anything.</p>
+        </div>
+      </div>
+
+      <div class="iter-f-item">
+        <div class="ob-wrap">
+          <div class="ob-track">
+            <img class="ob-slide" src="./sysaid/step-1-discover-method.png" alt="Onboarding step 1: Discover your applications">
+            <img class="ob-slide" src="./sysaid/step-2-entra-id-setup.png" alt="Onboarding step 2: Connect Microsoft Entra ID">
+            <img class="ob-slide" src="./sysaid/step-3-entra-id-permissions.png" alt="Onboarding step 3: Enable Advanced Insights">
+          </div>
+        </div>
+        <div class="ob-controls">
+          <button class="ob-btn ob-prev" aria-label="Previous step">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="ob-dots">
+            <button class="ob-dot active" aria-label="Step 1"></button>
+            <button class="ob-dot" aria-label="Step 2"></button>
+            <button class="ob-dot" aria-label="Step 3"></button>
+          </div>
+          <button class="ob-btn ob-next" aria-label="Next step">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="iter-f-caption" style="margin-top:16px">
+          <p class="iter-f-caption-text ob-caption-text active"><strong>Step 1: Discover your applications.</strong> Choose how to connect: Microsoft Entra ID (recommended, finds top 20 apps automatically), a browser extension, or manual entry. Skipping is always an option.</p>
+          <p class="iter-f-caption-text ob-caption-text"><strong>Step 2: Connect Microsoft Entra ID.</strong> A focused 2-step guide: read the setup documentation, then connect the add-on in configuration settings. The right panel shows a preview of what the data will look like.</p>
+          <p class="iter-f-caption-text ob-caption-text"><strong>Step 3: Enable Advanced Insights.</strong> Read-only Entra ID access lets SysAid calculate savings from usage and seat counts. Privacy-first messaging ("we never modify your settings") is built directly into the step.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Workstream 02 -->
+    <div class="iter-f-chapter reveal" style="transition-delay:.08s">
+      <div class="iter-f-eyebrow">
+        <span class="iter-f-big-num">Workstream 02</span>
+        <h3 class="iter-f-title">In-trial limitation UI</h3>
+      </div>
+      <p class="iter-f-body">The core design decision of the entire project. Once inside the trial, users see the full applications table with rich data: total estimated savings, newly discovered apps, utilization rates. A persistent trial countdown banner at the top reminds them of the 14-day window. But the real conversion moment is at the bottom of the table. After scrolling through their 20 visible apps, users hit a banner: "241 applications discovered. You're currently viewing the top 20. Upgrade to explore your full application ecosystem and uncover hidden savings." It's not a popup or an interrupt. It appears naturally as a scroll reveal at the end of the list, at the exact moment the user has already seen the value and is looking for more. The placement was deliberate: earn the user's attention first, then show them what they're missing.</p>
+    </div>
+
+  </div>
+
+  <div class="iter-f-band reveal" style="transition-delay:.1s">
+    <div class="iter-f-band-inner">
+
+      <div class="iter-f-item">
+        <img class="iter-f-img" src="./sysaid/figma-apps-table.png" alt="License Manager in-trial state: applications table with 14-day countdown banner">
+        <div class="iter-f-caption">
+          <p class="iter-f-caption-text"><strong>The in-trial state.</strong> A full applications table with estimated savings, utilization rates, and discovery data visible from day one. The 14-day countdown banner at the top maintains gentle urgency without blocking the experience.</p>
+        </div>
+      </div>
+
+      <div class="iter-f-item">
+        <img class="iter-f-img" src="./sysaid/figma-241-banner.png" alt="241 applications discovered scroll reveal at the bottom of the apps table">
+        <div class="iter-f-caption">
+          <p class="iter-f-caption-text"><strong>The scroll reveal.</strong> At the bottom of the table, after the user has explored their 20 visible apps, the full scan count appears: 241 applications discovered. The placement is intentional. Earn the user's attention first, then show them what they're missing.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Workstream 03 -->
+    <div class="iter-f-chapter reveal" style="transition-delay:.08s">
+      <div class="iter-f-eyebrow">
+        <span class="iter-f-big-num">Workstream 03</span>
+        <h3 class="iter-f-title">Trial end and expiry experience</h3>
+      </div>
+      <p class="iter-f-body">When the 14-day trial ends, the user sees a single page: "Your free trial is complete. Upgrade to License Manager Advanced for full access to: Manage your 241 discovered applications. Track usage and reclaim licenses. Ensure license compliance. Detect Shadow IT." Then: "Ready to continue?" with a "Request pricing" button. Below that, a quiet link to share trial feedback. The design challenge was making this feel like a natural handoff, not a wall. The specific number (241 applications) is pulled from the user's own scan, so it's personal. The list of locked features is exactly what they explored during the trial. The ask is clear but not coercive, because the user already knows what they're missing.</p>
+    </div>
+
+  </div>
+
+  <div class="iter-f-band reveal" style="transition-delay:.1s; margin-bottom: 0;">
+    <div class="iter-f-band-inner">
+
+      <div class="iter-f-item">
+        <img class="iter-f-img" src="./sysaid/figma-end-paywall.png" alt="Trial complete page: Your free trial is complete, upgrade to License Manager Advanced">
+        <div class="iter-f-caption">
+          <p class="iter-f-caption-text"><strong>The trial end page.</strong> The user's own discovery results (241 applications) are surfaced in the upgrade ask. The list of locked features maps directly to what they explored. "Request pricing" is the only hard CTA; a feedback link gives users a low-friction exit that still generates signal.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     USERFLOW
+════════════════════════════════════════════════════════ -->
+<section class="cs-section" aria-label="UserFlow">
+  <div class="container">
+
+    <div class="section-header reveal">
+      <span class="label">In-product guidance</span>
+      <h2 class="section-title">Using UserFlow to drive adoption</h2>
+    </div>
+
+    <div class="reveal" style="transition-delay:.06s">
+      <div class="body-text">
+        <p>Getting users to connect their environment is step one. Getting them to enrich the data (adding license counts, cost information, and reviewing discovered apps) is what actually makes the product valuable during the trial window. We used <strong>UserFlow</strong> to bridge that gap without requiring a support rep or onboarding call.</p>
+        <p>Once the application scan completes and the user lands on the Applications table, UserFlow triggers a contextual tooltip: "Your applications are ready. Discover how to manage your applications and optimize costs with a brief 1-minute walkthrough." The user can accept or dismiss. If they accept, a guided side panel walks them through the remaining enrichment steps in sequence, with contextual tooltips pointing to the exact fields they need to fill in.</p>
+        <p>The design logic: the more data a user puts into License Manager during the trial, the more accurate their savings estimate, and the stronger the upgrade case. UserFlow was the mechanism for nudging users toward that enrichment at the right moment, with the right framing, without interrupting the core experience.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="iter-f-band reveal" style="transition-delay:.1s; margin-bottom: 0;">
+    <div class="iter-f-band-inner">
+
+      <div class="iter-f-item">
+        <img class="iter-f-img" src="./sysaid/figma-userflow-1.png" alt="UserFlow tooltip: Your applications are ready, start 1-minute walkthrough">
+        <div class="iter-f-caption">
+          <p class="iter-f-caption-text"><strong>The walkthrough trigger.</strong> After the scan completes, UserFlow surfaces a tooltip showing utilization data and estimated savings already available. The ask is low-friction: a 1-minute walkthrough, with an easy dismiss if the user prefers to explore on their own.</p>
+        </div>
+      </div>
+
+      <div class="iter-f-item">
+        <img class="iter-f-img" src="./sysaid/figma-userflow-2.png" alt="UserFlow guided side panel: Set up applications with step-by-step checklist">
+        <div class="iter-f-caption">
+          <p class="iter-f-caption-text"><strong>The guided setup panel.</strong> A right-side panel walks through enrichment steps in order: connect Entra ID, add total licenses, add total cost, create custom applications. Contextual tooltips point to the exact column or field in the table, so users never lose their place in the product.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     RESEARCH APPROACH
+════════════════════════════════════════════════════════ -->
+<section class="cs-section" aria-label="Research approach">
+  <div class="container">
+
+    <div class="section-header reveal">
+      <span class="label">Research approach</span>
+      <h2 class="section-title">Watching instead of asking</h2>
+    </div>
+
+    <div class="reveal" style="transition-delay:.06s">
+      <div class="body-text">
+        <p>Traditional user research requires access to users before they experience the product: interviews, usability tests, observation sessions. For a trial, that's impossible. The trial IS the first experience. There's no one to interview before it exists.</p>
+        <p>The primary research tool was <strong>session recordings</strong>: watching real trial users navigate the product after launch. Where they hesitated. Where they dropped off. What they actually clicked versus what the design expected them to click. Every recording session fed directly into the next design decision.</p>
+        <p>This constraint shaped the design philosophy. Build something that works before you fully understand the user, then iterate fast on what you see. The post-launch feedback cycle was part of the design process from the start, not an afterthought added once the product was live.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     WHAT LAUNCHED
+════════════════════════════════════════════════════════ -->
+<section class="cs-section" aria-label="What launched">
+  <div class="container">
+
+    <div class="section-header reveal">
+      <span class="label">Outcome</span>
+      <h2 class="section-title">What launched, and what we're measuring</h2>
+    </div>
+
+    <div class="outcome-f-intro reveal" style="transition-delay:.06s">
+      <p class="outcome-f-body">The trial launched in early 2025, marking SysAid's first self-serve product experience in the company's history. Results are early and the measurement infrastructure is in place. The metrics below are what we're actively tracking; numbers will be updated as the data matures.</p>
+      <div class="impact-list">
+        <div class="impact-item">
+          <div class="impact-dot"></div>
+          <p class="impact-text"><strong>[XX%] Trial start conversion</strong>: of users who reached the trial entry point, % who completed setup and reached the applications list.</p>
+        </div>
+        <div class="impact-item">
+          <div class="impact-dot"></div>
+          <p class="impact-text"><strong>[XX%] Paywall engagement</strong>: of trial users who saw the "241 apps discovered" banner, % who clicked to learn about upgrading.</p>
+        </div>
+        <div class="impact-item">
+          <div class="impact-dot"></div>
+          <p class="impact-text"><strong>[XX] Sales-qualified leads</strong>: trial users who requested a sales conversation after seeing their discovery results.</p>
+        </div>
+        <div class="impact-item">
+          <div class="impact-dot"></div>
+          <p class="impact-text"><strong>Session recording insights</strong>: post-launch recordings identified specific friction points in the flow that are feeding directly into the next iteration cycle.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="outcome-f-band reveal" style="transition-delay:.1s">
+    <div class="outcome-f-band-inner">
+
+      <div class="outcome-f-screen">
+        <img src="./sysaid/figma-apps-table.png" alt="License Manager in-trial applications table with trial countdown banner">
+        <div class="outcome-f-caption">
+          <p class="outcome-f-text"><strong>The shipped trial experience.</strong> The full applications table with estimated savings, utilization data, and discovery information visible from day one. The trial countdown banner maintains urgency without blocking the product.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     NEXT PROJECT
+════════════════════════════════════════════════════════ -->
+<section class="next-project-section" aria-label="Next project">
+  <div class="next-project-grid">
+
+    <div class="next-project-text reveal">
+      <span class="next-label">Next project</span>
+      <h2 class="next-project-title">groundcover</h2>
+      <p class="next-project-desc">Simplified how DevOps teams control data ingestion in a complex observability product. Shipped in 6 weeks across three rapid design iterations.</p>
+      <a href="groundcover.html" class="btn btn-light" style="align-self: flex-start;">Read the case study</a>
+    </div>
+
+    <div class="next-project-visual reveal" style="transition-delay:.08s">
+      <a href="groundcover.html">
+        <img src="./groundcover-screenshot.png" alt="groundcover product interface">
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CONTACT
+════════════════════════════════════════════════════════ -->
+<section id="contact" aria-label="Contact">
+  <div class="container">
+    <div class="contact-inner">
+      <p class="label contact-label reveal">Contact</p>
+      <h2 class="contact-heading reveal" style="transition-delay:.06s">Say hello.</h2>
+      <p class="contact-sub reveal" style="transition-delay:.10s">
+        I'm always open to thoughtful conversations about product design, complex B2B SaaS, AI, and new opportunities.
+      </p>
+      <div class="contact-actions reveal" style="transition-delay:.14s">
+        <a href="mailto:avivzommmer@gmail.com" class="btn btn-dark">Email</a>
+        <a href="https://www.linkedin.com/in/avivzommer/" class="btn btn-light" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://adplist.org/mentors/aviv-zommer" class="btn btn-light" target="_blank" rel="noopener">Mentoring</a>
+        <a href="./resume/aviv-zommer-resume.pdf" class="btn btn-light" target="_blank" rel="noopener">Resume</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── Footer ────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-name">Aviv Zommer</p>
+        <p class="footer-desc">Senior Product Designer focused on complex B2B SaaS, AI, and thoughtful product experiences.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="mailto:avivzommmer@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/avivzommer/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://adplist.org/mentors/aviv-zommer" target="_blank" rel="noopener">Mentoring</a>
+        <a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -24px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
+
+  // Onboarding carousel
+  (function() {
+    const wrap  = document.querySelector('.ob-wrap');
+    const track = document.querySelector('.ob-track');
+    if (!track) return;
+    const dots    = document.querySelectorAll('.ob-dot');
+    const captions = document.querySelectorAll('.ob-caption-text');
+    let cur = 0;
+    const n = dots.length;
+    function go(idx) {
+      cur = (idx + n) % n;
+      track.style.transform = 'translateX(-' + (cur * wrap.offsetWidth) + 'px)';
+      dots.forEach(function(d, i) { d.classList.toggle('active', i === cur); });
+      captions.forEach(function(c, i) { c.classList.toggle('active', i === cur); });
+    }
+    document.querySelector('.ob-prev').addEventListener('click', function() { go(cur - 1); });
+    document.querySelector('.ob-next').addEventListener('click', function() { go(cur + 1); });
+    dots.forEach(function(d, i) { d.addEventListener('click', function() { go(i); }); });
+    // Re-snap on resize so it doesn't get stuck mid-slide
+    window.addEventListener('resize', function() { go(cur); });
+  })();
+</script>
+
+</body>
+</html>
