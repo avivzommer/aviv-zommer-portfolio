@@ -137,11 +137,13 @@
       -webkit-transform: translateZ(0);
       box-shadow: 0 24px 48px -12px rgba(16, 24, 40, 0.18);
     }
-    /* video: natural ratio, height fills inner */
-    .media-frame.video video {
+    /* video / iframe: natural ratio, height fills inner */
+    .media-frame.video video,
+    .media-frame.video iframe {
       height: 100%;
       width: auto;
       display: block;
+      border: none;
       border-radius: 8px;
     }
 
@@ -1172,7 +1174,7 @@
         <div class="hero-video-wrap" style="flex: 1; min-width: 0;">
           <div class="media-frame video">
             <div class="video-inner">
-              <video id="hero-video" src="./baloop/Baloop_4.mp4" autoplay muted loop playsinline aria-label="Baloop product overview"></video>
+              <iframe src="https://www.youtube.com/embed/TCtlgU9Pejk?autoplay=1&mute=1&loop=1&playlist=TCtlgU9Pejk&controls=0&rel=0&playsinline=1" allow="autoplay; encrypted-media" allowfullscreen title="Baloop product overview"></iframe>
             </div>
           </div>
         </div>
