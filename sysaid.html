@@ -573,9 +573,95 @@
       .next-project-grid { grid-template-columns: 1fr; gap: 40px; }
     }
 
+    /* ── Trial Flow Timeline ─────────────────────────────── */
+    .trial-flow-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr 2.4fr 1.3fr;
+      gap: 0;
+      margin-top: 56px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .tf-phase {
+      padding: 28px 24px 32px;
+      border-right: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .tf-phase:last-child { border-right: none; }
+    .tf-phase--wide { background: var(--surface); }
+    .tf-phase-head {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 18px;
+      border-bottom: 2px solid var(--fg);
+      margin-bottom: 18px;
+    }
+    .tf-phase-num {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    .tf-phase-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fg);
+      line-height: 1.3;
+    }
+    .tf-phase-meta {
+      font-weight: 400;
+      color: var(--mid);
+    }
+    .tf-items {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .tf-items li {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.45;
+      padding-left: 14px;
+      position: relative;
+    }
+    .tf-items li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--faint);
+    }
+    .tf-tracks {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .tf-track-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 10px;
+    }
+
     @media (max-width: 1024px) {
       :root { --pad-x: 32px; }
       .outcome-f-intro { grid-template-columns: 1fr; gap: 40px; }
+      .trial-flow-grid { grid-template-columns: 1fr 1fr; }
+      .tf-phase:nth-child(2) { border-right: none; }
+      .tf-phase:nth-child(3) { border-top: 1px solid var(--border); border-right: 1px solid var(--border); }
+      .tf-phase:nth-child(4) { border-top: 1px solid var(--border); border-right: none; }
     }
 
     @media (max-width: 720px) {
@@ -589,6 +675,12 @@
       .constraint-grid { grid-template-columns: 1fr 1fr; }
       .footer-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
       .footer-links { flex-wrap: wrap; gap: 16px; }
+      .trial-flow-grid { grid-template-columns: 1fr; border-radius: 10px; }
+      .tf-phase { border-right: none; border-bottom: 1px solid var(--border); }
+      .tf-phase:last-child { border-bottom: none; }
+      .tf-phase:nth-child(2) { border-right: none; }
+      .tf-phase:nth-child(3) { border-top: none; border-right: none; }
+      .tf-phase:nth-child(4) { border-top: none; border-right: none; }
     }
   </style>
 </head>
@@ -731,6 +823,94 @@
       </div>
     </div>
 
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     TRIAL FLOW TIMELINE
+════════════════════════════════════════════════════════ -->
+<section class="cs-section" aria-label="End-to-end flow" id="trial-flow-section">
+  <div class="container">
+
+    <div class="section-header reveal">
+      <span class="label">End-to-end flow</span>
+      <h2 class="section-title">The full trial journey</h2>
+    </div>
+
+    <div class="trial-flow-grid reveal" style="transition-delay:.06s">
+
+      <!-- Phase 1: Pre-Trial -->
+      <div class="tf-phase">
+        <div class="tf-phase-head">
+          <span class="tf-phase-num">01</span>
+          <span class="tf-phase-name">Pre-Trial</span>
+        </div>
+        <ul class="tf-items">
+          <li>Trial start paywall</li>
+          <li>Value proposition surface</li>
+        </ul>
+      </div>
+
+      <!-- Phase 2: Onboarding -->
+      <div class="tf-phase">
+        <div class="tf-phase-head">
+          <span class="tf-phase-num">02</span>
+          <span class="tf-phase-name">Onboarding</span>
+        </div>
+        <ul class="tf-items">
+          <li>License Manager intro</li>
+          <li>Scan initiation</li>
+          <li>Applications list — first view</li>
+        </ul>
+      </div>
+
+      <!-- Phase 3: In-Trial (wider) -->
+      <div class="tf-phase tf-phase--wide">
+        <div class="tf-phase-head">
+          <span class="tf-phase-num">03</span>
+          <span class="tf-phase-name">In-Trial <span class="tf-phase-meta">· 14 days</span></span>
+        </div>
+        <div class="tf-tracks">
+          <div class="tf-track">
+            <span class="tf-track-label">Product</span>
+            <ul class="tf-items">
+              <li>241 apps discovered banner</li>
+              <li>Top 20 apps accessible</li>
+              <li>App detail pages (limited)</li>
+            </ul>
+          </div>
+          <div class="tf-track">
+            <span class="tf-track-label">Email touchpoints</span>
+            <ul class="tf-items">
+              <li>Day 1 — Welcome + quick win</li>
+              <li>Day 7 — Mid-trial check-in</li>
+              <li>Day 12 — Expiry reminder</li>
+            </ul>
+          </div>
+          <div class="tf-track">
+            <span class="tf-track-label">In-product guidance</span>
+            <ul class="tf-items">
+              <li>Contextual upgrade prompts tied to discovery count</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 4: Post-Trial -->
+      <div class="tf-phase">
+        <div class="tf-phase-head">
+          <span class="tf-phase-num">04</span>
+          <span class="tf-phase-name">Post-Trial</span>
+        </div>
+        <ul class="tf-items">
+          <li>Expired paywall + full count reveal</li>
+          <li>Proactive sales outreach</li>
+          <li>Qualified lead handoff</li>
+        </ul>
+      </div>
+
+    </div><!-- /.trial-flow-grid -->
   </div>
 </section>
 
