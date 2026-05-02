@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <script>if(sessionStorage.getItem('auth')!=='1'){document.documentElement.classList.add('pre-auth');}</script>
   <style>
     /* ─── Reset ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -99,6 +100,9 @@
                   transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .reveal.in { opacity: 1; transform: none; }
+    /* Freeze all animations until password is entered */
+    .pre-auth .hero-phrase,
+    .pre-auth .hero-details { animation-play-state: paused; }
     @media (prefers-reduced-motion: reduce) {
       .reveal { opacity: 1; transform: none; transition: none; }
     }
@@ -745,42 +749,46 @@
 
 
 <script>
-  // Nav border on scroll
+  // Nav border on scroll (always active)
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 8);
   }, { passive: true });
 
-  // Scroll reveal
-  const revealEls = document.querySelectorAll('.reveal');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('in');
-        io.unobserve(e.target);
-      }
+  // All reveal + hero animations — called only after auth
+  function initPage() {
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -32px 0px' });
+    revealEls.forEach(el => io.observe(el));
+
+    // Hero fires immediately
+    document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
+
+    // Cursor tooltip
+    const tip = document.getElementById('cursor-tip');
+    let tipX = 0, tipY = 0;
+    document.addEventListener('mousemove', e => {
+      tipX = e.clientX;
+      tipY = e.clientY;
+      tip.style.left = tipX + 'px';
+      tip.style.top  = tipY + 'px';
+    }, { passive: true });
+    document.querySelectorAll('.work-item').forEach(item => {
+      item.addEventListener('mouseenter', () => tip.classList.add('visible'));
+      item.addEventListener('mouseleave', () => tip.classList.remove('visible'));
     });
-  }, { threshold: 0.06, rootMargin: '0px 0px -32px 0px' });
-  revealEls.forEach(el => io.observe(el));
+  }
 
-  // Hero fires immediately
-  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
-
-  // Cursor tooltip
-  const tip = document.getElementById('cursor-tip');
-  let tipX = 0, tipY = 0;
-
-  document.addEventListener('mousemove', e => {
-    tipX = e.clientX;
-    tipY = e.clientY;
-    tip.style.left = tipX + 'px';
-    tip.style.top  = tipY + 'px';
-  }, { passive: true });
-
-  document.querySelectorAll('.work-item').forEach(item => {
-    item.addEventListener('mouseenter', () => tip.classList.add('visible'));
-    item.addEventListener('mouseleave', () => tip.classList.remove('visible'));
-  });
+  // If already authenticated, start immediately
+  if (sessionStorage.getItem('auth') === '1') { initPage(); }
 </script>
 
 <script>
@@ -801,9 +809,14 @@
     e.preventDefault();
     if(input.value==='1029'){
       sessionStorage.setItem('auth','1');
+      document.documentElement.classList.remove('pre-auth');
+      gate.style.transition='opacity 0.4s';
       gate.style.opacity='0';
       document.body.style.overflow='';
-      setTimeout(function(){ gate.style.display='none'; },400);
+      setTimeout(function(){
+        gate.style.display='none';
+        initPage();
+      },400);
     } else {
       input.value='';
       err.style.display='block';
