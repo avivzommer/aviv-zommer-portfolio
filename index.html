@@ -775,6 +775,17 @@
     // Hero fires immediately
     document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
 
+    // Re-scroll to hash after layout settles (hero animation can shift position)
+    if (window.location.hash) {
+      setTimeout(function() {
+        var target = document.querySelector(window.location.hash);
+        if (target) {
+          var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
+          window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - navH, behavior: 'auto' });
+        }
+      }, 50);
+    }
+
     // Cursor tooltip
     const tip = document.getElementById('cursor-tip');
     let tipX = 0, tipY = 0;
