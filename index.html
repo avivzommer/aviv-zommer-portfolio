@@ -26,7 +26,7 @@
       --pad-x:     48px;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
     body {
       font-family: var(--font);
       background: var(--bg);
@@ -187,6 +187,7 @@
     #work {
       padding: 96px 0;
       border-top: 1px solid var(--border);
+      scroll-margin-top: var(--nav-h);
     }
     .work-header { margin-bottom: 40px; }
 
@@ -297,6 +298,7 @@
     #about {
       padding: 120px 0;
       border-top: 1px solid var(--border);
+      scroll-margin-top: var(--nav-h);
     }
     .about-inner {
       display: grid;
@@ -377,6 +379,7 @@
     #contact {
       padding: 144px 0;
       border-top: 1px solid var(--border);
+      scroll-margin-top: var(--nav-h);
       text-align: center;
     }
     .contact-inner { max-width: 620px; margin: 0 auto; }
