@@ -406,36 +406,48 @@
     ════════════════════════════════════════════════════════ */
     .outcome-f-intro {
       margin-top: 40px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 56px;
+      max-width: 620px;
     }
     .outcome-f-body { font-size: 15px; line-height: 1.78; color: var(--mid); }
 
-    .impact-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: 40px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
     }
-    .impact-item {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
+    .stat-card {
+      padding: 32px 28px 28px;
+      border-right: 1px solid var(--border);
+      background: #f9f8f6;
+      position: relative;
     }
-    .impact-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--fg);
-      margin-top: 8px;
-      flex-shrink: 0;
+    .stat-card:last-child { border-right: none; }
+    .stat-num {
+      font-size: clamp(36px, 3.4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--fg);
+      line-height: 1;
+      margin-bottom: 10px;
     }
-    .impact-text {
-      font-size: 15px;
-      line-height: 1.72;
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg);
+      margin-bottom: 6px;
+    }
+    .stat-sub {
+      font-size: 13px;
       color: var(--mid);
+      line-height: 1.55;
     }
-    .impact-text strong { color: var(--fg); font-weight: 500; }
+    .stat-card--gap .stat-num,
+    .stat-card--gap .stat-label { color: #7b2242; }
 
     .outcome-f-band {
       width: 100vw;
@@ -738,7 +750,7 @@
 
     @media (max-width: 1024px) {
       :root { --pad-x: 32px; }
-      .outcome-f-intro { grid-template-columns: 1fr; gap: 40px; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
       .trial-flow-matrix { grid-template-columns: 90px repeat(4, 1fr); }
       .tfm-header, .tfm-cell { padding: 14px 14px; }
     }
@@ -1194,24 +1206,29 @@
     </div>
 
     <div class="outcome-f-intro reveal" style="transition-delay:.06s">
-      <p class="outcome-f-body">The trial launched in early 2025, marking SysAid's first self-serve product experience in the company's history. Results are early and the measurement infrastructure is in place. The metrics below are what we're actively tracking; numbers will be updated as the data matures.</p>
-      <div class="impact-list">
-        <div class="impact-item">
-          <div class="impact-dot"></div>
-          <p class="impact-text"><strong>[XX%] Trial start conversion</strong>: of users who reached the trial entry point, % who completed setup and reached the applications list.</p>
-        </div>
-        <div class="impact-item">
-          <div class="impact-dot"></div>
-          <p class="impact-text"><strong>[XX%] Paywall engagement</strong>: of trial users who saw the "241 apps discovered" banner, % who clicked to learn about upgrading.</p>
-        </div>
-        <div class="impact-item">
-          <div class="impact-dot"></div>
-          <p class="impact-text"><strong>[XX] Sales-qualified leads</strong>: trial users who requested a sales conversation after seeing their discovery results.</p>
-        </div>
-        <div class="impact-item">
-          <div class="impact-dot"></div>
-          <p class="impact-text"><strong>Session recording insights</strong>: post-launch recordings identified specific friction points in the flow that are feeding directly into the next iteration cycle.</p>
-        </div>
+      <p class="outcome-f-body">The trial launched in early 2025 — SysAid's first self-serve product experience. Three metrics validated the design approach. One gap tells us where the work continues.</p>
+    </div>
+
+    <div class="stat-grid reveal" style="transition-delay:.1s">
+      <div class="stat-card">
+        <div class="stat-num">20%</div>
+        <div class="stat-label">Paywall → Trial</div>
+        <div class="stat-sub">Above the 10–15% benchmark for targeted B2B paywalls</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">65%</div>
+        <div class="stat-label">Discovery activation</div>
+        <div class="stat-sub">Of trial users who reached the full applications table — real product intent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">39%</div>
+        <div class="stat-label">Contact request rate</div>
+        <div class="stat-sub">Of users who hit the paywall requested contact — vs ~10–15% typical</div>
+      </div>
+      <div class="stat-card stat-card--gap">
+        <div class="stat-num">6%</div>
+        <div class="stat-label">Trial → Booking</div>
+        <div class="stat-sub">Vs 15–25% benchmark — the gap that shapes the next iteration</div>
       </div>
     </div>
 
