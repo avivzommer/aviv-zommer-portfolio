@@ -1025,88 +1025,11 @@
 })();
 </script>
 
-<!-- ─── Tweaks Panel ────────────────────────────────────── -->
-<div id="tweaks-root"></div>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script type="text/babel" src="./tweaks-panel.jsx"></script>
-<script type="text/babel">
-  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-    "mood": "minimal",
-    "words": "highlighter",
-    "worklayout": "cards"
-  }/*EDITMODE-END*/;
-
-  function ApplyTweaks({ tweaks }) {
-    React.useEffect(() => {
-      document.body.setAttribute('data-mood', tweaks.mood);
-      document.body.setAttribute('data-words', tweaks.words);
-      document.body.setAttribute('data-worklayout', tweaks.worklayout);
-    }, [tweaks.mood, tweaks.words, tweaks.worklayout]);
-    return null;
-  }
-
-  function TweaksApp() {
-    const [tweaks, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
-    return (
-      <>
-        <ApplyTweaks tweaks={tweaks} />
-        <window.TweaksPanel title="Tweaks">
-          <window.TweakSection label="Mood">
-            <window.TweakRadio
-              value={tweaks.mood}
-              onChange={(v) => setTweak('mood', v)}
-              options={[
-                { value: 'minimal', label: 'Minimal' },
-                { value: 'cream',   label: 'Cream' },
-                { value: 'ink',     label: 'Ink' },
-              ]}
-            />
-          </window.TweakSection>
-
-          <window.TweakSection label="Bold words">
-            <window.TweakRadio
-              value={tweaks.words}
-              onChange={(v) => setTweak('words', v)}
-              options={[
-                { value: 'block',       label: 'Block' },
-                { value: 'highlighter', label: 'Highlight' },
-                { value: 'underline',   label: 'Underline' },
-              ]}
-            />
-          </window.TweakSection>
-
-          <window.TweakSection label="Selected Work">
-            <window.TweakRadio
-              value={tweaks.worklayout}
-              onChange={(v) => setTweak('worklayout', v)}
-              options={[
-                { value: 'cards',     label: 'Cards' },
-                { value: 'editorial', label: 'Editorial' },
-              ]}
-            />
-          </window.TweakSection>
-        </window.TweaksPanel>
-      </>
-    );
-  }
-
-  // Apply defaults immediately so the page reflects persisted state on load
-  document.body.setAttribute('data-mood', TWEAK_DEFAULTS.mood);
-  document.body.setAttribute('data-words', TWEAK_DEFAULTS.words);
-  document.body.setAttribute('data-worklayout', TWEAK_DEFAULTS.worklayout);
-
-  // Wait for tweaks-panel.jsx to finish loading (it's a separate babel script)
-  function mount() {
-    if (!window.TweaksPanel || !window.useTweaks) {
-      setTimeout(mount, 50);
-      return;
-    }
-    const root = ReactDOM.createRoot(document.getElementById('tweaks-root'));
-    root.render(<TweaksApp />);
-  }
-  mount();
+<script>
+  // Apply design variant defaults
+  document.body.setAttribute('data-mood', 'minimal');
+  document.body.setAttribute('data-words', 'highlighter');
+  document.body.setAttribute('data-worklayout', 'cards');
 </script>
 
 </body>
