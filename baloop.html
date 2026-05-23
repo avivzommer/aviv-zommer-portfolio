@@ -283,6 +283,22 @@
       margin-bottom: 28px;
     }
 
+    /* Yellow marker highlight */
+    .hw {
+      background-image: linear-gradient(
+        to bottom,
+        transparent 0, transparent 52%,
+        #ffd96b 52%, #ffd96b 94%,
+        transparent 94%
+      );
+      background-repeat: no-repeat;
+      background-size: 0% 100%;
+      background-position: left center;
+      padding: 0 4px;
+      transition: background-size 0.85s cubic-bezier(0.7, 0.05, 0.35, 1) 0.4s;
+    }
+    .hero-title.in .hw { background-size: 100% 100%; }
+
     .hero-sub {
       font-size: 17px;
       line-height: 1.72;
@@ -1121,7 +1137,7 @@
       <span class="hero-company-name">Baloop</span>
     </div>
 
-    <h1 class="hero-title">Turned field research into a support system for youth mentors under emotional strain</h1>
+    <h1 class="hero-title reveal">Turned field research into a support system for youth mentors under <span class="hw">emotional strain</span></h1>
 
     <p class="hero-sub">This project explored how design could support youth mentors facing burnout, emotional strain, and a growing loss of purpose during wartime. Through field research, action research, and concept testing, I designed Baloop, a reflective support system that helps mentors track meaningful progress, strengthen motivation, and build continuity around their work.</p>
 

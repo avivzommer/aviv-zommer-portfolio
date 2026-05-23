@@ -229,6 +229,23 @@
       margin-bottom: 28px;
     }
 
+    /* Yellow marker highlight */
+    .hw {
+      background-image: linear-gradient(
+        to bottom,
+        transparent 0, transparent 52%,
+        #ffd96b 52%, #ffd96b 94%,
+        transparent 94%
+      );
+      background-repeat: no-repeat;
+      background-size: 0% 100%;
+      background-position: left center;
+      padding: 0 4px;
+      transition: background-size 0.85s cubic-bezier(0.7, 0.05, 0.35, 1) 0.4s;
+    }
+    .hero-title.in .hw,
+    .next-project-text.in .hw { background-size: 100% 100%; }
+
     .hero-sub {
       font-size: 17px;
       line-height: 1.72;
@@ -783,7 +800,7 @@
     </div>
 
     <h1 class="hero-title reveal" style="transition-delay:.08s">
-      Brought SysAid's first self-serve Advanced trial to a traditionally sales-led product
+      Brought SysAid's <span class="hw">first self-serve</span> Advanced trial to a traditionally sales-led product
     </h1>
 
     <p class="hero-sub reveal" style="transition-delay:.12s">
@@ -1224,7 +1241,7 @@
 
     <div class="next-project-text reveal">
       <span class="next-label">Next project</span>
-      <h2 class="next-project-title">groundcover</h2>
+      <h2 class="next-project-title"><span class="hw">groundcover</span></h2>
       <p class="next-project-desc">Simplified how DevOps teams control data ingestion in a complex observability product. Shipped in 6 weeks across three rapid design iterations.</p>
       <a href="groundcover.html" class="btn btn-light" style="align-self: flex-start;">Read the case study</a>
     </div>
