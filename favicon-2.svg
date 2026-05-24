@@ -1,0 +1,6 @@
+<!-- Warm bg, dark AZ, thick yellow marker underline (wider, more prominent) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#fdfbf7"/>
+  <text x="16" y="20" font-family="-apple-system, 'Inter', sans-serif" font-weight="700" font-size="14" fill="#14110d" text-anchor="middle" letter-spacing="-0.5">AZ</text>
+  <rect x="6" y="23" width="20" height="3.5" rx="1.75" fill="#ffd96b"/>
+</svg>
