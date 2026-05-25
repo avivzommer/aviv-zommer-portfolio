@@ -363,11 +363,21 @@
     .mentoring-logos a:hover { opacity: 1; }
     .mentoring-logo { height: 22px; width: auto; display: block; }
     .mentoring-partner-text { font-size: 13px; color: var(--mid); }
-    .mentoring-cta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .mentoring-embed {
+      height: 496px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 650px;
       margin-bottom: 28px;
+      box-shadow: 0 4px 24px rgba(20,17,13,0.07);
+    }
+    .mentoring-embed iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
     }
     .about-more {
       display: inline-flex;
@@ -877,9 +887,8 @@
           <p class="mentoring-text" style="font-size: 14px">
             Beyond the work, I mentor product designers through ADPList and Startup Designers, helping them navigate complex career transitions, sharpen their craft, and find their voice in product work.
           </p>
-          <div class="mentoring-cta">
-            <a href="mailto:avivzommer@gmail.com" class="btn btn-dark">Get in touch</a>
-            <a href="https://adplist.org/mentors/aviv-zommer" class="btn btn-light" target="_blank" rel="noopener">ADPList profile</a>
+          <div class="mentoring-embed">
+            <iframe src="https://adplist.org/widgets/single-session?src=aviv-zommer&session=71077-mentorship-session" title="Mentorship Kickoff 🎉" loading="lazy"></iframe>
           </div>
           <div class="mentoring-logos">
             <span class="mentoring-partner-text">Partnership with Startup Designers IL</span>
