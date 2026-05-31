@@ -338,7 +338,7 @@
       font-size: 16px;
       line-height: 1.8;
       color: var(--mid);
-      margin-bottom: 52px;
+      margin-bottom: 20px;
     }
     .mentoring-block {
       background: var(--surface);
@@ -382,16 +382,19 @@
     .about-more {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       font-size: 14px;
       font-weight: 500;
+      color: var(--fg);
       border-bottom: 1px solid var(--fg);
       padding-bottom: 1px;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, gap 0.25s cubic-bezier(0.22,1,0.36,1);
       width: fit-content;
+      margin-bottom: 52px;
     }
-    .about-more:hover { opacity: 0.55; }
-    .about-more svg { flex-shrink: 0; }
+    .about-more:hover { opacity: 0.55; gap: 9px; }
+    .about-more svg { flex-shrink: 0; transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+    .about-more:hover svg { transform: translate(3px, -3px); }
 
     /* ═══════════════════════════════════════════════════════
        CONTACT CTA
@@ -777,7 +780,7 @@
   <a href="#" class="nav-logo">Aviv Zommer</a>
   <ul class="nav-links">
     <li class="hide-sm"><a href="#work">Work</a></li>
-    <li class="hide-sm"><a href="#about">About</a></li>
+    <li class="hide-sm"><a href="about.html">About</a></li>
     <li><a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a></li>
     <li><a href="#contact" class="cta">Say hello</a></li>
   </ul>
@@ -916,6 +919,13 @@
           I'm a Senior Product Designer focused on complex B2B SaaS products, helping teams connect business goals, user needs, and what AI can unlock through thoughtful UX/UI. My work sits at the intersection of strategy, systems, and storytelling. With a background across brand, marketing, and product design, I bring a cross-disciplinary perspective to building products that are clear, useful, and aligned with real business value. I care deeply about both precision and empathy, and I bring that same mindset to mentoring designers in the community.
         </p>
 
+        <a href="about.html" class="about-more reveal" style="transition-delay:.12s">
+          Read the full story
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 11L11 2M11 2H4.5M11 2V8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+
         <div class="mentoring-block reveal" style="transition-delay:.14s">
           <p class="label mentoring-label">Mentoring</p>
           <p class="mentoring-text" style="font-size: 14px">
@@ -968,6 +978,7 @@
         <p class="footer-desc">Senior Product Designer focused on complex B2B SaaS, AI, and thoughtful product experiences.</p>
       </div>
       <nav class="footer-links" aria-label="Footer links">
+        <a href="about.html">About</a>
         <a href="/cdn-cgi/l/email-protection#6706110e111d080a0a0a021527000a060e0b4904080a">Email</a>
         <a href="https://www.linkedin.com/in/avivzommer/" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://adplist.org/mentors/aviv-zommer" target="_blank" rel="noopener">Mentoring</a>
