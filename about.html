@@ -372,13 +372,22 @@
       margin-top: 14px;
     }
 
+    .exp-detail-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 40px;
+      padding-left: 14px;
+      padding-top: 2px;
+    }
+
     .exp-bullets {
       list-style: none;
-      margin: 0 0 0 32px;
+      margin: 0;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      max-width: 340px;
+      flex: 0 1 380px;
+      max-width: 380px;
       opacity: 0;
       transition: opacity 0.4s ease 0.1s;
     }
@@ -399,16 +408,13 @@
     }
 
     .exp-sticker {
-      position: absolute;
-      top: -8px;
-      right: 0;
-      height: 150px;
+      flex: 0 0 auto;
+      height: 140px;
       opacity: 0;
       pointer-events: none;
-      transform: rotate(var(--rot, -5deg)) scale(0.85);
-      transform-origin: top right;
+      transform: rotate(var(--rot, -5deg)) scale(0.88);
+      transform-origin: top left;
       transition: opacity 0.4s, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 5;
     }
     .exp-sticker img {
       height: 100%;
@@ -786,13 +792,17 @@
               <span class="exp-role">Senior Product Designer</span>
             </span>
           </div>
-          <div class="exp-detail"><ul class="exp-bullets">
+          <div class="exp-detail">
+            <div class="exp-detail-inner">
+              <ul class="exp-bullets">
             <li>Led design of the first self-serve trial, introducing a Product-Led Sales motion to a historically sales-only product.</li>
             <li>Led the company's design system, improving consistency and scalability across the product.</li>
             <li>Introduced AI-driven design workflows connecting Figma, Claude, and the design system.</li>
-          </ul></div>
-          <div class="exp-sticker" aria-hidden="true">
-            <img src="./sysaid-screenshot.png" alt="" loading="lazy">
+              </ul>
+              <div class="exp-sticker" aria-hidden="true">
+                <img src="./sysaid-screenshot.png" alt="" loading="lazy">
+              </div>
+            </div>
           </div>
         </li>
 
@@ -805,13 +815,17 @@
               <span class="exp-role">Product Designer</span>
             </span>
           </div>
-          <div class="exp-detail"><ul class="exp-bullets">
+          <div class="exp-detail">
+            <div class="exp-detail-inner">
+              <ul class="exp-bullets">
             <li>Simplified data ingestion workflows, enabling self-serve configuration and reducing dependency on support.</li>
             <li>Designed RBAC system enabling scalable self-serve permission management.</li>
             <li>Led integration of proactive AI-powered insights into the product experience.</li>
-          </ul></div>
-          <div class="exp-sticker" aria-hidden="true">
-            <img src="./groundcover-screenshot.png" alt="" loading="lazy">
+              </ul>
+              <div class="exp-sticker" aria-hidden="true">
+                <img src="./groundcover-screenshot.png" alt="" loading="lazy">
+              </div>
+            </div>
           </div>
         </li>
 
@@ -824,13 +838,17 @@
               <span class="exp-role">Product Designer</span>
             </span>
           </div>
-          <div class="exp-detail"><ul class="exp-bullets">
+          <div class="exp-detail">
+            <div class="exp-detail-inner">
+              <ul class="exp-bullets">
             <li>Designed workflows for a supply chain management platform serving retail and distribution.</li>
             <li>Conducted user research and mapped journeys to improve usability.</li>
             <li>Built and scaled a cross-product design system.</li>
-          </ul></div>
-          <div class="exp-sticker" aria-hidden="true">
-            <img src="./about/onebeat-1.avif" alt="" loading="lazy">
+              </ul>
+              <div class="exp-sticker" aria-hidden="true">
+                <img src="./about/onebeat-1.avif" alt="" loading="lazy">
+              </div>
+            </div>
           </div>
         </li>
 
@@ -843,12 +861,16 @@
               <span class="exp-role">Senior Marketing Designer</span>
             </span>
           </div>
-          <div class="exp-detail"><ul class="exp-bullets">
+          <div class="exp-detail">
+            <div class="exp-detail-inner">
+              <ul class="exp-bullets">
             <li>Led design of marketing assets for a B2B cybersecurity company.</li>
             <li>Ensured brand and product consistency across all touchpoints.</li>
-          </ul></div>
-          <div class="exp-sticker" aria-hidden="true">
-            <img src="./about/transmit-security.avif" alt="" loading="lazy">
+              </ul>
+              <div class="exp-sticker" aria-hidden="true">
+                <img src="./about/transmit-security.avif" alt="" loading="lazy">
+              </div>
+            </div>
           </div>
         </li>
 
@@ -861,12 +883,16 @@
               <span class="exp-role">Creative Director</span>
             </span>
           </div>
-          <div class="exp-detail"><ul class="exp-bullets">
+          <div class="exp-detail">
+            <div class="exp-detail-inner">
+              <ul class="exp-bullets">
             <li>Led a team of designers delivering branding and visual communication for major clients.</li>
             <li>Defined design direction and ensured high-quality execution across all creative output.</li>
-          </ul></div>
-          <div class="exp-sticker" aria-hidden="true">
-            <img src="./about/david-yosef.png" alt="" loading="lazy">
+              </ul>
+              <div class="exp-sticker" aria-hidden="true">
+                <img src="./about/david-yosef.png" alt="" loading="lazy">
+              </div>
+            </div>
           </div>
         </li>
 
