@@ -50,22 +50,151 @@
       inset: 0 0 auto 0;
       z-index: 200;
       height: var(--nav-h);
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 var(--pad-x);
-      background: rgba(255,254,254,0.88);
+      gap: 16px;
+    }
+    #nav.scrolled {
+      background: rgba(255,254,254,0.82);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.3s ease;
+      border-bottom-color: var(--border);
     }
-    #nav.scrolled { border-bottom-color: var(--border); }
-    .nav-logo { font-size: 16px; font-weight: 500; letter-spacing: -0.015em; }
-    .nav-links { display: flex; align-items: center; gap: 32px; }
-    .nav-links a { font-size: 14px; color: var(--mid); transition: color 0.2s; }
-    .nav-links a:hover { color: var(--fg); }
-    .nav-links .cta { color: var(--fg); font-weight: 500; }
+
+    /* Brand: avatar + name */
+    .nav-brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px var(--bg);
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    @media (hover: hover) and (pointer: fine) {
+      .nav-brand:hover .nav-avatar { transform: scale(1.06); }
+    }
+    .nav-logo { font-size: 15px; font-weight: 500; letter-spacing: -0.015em; }
+
+    /* Floating pill nav */
+    .nav-pill {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 5px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 8px 24px rgba(20,17,13,0.08), 0 0 0 1px rgba(20,17,13,0.04);
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+    }
+    .nav-links { display: flex; align-items: center; gap: 2px; }
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      height: 32px;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--mid);
+      transition: background 0.2s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .nav-links a:hover { background: var(--surface); color: var(--fg); }
+    }
+
+    /* CTA button, outside the pill */
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 20px;
+      border-radius: 999px;
+      background: var(--fg);
+      color: var(--bg);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+      transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.16s ease-out;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-cta:active { transform: scale(0.96); }
+    @media (hover: hover) and (pointer: fine) {
+      .nav-cta:hover { opacity: 0.8; }
+    }
+    .nav-lang {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mid);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 14px;
+      white-space: nowrap;
+      transition: color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+      flex-shrink: 0;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .nav-lang:hover { color: var(--fg); }
+    }
+
+    /* Hamburger — hidden on desktop, shown in place of the avatar on mobile */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      border-radius: 1px;
+      background: var(--fg);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+    }
+    .nav-hamburger.is-open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .nav-hamburger.is-open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.is-open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    /* Mobile dropdown menu */
+    .nav-mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: rgba(255,254,254,0.98);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 4px 16px 12px;
+    }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-menu a {
+      padding: 14px 4px;
+      font-size: 15px;
+      color: var(--fg);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-mobile-menu a:last-child { border-bottom: none; }
 
     /* ─── Shared ─────────────────────────────────────────── */
     .label {
@@ -192,13 +321,19 @@
       padding-bottom: 88px;
     }
 
+    .hero-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 52px;
+    }
     .back-link {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       font-size: 13px;
       color: var(--mid);
-      margin-bottom: 52px;
       transition: color 0.2s;
     }
     .back-link:hover { color: var(--fg); }
@@ -1063,8 +1198,12 @@
 
     @media (max-width: 720px) {
       :root { --pad-x: 20px; }
-      .nav-links { gap: 20px; }
-      .nav-links a:not(.cta) { display: none; }
+      .nav-inner { padding: 0 16px; gap: 8px; }
+      .nav-brand { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-pill { display: none; }
+      .nav-cta { height: 36px; padding: 0 16px; font-size: 13px; }
+      .nav-lang { font-size: 12px; padding: 5px 10px; }
       .img-pair { grid-template-columns: 1fr; }
       .tool-selector { grid-template-columns: 1fr; }
       .framework-grid { grid-template-columns: 1fr; }
@@ -1135,14 +1274,29 @@
      NAV
 ════════════════════════════════════════════════════════ -->
 <nav id="nav" aria-label="Main navigation">
-  <a href="index.html" class="nav-logo">Aviv Zommer</a>
-  <ul class="nav-links">
-    <li><a href="index.html#work">Work</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a></li>
-    <li><a href="index.html#contact" class="cta">Say hello</a></li>
-  </ul>
-  <a href="baloop.html" style="font-size:13px;font-weight:500;color:var(--mid);border:1px solid var(--border);border-radius:100px;padding:5px 14px;margin-inline-start:8px;white-space:nowrap;transition:color .2s;">English</a>
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-avatar"><img src="./aviv-portrait.jpeg" alt="" loading="eager"></span>
+      <span class="nav-logo">Aviv Zommer</span>
+    </a>
+    <button type="button" class="nav-hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-pill">
+      <ul class="nav-links">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+      </ul>
+    </div>
+    <a href="index.html#contact" class="nav-cta">Say hello</a>
+  </div>
+  <div class="nav-mobile-menu" id="nav-mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="index.html#work">Work</a>
+    <a href="about.html">About</a>
+    <a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a>
+  </div>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -1165,12 +1319,15 @@
 <section id="hero">
   <div class="container">
 
-    <a href="index.html" class="back-link">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      לכל העבודות
-    </a>
+    <div class="hero-top-row">
+      <a href="index.html" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        לכל העבודות
+      </a>
+      <a href="baloop.html" class="nav-lang">English</a>
+    </div>
 
     <div class="hero-company">
       <img src="./baloop-logo.svg" alt="Baloop">
@@ -2060,6 +2217,24 @@
   window.addEventListener('scroll', () => {
     document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
   }, { passive: true });
+
+  /* ── Mobile hamburger menu ── */
+  (function () {
+    const hamburger = document.querySelector('.nav-hamburger');
+    const mobileMenu = document.querySelector('.nav-mobile-menu');
+    if (!hamburger || !mobileMenu) return;
+    const closeMenu = () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('is-open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    };
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('is-open', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  })();
 
   /* ── Hero video unmute toggle ── */
   const heroVideo = document.getElementById('hero-video');

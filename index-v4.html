@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviv Zommer — Senior Product Designer</title>
+  <title>Aviv Zommer — Centered Hero</title>
   <meta name="description" content="Senior Product Designer focused on complex B2B SaaS products, AI, and thoughtful product experiences.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>if(sessionStorage.getItem('auth')!=='1'){document.documentElement.classList.add('pre-auth');}</script>
   <style>
     /* ─── Reset ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -142,53 +143,6 @@
     @media (hover: hover) and (pointer: fine) {
       .nav-cta:hover { opacity: 0.8; }
     }
-
-    /* Hamburger — hidden on desktop, shown in place of the avatar on mobile */
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 4px;
-      width: 34px;
-      height: 34px;
-      flex-shrink: 0;
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .nav-hamburger span {
-      display: block;
-      width: 18px;
-      height: 1.5px;
-      border-radius: 1px;
-      background: var(--fg);
-      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
-    }
-    .nav-hamburger.is-open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
-    .nav-hamburger.is-open span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.is-open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
-
-    /* Mobile dropdown menu */
-    .nav-mobile-menu {
-      display: none;
-      flex-direction: column;
-      background: rgba(255,254,254,0.98);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 4px 16px 12px;
-    }
-    .nav-mobile-menu.open { display: flex; }
-    .nav-mobile-menu a {
-      padding: 14px 4px;
-      font-size: 15px;
-      color: var(--fg);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-mobile-menu a:last-child { border-bottom: none; }
 
     /* ─── Label ──────────────────────────────────────────── */
     .label {
@@ -769,10 +723,6 @@
       .work-item:hover .work-read-cta svg {
         transform: translate(3px, -3px);
       }
-      /* Locked (password-required) CTA: lock icon stays put on hover */
-      .work-item.is-locked:hover .work-read-cta svg {
-        transform: none;
-      }
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -970,9 +920,11 @@
 
       /* Nav */
       .nav-inner { padding: 0 16px; gap: 8px; }
-      .nav-brand { display: none; }
-      .nav-hamburger { display: flex; }
-      .nav-pill { display: none; }
+      .nav-logo { display: none; }
+      .nav-pill { padding: 4px; }
+      .nav-links { gap: 0; }
+      .nav-links a { padding: 0 12px; font-size: 13px; }
+      .nav-links li.hide-sm { display: none; }
       .nav-cta { height: 36px; padding: 0 16px; font-size: 13px; }
 
       /* Hero */
@@ -997,15 +949,6 @@
         flex: 0 0 78vw;
         max-width: 300px;
         scroll-snap-align: start;
-      }
-      /* The edge fades exist only to soften the desktop hover push-apart spill —
-         there's no hover on touch, so on mobile they just wash out the first/last
-         card in the scroll-snap strip. Bottom fade isn't needed either since the
-         card row no longer sits inside a bounded panel here. */
-      #hero .container::before,
-      #hero .container::after,
-      .hero-bottom-fade {
-        display: none;
       }
       .chips .chip { font-size: 12px !important; height: 26px; padding: 0 10px; }
 
@@ -1040,6 +983,84 @@
       .footer-links { flex-wrap: wrap; gap: 14px; }
     }
 
+  /* ── Password gate ── */
+  #pw-gate {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(20,17,13,0.52);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: opacity 0.4s;
+  }
+  .pw-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 8px 48px rgba(20,17,13,0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pw-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fg);
+    margin: 0;
+  }
+  #pw-form {
+    display: flex;
+    gap: 8px;
+  }
+  #pw-input {
+    flex: 1;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #pw-input:focus {
+    border-color: var(--mid);
+    box-shadow: 0 0 0 3px rgba(20,17,13,0.06);
+  }
+  #pw-form button {
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px;
+    background: var(--fg);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.14s ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #pw-form button:active { transform: scale(0.95); }
+  @media (hover: hover) and (pointer: fine) {
+    #pw-form button:hover { opacity: 0.75; }
+  }
+  #pw-error {
+    font-size: 12px;
+    color: #c0392b;
+    margin: 0;
+    display: none;
+  }
+  @keyframes pw-shake {
+    0%,100% { transform: translateX(0); }
+    20%,60%  { transform: translateX(-6px); }
+    40%,80%  { transform: translateX(6px); }
+  }
+  .pw-shake { animation: pw-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
   /* ═══════════════════════════════════════════════════════
      TWEAK VARIANTS — reshape the whole feel
      defaults: mood=minimal, words=block, worklayout=cards
@@ -1069,6 +1090,8 @@
   }
   body[data-mood="ink"] .btn-light:hover { background: #25252c; }
   body[data-mood="ink"] .about-photo img { filter: grayscale(15%) brightness(0.92); }
+  body[data-mood="ink"] #pw-input { background: var(--surface); color: var(--fg); border-color: var(--border); }
+  body[data-mood="ink"] .pw-box { background: var(--surface); border-color: var(--border); }
 
   /* ── Words: Highlighter swipe (marker only, no box) ── */
   body[data-words="highlighter"] #cursor-tip {
@@ -1082,13 +1105,6 @@
   body[data-mood="ink"][data-words="highlighter"] #cursor-tip {
     background: #ffd96b;
     color: #0e0e10;
-  }
-  /* "Password required to read" tooltip stays black, not the yellow marker color */
-  body[data-words="highlighter"] #cursor-tip.locked-tip,
-  body[data-mood="cream"][data-words="highlighter"] #cursor-tip.locked-tip,
-  body[data-mood="ink"][data-words="highlighter"] #cursor-tip.locked-tip {
-    background: var(--fg);
-    color: var(--bg);
   }
   /* ── Highlight extends to project hover & about heading ── */
   /* "Read case study" CTA: marker sweeps in on card hover */
@@ -1115,10 +1131,6 @@
     background-image: linear-gradient(to bottom, transparent 0, transparent 62%, #d97757 62%, #d97757 96%, transparent 96%);
   }
   body[data-mood="ink"][data-words="highlighter"] .work-item:hover .work-read-cta { color: #0e0e10; }
-  /* Locked (password-required) CTA: no yellow highlighter sweep */
-  body[data-words="highlighter"] .work-item.is-locked:hover .work-read-cta {
-    background-size: 0% 100%;
-  }
 
   /* "Hi, I'm Aviv." — marker on "Aviv" draws in when scrolled into view */
   body[data-words="highlighter"] .hero-marker,
@@ -1180,6 +1192,22 @@
 </head>
 <body>
 
+<!-- ─── Password gate ───────────────────────────────────── -->
+<div id="pw-gate" style="display:none">
+  <div class="pw-box">
+    <p class="pw-label">This portfolio is password protected</p>
+    <form id="pw-form" autocomplete="off">
+      <input id="pw-input" type="password" placeholder="Enter password" autocomplete="new-password" />
+      <button type="submit" aria-label="Submit password">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+    <p id="pw-error">Incorrect password</p>
+  </div>
+</div>
+
 <!-- Cursor tooltip -->
 <div id="cursor-tip" aria-hidden="true">Read case study</div>
 
@@ -1190,9 +1218,6 @@
       <span class="nav-avatar"><img src="./aviv-portrait.jpeg" alt="" loading="eager"></span>
       <span class="nav-logo">Aviv Zommer</span>
     </a>
-    <button type="button" class="nav-hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-menu">
-      <span></span><span></span><span></span>
-    </button>
     <div class="nav-pill">
       <ul class="nav-links">
         <li class="hide-sm"><a href="#work">Work</a></li>
@@ -1201,12 +1226,6 @@
       </ul>
     </div>
     <a href="#contact" class="nav-cta">Say hello</a>
-  </div>
-  <div class="nav-mobile-menu" id="nav-mobile-menu">
-    <a href="#">Home</a>
-    <a href="#work">Work</a>
-    <a href="about.html">About</a>
-    <a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a>
   </div>
 </nav>
 
@@ -1479,24 +1498,7 @@
     nav.classList.toggle('scrolled', window.scrollY > 8);
   }, { passive: true });
 
-  // Mobile hamburger menu (always active)
-  const hamburger = document.querySelector('.nav-hamburger');
-  const mobileMenu = document.querySelector('.nav-mobile-menu');
-  if (hamburger && mobileMenu) {
-    const closeMenu = () => {
-      mobileMenu.classList.remove('open');
-      hamburger.classList.remove('is-open');
-      hamburger.setAttribute('aria-expanded', 'false');
-    };
-    hamburger.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('open');
-      hamburger.classList.toggle('is-open', isOpen);
-      hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    });
-    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
-  }
-
-  // All reveal + hero animations
+  // All reveal + hero animations — called only after auth
   function initPage() {
     // Scroll reveal
     const revealEls = document.querySelectorAll('.reveal');
@@ -1524,22 +1526,6 @@
       }, 50);
     }
 
-    // Gated case studies: show "Password required" until unlocked this session
-    if (sessionStorage.getItem('auth') !== '1') {
-      document.querySelectorAll('.work-item[href="sysaid.html"], .work-item[href="groundcover.html"]').forEach(item => {
-        const cta = item.querySelector('.work-read-cta');
-        if (cta) {
-          cta.innerHTML = 'Password required' +
-            '<svg viewBox="0 0 13 13" fill="none" aria-hidden="true">' +
-            '<rect x="2.5" y="5.5" width="8" height="6" rx="1.2" stroke="currentColor" stroke-width="1.3"/>' +
-            '<path d="M4.3 5.5V3.9a2.2 2.2 0 0 1 4.4 0v1.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>' +
-            '</svg>';
-        }
-        item.classList.add('is-locked');
-        item.dataset.tip = 'Password required to read';
-      });
-    }
-
     // Cursor tooltip
     const tip = document.getElementById('cursor-tip');
     let tipX = 0, tipY = 0;
@@ -1550,11 +1536,7 @@
       tip.style.top  = tipY + 'px';
     }, { passive: true });
     document.querySelectorAll('.work-item').forEach(item => {
-      item.addEventListener('mouseenter', () => {
-        tip.textContent = item.dataset.tip || 'Read case study';
-        tip.classList.toggle('locked-tip', item.classList.contains('is-locked'));
-        tip.classList.add('visible');
-      });
+      item.addEventListener('mouseenter', () => tip.classList.add('visible'));
       item.addEventListener('mouseleave', () => tip.classList.remove('visible'));
     });
 
@@ -1589,7 +1571,45 @@
     });
   }
 
-  initPage();
+  // If already authenticated, start immediately
+  if (sessionStorage.getItem('auth') === '1') { initPage(); }
+</script>
+
+<script>
+/* ── Password gate ── */
+(function(){
+  var gate  = document.getElementById('pw-gate');
+  var form  = document.getElementById('pw-form');
+  var input = document.getElementById('pw-input');
+  var err   = document.getElementById('pw-error');
+  var box   = document.querySelector('.pw-box');
+  if(sessionStorage.getItem('auth')==='1'){
+    gate.style.display='none';
+    return;
+  }
+  gate.style.display='flex';
+  document.body.style.overflow='hidden';
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(input.value==='1029'){
+      sessionStorage.setItem('auth','1');
+      document.documentElement.classList.remove('pre-auth');
+      gate.style.transition='opacity 0.4s';
+      gate.style.opacity='0';
+      document.body.style.overflow='';
+      setTimeout(function(){
+        gate.style.display='none';
+        initPage();
+      },400);
+    } else {
+      input.value='';
+      err.style.display='block';
+      box.classList.remove('pw-shake');
+      void box.offsetWidth; /* reflow to restart animation */
+      box.classList.add('pw-shake');
+    }
+  });
+})();
 </script>
 
 <script>

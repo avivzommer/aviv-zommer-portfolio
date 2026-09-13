@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviv Zommer — Senior Product Designer</title>
+  <title>Aviv Zommer — Work Layout D</title>
   <meta name="description" content="Senior Product Designer focused on complex B2B SaaS products, AI, and thoughtful product experiences.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>if(sessionStorage.getItem('auth')!=='1'){document.documentElement.classList.add('pre-auth');}</script>
   <style>
     /* ─── Reset ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -143,53 +144,6 @@
       .nav-cta:hover { opacity: 0.8; }
     }
 
-    /* Hamburger — hidden on desktop, shown in place of the avatar on mobile */
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 4px;
-      width: 34px;
-      height: 34px;
-      flex-shrink: 0;
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .nav-hamburger span {
-      display: block;
-      width: 18px;
-      height: 1.5px;
-      border-radius: 1px;
-      background: var(--fg);
-      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
-    }
-    .nav-hamburger.is-open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
-    .nav-hamburger.is-open span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.is-open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
-
-    /* Mobile dropdown menu */
-    .nav-mobile-menu {
-      display: none;
-      flex-direction: column;
-      background: rgba(255,254,254,0.98);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 4px 16px 12px;
-    }
-    .nav-mobile-menu.open { display: flex; }
-    .nav-mobile-menu a {
-      padding: 14px 4px;
-      font-size: 15px;
-      color: var(--fg);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-mobile-menu a:last-child { border-bottom: none; }
-
     /* ─── Label ──────────────────────────────────────────── */
     .label {
       font-size: 10.5px;
@@ -257,75 +211,29 @@
     #hero {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       min-height: 100vh;
       min-height: 100svh;
       padding-top: calc(var(--nav-h) + 40px);
       padding-bottom: 48px;
-      position: relative;
-    }
-    /* Ambient glow lives on #hero itself (not inside the overflow:hidden .container
-       below) so it can fade all the way to transparent without ever hitting a hard
-       clipped edge — this is what was getting cut off at the top before */
-    #hero::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 900px;
-      max-width: 150%;
-      height: 620px;
-      background: radial-gradient(ellipse at center,
-        rgba(243,226,200,0.55) 0%,
-        rgba(222,230,214,0.35) 38%,
-        rgba(226,223,236,0.2) 62%,
-        rgba(255,254,254,0) 78%);
-      pointer-events: none;
-      z-index: -1;
-    }
-    /* Soft fade below the card row — a real element in normal flow (not an
-       absolutely-positioned overlay pinned to the viewport), so it always sits
-       strictly *below* the actual cards regardless of viewport height, and can
-       never wash out real content the way a viewport-anchored overlay did */
-    .hero-bottom-fade {
-      height: 90px;
-      flex-shrink: 0;
-      background: linear-gradient(to bottom, rgba(255,254,254,0), var(--bg));
-      pointer-events: none;
     }
     #hero .container {
       display: flex;
       flex-direction: column;
-      flex-shrink: 0;
+      flex: 1;
       width: 100%;
       min-width: 0;
-      overflow: hidden;
-      position: relative;
     }
-    /* Same idea, horizontally: fades cards that spill past the content edge on
-       hover (see .hero-card:hover ~ .hero-card push-apart below) instead of a hard cut */
-    #hero .container::before,
-    #hero .container::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 90px;
-      pointer-events: none;
-      z-index: 5;
-    }
-    #hero .container::before { left: 0;  background: linear-gradient(to right, var(--bg), rgba(255,254,254,0)); }
-    #hero .container::after  { right: 0; background: linear-gradient(to left,  var(--bg), rgba(255,254,254,0)); }
     .hero-surface {
+      flex: 1;
       display: flex;
       flex-direction: column;
       min-width: 0;
-      position: relative;
-      isolation: isolate;
-      padding: 24px 0 0;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 56px 48px 40px;
+      overflow: hidden;
     }
-    .hero-copy { max-width: 680px; margin: 0 auto; text-align: center; }
+    .hero-copy { max-width: 680px; }
     .hero-greet {
       font-size: clamp(32px, 6vw, 56px);
       font-weight: 500;
@@ -333,7 +241,7 @@
       letter-spacing: -0.03em;
       margin: 0 0 20px;
     }
-    .hero-role-line { color: var(--fg); }
+    .hero-role-line { color: var(--mid); }
     .hero-marker {
       display: inline-block;
       font-style: normal;
@@ -343,11 +251,6 @@
       line-height: 1.7;
       color: var(--mid);
     }
-    /* Wraps the lead-in word ("at") together with its pill so they always move
-       to the next line as one unit — a plain nbsp before an inline-flex element
-       isn't reliably treated as unbreakable across browsers, but white-space:nowrap
-       on a wrapping span is. */
-    .hero-pill-wrap { white-space: nowrap; }
     .hero-pill {
       display: inline-flex;
       align-items: center;
@@ -379,7 +282,7 @@
          in place; only later siblings move, and can spill past this box to the right. */
       width: 748px;
       max-width: 100%;
-      margin: 56px auto 0;
+      margin: auto auto 0;
       padding-top: 24px;
       min-width: 0;
     }
@@ -405,16 +308,15 @@
       position: absolute;
       inset: 0;
       z-index: 1;
-      border-radius: inherit;
       background: var(--surface);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .hero-card-work     { transform: rotate(-6deg); z-index: 1; background: #f3e2c8; border-color: #e9d2a3; overflow: visible; }
-    .hero-card-research { transform: rotate(-2deg); z-index: 2; margin-left: -44px; overflow: visible; }
-    .hero-card-mentor   { transform: rotate(2deg);  z-index: 3; margin-left: -44px; background: #dee6d6; border-color: #c9d6bc; overflow: visible; }
-    .hero-card-apps     { transform: rotate(6deg);  z-index: 4; margin-left: -44px; background: #e2dfec; border-color: #d1c9dd; }
+    .hero-card-work     { transform: rotate(-4deg); z-index: 1; background: #f3e2c8; border-color: #e9d2a3; overflow: visible; }
+    .hero-card-research { transform: rotate(3deg);  z-index: 2; margin-left: -44px; overflow: visible; }
+    .hero-card-mentor   { transform: rotate(-3deg); z-index: 3; margin-left: -44px; background: #dee6d6; border-color: #c9d6bc; overflow: visible; }
+    .hero-card-apps     { transform: rotate(2deg);  z-index: 4; margin-left: -44px; background: #e2dfec; border-color: #d1c9dd; }
 
     /* Work card: peeking screenshot stack, pops in on hover — sits directly above the
        card's own width (not offset off its right edge into the next card's space) */
@@ -457,32 +359,20 @@
       pointer-events: none;
       z-index: 6;
     }
-    /* filter:drop-shadow() lives on this wrapper, not on the <img> itself — Safari
-       has a long-standing bug where a CSS filter applied directly to a replaced
-       element (img/video) gets clipped to the element's own box instead of
-       extending its render buffer for the shadow, so the shadow shows up as a
-       hard-edged rectangle instead of following the badge's silhouette. Chrome and
-       Firefox render this fine either way; moving the filter to a plain wrapper
-       element sidesteps the Safari bug entirely. */
-    .hero-card-trophy {
+    .hero-card-trophy-img {
       position: absolute;
       width: 74px;
       height: 74px;
-      opacity: 0;
+      object-fit: contain;
       filter: drop-shadow(0 10px 18px rgba(20,17,13,0.22));
+      opacity: 0;
       transform: scale(0.65) translateY(-36px) rotate(0deg);
       transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
                   transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .hero-card-trophy-img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    .hero-card-trophy:nth-child(1) { top: 46px; left: 0; }
-    .hero-card-trophy:nth-child(2) { top: 46px; left: 55px; z-index: 2; }
-    .hero-card-trophy:nth-child(3) { top: 46px; left: 110px; z-index: 3; }
+    .hero-card-trophy-img:nth-child(1) { top: 46px; left: 0; }
+    .hero-card-trophy-img:nth-child(2) { top: 46px; left: 55px; z-index: 2; }
+    .hero-card-trophy-img:nth-child(3) { top: 46px; left: 110px; z-index: 3; }
     @media (hover: hover) and (pointer: fine) {
       .hero-card:hover {
         transform: rotate(0deg) translateY(-18px) scale(1.06);
@@ -490,7 +380,7 @@
         box-shadow: 0 24px 48px rgba(20,17,13,0.18);
       }
       /* Ben-style focus: hovered card pushes later cards far apart (can spill past the
-         content width and clip — see #hero .container's overflow:hidden) and the rest dim back */
+         panel edge and clip — see .hero-surface's overflow:hidden) and the rest dim back */
       .hero-cards:has(.hero-card:hover) .hero-card:not(:hover)::after {
         opacity: 0.75;
       }
@@ -512,18 +402,18 @@
         transform: scale(1) translateY(0) rotate(-3deg);
         transition-delay: 0.2s;
       }
-      .hero-card-mentor:hover .hero-card-trophy {
+      .hero-card-mentor:hover .hero-card-trophy-img {
         opacity: 1;
       }
-      .hero-card-mentor:hover .hero-card-trophy:nth-child(1) {
+      .hero-card-mentor:hover .hero-card-trophy-img:nth-child(1) {
         transform: scale(1) translateY(0) rotate(-10deg);
         transition-delay: 0s;
       }
-      .hero-card-mentor:hover .hero-card-trophy:nth-child(2) {
+      .hero-card-mentor:hover .hero-card-trophy-img:nth-child(2) {
         transform: scale(1) translateY(0) rotate(6deg);
         transition-delay: 0.1s;
       }
-      .hero-card-mentor:hover .hero-card-trophy:nth-child(3) {
+      .hero-card-mentor:hover .hero-card-trophy-img:nth-child(3) {
         transform: scale(1) translateY(0) rotate(-4deg);
         transition-delay: 0.2s;
       }
@@ -769,10 +659,6 @@
       .work-item:hover .work-read-cta svg {
         transform: translate(3px, -3px);
       }
-      /* Locked (password-required) CTA: lock icon stays put on hover */
-      .work-item.is-locked:hover .work-read-cta svg {
-        transform: none;
-      }
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -961,6 +847,7 @@
     ═══════════════════════════════════════════════════════ */
     @media (max-width: 1024px) {
       :root { --pad-x: 32px; }
+      .hero-surface { padding: 40px 32px 32px; }
       .about-inner { grid-template-columns: 1fr; gap: 48px; }
       .about-photo-col { position: static; max-width: 320px; }
     }
@@ -970,12 +857,15 @@
 
       /* Nav */
       .nav-inner { padding: 0 16px; gap: 8px; }
-      .nav-brand { display: none; }
-      .nav-hamburger { display: flex; }
-      .nav-pill { display: none; }
+      .nav-logo { display: none; }
+      .nav-pill { padding: 4px; }
+      .nav-links { gap: 0; }
+      .nav-links a { padding: 0 12px; font-size: 13px; }
+      .nav-links li.hide-sm { display: none; }
       .nav-cta { height: 36px; padding: 0 16px; font-size: 13px; }
 
       /* Hero */
+      .hero-surface { padding: 32px 24px 28px; }
       .hero-subtitle { font-size: 15px; }
       .hero-cards {
         margin-top: 32px;
@@ -986,9 +876,9 @@
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         gap: 14px;
-        margin-left: calc(var(--pad-x) * -1);
-        margin-right: calc(var(--pad-x) * -1);
-        padding: 4px var(--pad-x) 8px;
+        margin-left: -24px;
+        margin-right: -24px;
+        padding: 4px 24px 8px;
         -webkit-overflow-scrolling: touch;
       }
       .hero-card {
@@ -997,15 +887,6 @@
         flex: 0 0 78vw;
         max-width: 300px;
         scroll-snap-align: start;
-      }
-      /* The edge fades exist only to soften the desktop hover push-apart spill —
-         there's no hover on touch, so on mobile they just wash out the first/last
-         card in the scroll-snap strip. Bottom fade isn't needed either since the
-         card row no longer sits inside a bounded panel here. */
-      #hero .container::before,
-      #hero .container::after,
-      .hero-bottom-fade {
-        display: none;
       }
       .chips .chip { font-size: 12px !important; height: 26px; padding: 0 10px; }
 
@@ -1040,6 +921,84 @@
       .footer-links { flex-wrap: wrap; gap: 14px; }
     }
 
+  /* ── Password gate ── */
+  #pw-gate {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(20,17,13,0.52);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: opacity 0.4s;
+  }
+  .pw-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 8px 48px rgba(20,17,13,0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pw-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--fg);
+    margin: 0;
+  }
+  #pw-form {
+    display: flex;
+    gap: 8px;
+  }
+  #pw-input {
+    flex: 1;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #pw-input:focus {
+    border-color: var(--mid);
+    box-shadow: 0 0 0 3px rgba(20,17,13,0.06);
+  }
+  #pw-form button {
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px;
+    background: var(--fg);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.14s ease-out;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #pw-form button:active { transform: scale(0.95); }
+  @media (hover: hover) and (pointer: fine) {
+    #pw-form button:hover { opacity: 0.75; }
+  }
+  #pw-error {
+    font-size: 12px;
+    color: #c0392b;
+    margin: 0;
+    display: none;
+  }
+  @keyframes pw-shake {
+    0%,100% { transform: translateX(0); }
+    20%,60%  { transform: translateX(-6px); }
+    40%,80%  { transform: translateX(6px); }
+  }
+  .pw-shake { animation: pw-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
   /* ═══════════════════════════════════════════════════════
      TWEAK VARIANTS — reshape the whole feel
      defaults: mood=minimal, words=block, worklayout=cards
@@ -1069,6 +1028,8 @@
   }
   body[data-mood="ink"] .btn-light:hover { background: #25252c; }
   body[data-mood="ink"] .about-photo img { filter: grayscale(15%) brightness(0.92); }
+  body[data-mood="ink"] #pw-input { background: var(--surface); color: var(--fg); border-color: var(--border); }
+  body[data-mood="ink"] .pw-box { background: var(--surface); border-color: var(--border); }
 
   /* ── Words: Highlighter swipe (marker only, no box) ── */
   body[data-words="highlighter"] #cursor-tip {
@@ -1082,13 +1043,6 @@
   body[data-mood="ink"][data-words="highlighter"] #cursor-tip {
     background: #ffd96b;
     color: #0e0e10;
-  }
-  /* "Password required to read" tooltip stays black, not the yellow marker color */
-  body[data-words="highlighter"] #cursor-tip.locked-tip,
-  body[data-mood="cream"][data-words="highlighter"] #cursor-tip.locked-tip,
-  body[data-mood="ink"][data-words="highlighter"] #cursor-tip.locked-tip {
-    background: var(--fg);
-    color: var(--bg);
   }
   /* ── Highlight extends to project hover & about heading ── */
   /* "Read case study" CTA: marker sweeps in on card hover */
@@ -1115,10 +1069,6 @@
     background-image: linear-gradient(to bottom, transparent 0, transparent 62%, #d97757 62%, #d97757 96%, transparent 96%);
   }
   body[data-mood="ink"][data-words="highlighter"] .work-item:hover .work-read-cta { color: #0e0e10; }
-  /* Locked (password-required) CTA: no yellow highlighter sweep */
-  body[data-words="highlighter"] .work-item.is-locked:hover .work-read-cta {
-    background-size: 0% 100%;
-  }
 
   /* "Hi, I'm Aviv." — marker on "Aviv" draws in when scrolled into view */
   body[data-words="highlighter"] .hero-marker,
@@ -1180,6 +1130,22 @@
 </head>
 <body>
 
+<!-- ─── Password gate ───────────────────────────────────── -->
+<div id="pw-gate" style="display:none">
+  <div class="pw-box">
+    <p class="pw-label">This portfolio is password protected</p>
+    <form id="pw-form" autocomplete="off">
+      <input id="pw-input" type="password" placeholder="Enter password" autocomplete="new-password" />
+      <button type="submit" aria-label="Submit password">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+    <p id="pw-error">Incorrect password</p>
+  </div>
+</div>
+
 <!-- Cursor tooltip -->
 <div id="cursor-tip" aria-hidden="true">Read case study</div>
 
@@ -1190,9 +1156,6 @@
       <span class="nav-avatar"><img src="./aviv-portrait.jpeg" alt="" loading="eager"></span>
       <span class="nav-logo">Aviv Zommer</span>
     </a>
-    <button type="button" class="nav-hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-menu">
-      <span></span><span></span><span></span>
-    </button>
     <div class="nav-pill">
       <ul class="nav-links">
         <li class="hide-sm"><a href="#work">Work</a></li>
@@ -1201,12 +1164,6 @@
       </ul>
     </div>
     <a href="#contact" class="nav-cta">Say hello</a>
-  </div>
-  <div class="nav-mobile-menu" id="nav-mobile-menu">
-    <a href="#">Home</a>
-    <a href="#work">Work</a>
-    <a href="about.html">About</a>
-    <a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a>
   </div>
 </nav>
 
@@ -1222,10 +1179,10 @@
           <span class="hero-role-line">Senior Product Designer.</span>
         </h1>
         <p class="hero-subtitle reveal" style="transition-delay:.08s">
-          Senior Product Designer and AI Builder, building B2B SaaS &amp; AI products
-          <span class="hero-pill-wrap">at <a class="hero-pill hero-pill-light" href="sysaid.html"><img src="./sysaid-logo.svg" alt="" class="hero-pill-icon">SysAid</a></span>,
-          and mentoring designers
-          <span class="hero-pill-wrap">at <a class="hero-pill hero-pill-dark" href="#mentoring"><img src="./startup-designers-logo.png" alt="" class="hero-pill-icon">Startup Designers</a></span>.
+          Senior Product Designer and AI Builder, building B2B SaaS &amp; AI products at
+          <a class="hero-pill hero-pill-light" href="sysaid.html"><img src="./sysaid-logo.svg" alt="" class="hero-pill-icon">SysAid</a>,
+          and mentoring designers at
+          <a class="hero-pill hero-pill-dark" href="#mentoring"><img src="./startup-designers-logo.png" alt="" class="hero-pill-icon">Startup Designers</a>.
         </p>
       </div>
 
@@ -1267,9 +1224,9 @@
           </div>
           <span class="hero-card-cta">Learn more</span>
           <div class="hero-card-trophies" aria-hidden="true">
-            <span class="hero-card-trophy"><img src="./adplist-badge-top1-jun.svg" class="hero-card-trophy-img" alt="" loading="lazy"></span>
-            <span class="hero-card-trophy"><img src="./adplist-badge-top10.svg" class="hero-card-trophy-img" alt="" loading="lazy"></span>
-            <span class="hero-card-trophy"><img src="./adplist-badge-top1-aug.svg" class="hero-card-trophy-img" alt="" loading="lazy"></span>
+            <img src="./adplist-badge-top1-jun.svg" class="hero-card-trophy-img" alt="" loading="lazy">
+            <img src="./adplist-badge-top10.svg" class="hero-card-trophy-img" alt="" loading="lazy">
+            <img src="./adplist-badge-top1-aug.svg" class="hero-card-trophy-img" alt="" loading="lazy">
           </div>
         </a>
 
@@ -1282,8 +1239,6 @@
         </div>
 
       </div>
-
-      <div class="hero-bottom-fade" aria-hidden="true"></div>
 
     </div>
   </div>
@@ -1479,24 +1434,7 @@
     nav.classList.toggle('scrolled', window.scrollY > 8);
   }, { passive: true });
 
-  // Mobile hamburger menu (always active)
-  const hamburger = document.querySelector('.nav-hamburger');
-  const mobileMenu = document.querySelector('.nav-mobile-menu');
-  if (hamburger && mobileMenu) {
-    const closeMenu = () => {
-      mobileMenu.classList.remove('open');
-      hamburger.classList.remove('is-open');
-      hamburger.setAttribute('aria-expanded', 'false');
-    };
-    hamburger.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('open');
-      hamburger.classList.toggle('is-open', isOpen);
-      hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    });
-    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
-  }
-
-  // All reveal + hero animations
+  // All reveal + hero animations — called only after auth
   function initPage() {
     // Scroll reveal
     const revealEls = document.querySelectorAll('.reveal');
@@ -1524,22 +1462,6 @@
       }, 50);
     }
 
-    // Gated case studies: show "Password required" until unlocked this session
-    if (sessionStorage.getItem('auth') !== '1') {
-      document.querySelectorAll('.work-item[href="sysaid.html"], .work-item[href="groundcover.html"]').forEach(item => {
-        const cta = item.querySelector('.work-read-cta');
-        if (cta) {
-          cta.innerHTML = 'Password required' +
-            '<svg viewBox="0 0 13 13" fill="none" aria-hidden="true">' +
-            '<rect x="2.5" y="5.5" width="8" height="6" rx="1.2" stroke="currentColor" stroke-width="1.3"/>' +
-            '<path d="M4.3 5.5V3.9a2.2 2.2 0 0 1 4.4 0v1.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>' +
-            '</svg>';
-        }
-        item.classList.add('is-locked');
-        item.dataset.tip = 'Password required to read';
-      });
-    }
-
     // Cursor tooltip
     const tip = document.getElementById('cursor-tip');
     let tipX = 0, tipY = 0;
@@ -1550,11 +1472,7 @@
       tip.style.top  = tipY + 'px';
     }, { passive: true });
     document.querySelectorAll('.work-item').forEach(item => {
-      item.addEventListener('mouseenter', () => {
-        tip.textContent = item.dataset.tip || 'Read case study';
-        tip.classList.toggle('locked-tip', item.classList.contains('is-locked'));
-        tip.classList.add('visible');
-      });
+      item.addEventListener('mouseenter', () => tip.classList.add('visible'));
       item.addEventListener('mouseleave', () => tip.classList.remove('visible'));
     });
 
@@ -1589,7 +1507,45 @@
     });
   }
 
-  initPage();
+  // If already authenticated, start immediately
+  if (sessionStorage.getItem('auth') === '1') { initPage(); }
+</script>
+
+<script>
+/* ── Password gate ── */
+(function(){
+  var gate  = document.getElementById('pw-gate');
+  var form  = document.getElementById('pw-form');
+  var input = document.getElementById('pw-input');
+  var err   = document.getElementById('pw-error');
+  var box   = document.querySelector('.pw-box');
+  if(sessionStorage.getItem('auth')==='1'){
+    gate.style.display='none';
+    return;
+  }
+  gate.style.display='flex';
+  document.body.style.overflow='hidden';
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(input.value==='1029'){
+      sessionStorage.setItem('auth','1');
+      document.documentElement.classList.remove('pre-auth');
+      gate.style.transition='opacity 0.4s';
+      gate.style.opacity='0';
+      document.body.style.overflow='';
+      setTimeout(function(){
+        gate.style.display='none';
+        initPage();
+      },400);
+    } else {
+      input.value='';
+      err.style.display='block';
+      box.classList.remove('pw-shake');
+      void box.offsetWidth; /* reflow to restart animation */
+      box.classList.add('pw-shake');
+    }
+  });
+})();
 </script>
 
 <script>
