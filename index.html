@@ -1527,8 +1527,13 @@
       }, 50);
     }
 
-    // Gated case studies: show "Password required" until unlocked this session
-    if (sessionStorage.getItem('auth') !== '1') {
+    // Gated case studies: show "Password required" until this browser has
+    // unlocked them (cosmetic only — the real gate is enforced server-side
+    // by the Netlify Edge Function on sysaid.html/groundcover.html itself).
+    function hasUnlockedCaseStudies() {
+      return document.cookie.split('; ').some(c => c.startsWith('cs_unlocked='));
+    }
+    if (!hasUnlockedCaseStudies()) {
       document.querySelectorAll('.work-item[href="sysaid.html"], .work-item[href="groundcover.html"]').forEach(item => {
         const cta = item.querySelector('.work-read-cta');
         if (cta) {

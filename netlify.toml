@@ -1,0 +1,7 @@
+[[edge_functions]]
+  path = "/sysaid.html"
+  function = "case-study-gate"
+
+[[edge_functions]]
+  path = "/groundcover.html"
+  function = "case-study-gate"

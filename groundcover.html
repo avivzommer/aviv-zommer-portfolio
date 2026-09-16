@@ -790,103 +790,10 @@
       .footer-links { flex-wrap: wrap; gap: 16px; }
     }
 
-    /* ── Password gate ── */
-    #pw-gate {
-      position: fixed; inset: 0; z-index: 9999;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(20,17,13,0.52);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: opacity 0.4s;
-    }
-    .pw-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 36px 40px;
-      width: 100%;
-      max-width: 360px;
-      box-shadow: 0 8px 48px rgba(20,17,13,0.14);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .pw-label {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--fg);
-      margin: 0;
-    }
-    #pw-form {
-      display: flex;
-      gap: 8px;
-    }
-    #pw-input {
-      flex: 1;
-      font-size: 14px;
-      font-family: inherit;
-      color: var(--fg);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 9px 12px;
-      outline: none;
-      transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-                  box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    #pw-input:focus {
-      border-color: var(--mid);
-      box-shadow: 0 0 0 3px rgba(20,17,13,0.06);
-    }
-    #pw-form button {
-      display: flex; align-items: center; justify-content: center;
-      width: 38px; height: 38px;
-      background: var(--fg);
-      color: var(--bg);
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 0.14s ease-out;
-      -webkit-tap-highlight-color: transparent;
-    }
-    #pw-form button:active { transform: scale(0.95); }
-    @media (hover: hover) and (pointer: fine) {
-      #pw-form button:hover { opacity: 0.75; }
-    }
-    #pw-error {
-      font-size: 12px;
-      color: #c0392b;
-      margin: 0;
-      display: none;
-    }
-    @keyframes pw-shake {
-      0%,100% { transform: translateX(0); }
-      20%,60%  { transform: translateX(-6px); }
-      40%,80%  { transform: translateX(6px); }
-    }
-    .pw-shake { animation: pw-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
   </style>
   <link rel="icon" type="image/svg+xml" href="./favicon-2.svg">
 </head>
 <body>
-
-<!-- ─── Password gate ───────────────────────────────────── -->
-<div id="pw-gate" style="display:none">
-  <div class="pw-box">
-    <p class="pw-label">This case study is password protected</p>
-    <form id="pw-form" autocomplete="off">
-      <input id="pw-input" type="password" placeholder="Enter password" autocomplete="new-password" />
-      <button type="submit" aria-label="Submit password">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </form>
-    <p id="pw-error">Incorrect password</p>
-  </div>
-</div>
 
 <!-- ─── Nav ──────────────────────────────────────────────── -->
 <nav id="nav" role="navigation" aria-label="Main navigation">
@@ -1384,42 +1291,6 @@
       });
     });
   });
-
-</script>
-
-<script>
-/* ── Password gate ── */
-(function(){
-  var gate  = document.getElementById('pw-gate');
-  var form  = document.getElementById('pw-form');
-  var input = document.getElementById('pw-input');
-  var err   = document.getElementById('pw-error');
-  var box   = document.querySelector('.pw-box');
-  if(sessionStorage.getItem('auth')==='1'){
-    gate.style.display='none';
-    return;
-  }
-  gate.style.display='flex';
-  document.body.style.overflow='hidden';
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    if(input.value==='1029'){
-      sessionStorage.setItem('auth','1');
-      gate.style.transition='opacity 0.4s';
-      gate.style.opacity='0';
-      document.body.style.overflow='';
-      setTimeout(function(){
-        gate.style.display='none';
-      },400);
-    } else {
-      input.value='';
-      err.style.display='block';
-      box.classList.remove('pw-shake');
-      void box.offsetWidth; /* reflow to restart animation */
-      box.classList.add('pw-shake');
-    }
-  });
-})();
 
 </script>
 
