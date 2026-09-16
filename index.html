@@ -1534,7 +1534,7 @@
       return document.cookie.split('; ').some(c => c.startsWith('cs_unlocked='));
     }
     if (!hasUnlockedCaseStudies()) {
-      document.querySelectorAll('.work-item[href="sysaid.html"], .work-item[href="groundcover.html"]').forEach(item => {
+      document.querySelectorAll('.work-item[href="sysaid.html"], .work-item[href="groundcover.html"], .work-item[href="/sysaid"], .work-item[href="/groundcover"]').forEach(item => {
         const cta = item.querySelector('.work-read-cta');
         if (cta) {
           cta.innerHTML = 'Password required' +
