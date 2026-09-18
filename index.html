@@ -739,15 +739,20 @@
       transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .work-item:active { transform: scale(0.998); }
-    .work-item-img img {
+    .work-item-img img,
+    .work-item-img video {
       width: 100%;
       height: auto;
       display: block;
       border-radius: 12px;
       transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
     }
+    .work-item-video {
+      box-shadow: 0 24px 48px -12px rgba(20,17,13,0.18);
+    }
     @media (hover: hover) and (pointer: fine) {
-      .work-item:hover .work-item-img img {
+      .work-item:hover .work-item-img img,
+      .work-item:hover .work-item-img video {
         transform: scale(1.018);
       }
     }
@@ -1018,7 +1023,8 @@
       /* Override inline font-sizes on work titles */
       .work-item-title { font-size: clamp(20px, 5.8vw, 26px) !important; max-width: 100%; margin-bottom: 20px; }
       .work-item-img { margin-bottom: 20px; }
-      .work-item-img img { border-radius: 8px; }
+      .work-item-img img,
+      .work-item-img video { border-radius: 8px; }
       .work-read-cta { font-size: 14px !important; }
       .work-meta-chips { display: none; }
 
@@ -1341,7 +1347,7 @@
         </div>
         <h2 class="work-item-title" style="font-size: 34px">Simplified how users control data ingestion in a complex observability product</h2>
         <div class="work-item-img">
-          <img src="./groundcover-screenshot.png" alt="groundcover product interface" loading="lazy">
+          <video class="work-item-video" src="./groundcover/groundcover-home-drag-animation.mp4" muted loop playsinline preload="metadata" aria-label="groundcover product interface"></video>
         </div>
         <span class="work-read-cta" style="font-size: 16px">
           Read case study
@@ -1567,6 +1573,24 @@
     });
 
     initHeroCards();
+    initWorkVideos();
+  }
+
+  // Work-item videos: play on hover, paused/reset otherwise (desktop only)
+  function initWorkVideos() {
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!canHover || reduced) return;
+
+    document.querySelectorAll('.work-item-video').forEach(video => {
+      const item = video.closest('.work-item');
+      if (!item) return;
+      item.addEventListener('mouseenter', () => { video.play(); });
+      item.addEventListener('mouseleave', () => {
+        video.pause();
+        video.currentTime = 0;
+      });
+    });
   }
 
   // Hero cards: cycle through screenshots while hovered (desktop only)
