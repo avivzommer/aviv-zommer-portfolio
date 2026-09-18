@@ -397,9 +397,26 @@
       overflow: hidden;
       color: inherit;
       transform-origin: bottom center;
-      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      /* Entrance: translate/scale are independent of `transform` (which the fan
+         rotation and :hover effect below both use), so the fly-in never fights
+         with either — it just composes on top, unaffected once settled at 0/1. */
+      opacity: 0;
+      translate: 0 40px;
+      scale: 0.9;
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--enter-delay, 0s),
+                  translate 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) var(--enter-delay, 0s),
+                  scale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) var(--enter-delay, 0s),
+                  transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
                   box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
                   margin-left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-cards .hero-card:nth-child(1) { --enter-delay: 0.05s; }
+    .hero-cards .hero-card:nth-child(2) { --enter-delay: 0.14s; }
+    .hero-cards .hero-card:nth-child(3) { --enter-delay: 0.23s; }
+    .hero-cards .hero-card:nth-child(4) { --enter-delay: 0.32s; }
+    .hero-cards.in .hero-card { opacity: 1; translate: 0 0; scale: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-card { opacity: 1; translate: 0 0; scale: 1; transition: none; }
     }
     /* Dim scrim for non-hovered cards — an opaque overlay rather than element opacity,
        so cards never look see-through against the panel */
