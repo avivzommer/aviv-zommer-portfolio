@@ -750,6 +750,9 @@
     .work-item-video {
       box-shadow: 0 24px 48px -12px rgba(20,17,13,0.18);
     }
+    .work-item-video--flat {
+      box-shadow: none;
+    }
     @media (hover: hover) and (pointer: fine) {
       .work-item:hover .work-item-img img,
       .work-item:hover .work-item-img video {
@@ -1371,7 +1374,7 @@
         </div>
         <h2 class="work-item-title" style="font-size: 36px">Turned field research into a support system for youth mentors under emotional strain</h2>
         <div class="work-item-img">
-          <video class="work-item-video" src="./baloop/baloop-home-screenshot.mp4" muted loop playsinline preload="metadata" aria-label="Baloop product interface"></video>
+          <video class="work-item-video work-item-video--flat" src="./baloop/baloop-home-screenshot.mp4" muted playsinline preload="metadata" aria-label="Baloop product interface"></video>
         </div>
         <span class="work-read-cta" style="font-size: 16px">
           Read case study
