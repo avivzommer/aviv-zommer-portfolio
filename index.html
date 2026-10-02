@@ -434,7 +434,7 @@
     .hero-card-work     { transform: rotate(-6deg); z-index: 1; background: #f3e2c8; border: none; overflow: visible; }
     .hero-card-research { transform: rotate(-2deg); z-index: 2; margin-left: -44px; overflow: visible; }
     .hero-card-mentor   { transform: rotate(2deg);  z-index: 3; margin-left: -44px; background: #dee6d6; border: none; overflow: visible; }
-    .hero-card-apps     { transform: rotate(6deg);  z-index: 4; margin-left: -44px; background: #e2dfec; border: none; }
+    .hero-card-apps     { transform: rotate(6deg);  z-index: 4; margin-left: -44px; background: #e2dfec; border: none; overflow: visible; }
 
     /* Work card: peeking screenshot stack, pops in on hover — sits directly above the
        card's own width (not offset off its right edge into the next card's space) */
@@ -548,7 +548,29 @@
         transition-delay: 0.2s;
       }
     }
-    .hero-card.is-placeholder { cursor: default; }
+    /* Apps card: the flame icon ignites above the card on hover, same entrance as the
+       Work / Mentoring peeks. The animated SVG is injected on idle (see initAppsFlame)
+       so its weight never competes with first paint. */
+    .hero-card-flame {
+      position: absolute;
+      top: -64px;
+      left: 50%;
+      width: 112px;
+      margin-left: -56px;
+      pointer-events: none;
+      z-index: 6;
+      opacity: 0;
+      transform: scale(0.65) translateY(-36px) rotate(0deg);
+      transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-card-flame object { display: block; width: 100%; aspect-ratio: 200 / 203; }
+    @media (hover: hover) and (pointer: fine) {
+      .hero-card-apps:hover .hero-card-flame {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotate(-6deg);
+      }
+    }
     /* Text-only cards (Work, Mentoring) — no media, bigger type filling the card */
     .hero-card-text { display: flex; flex-direction: column; }
     .hero-card-text .hero-card-body {
@@ -561,26 +583,6 @@
     .hero-card-text .hero-card-title { font-size: 22px; margin-bottom: 10px; }
     .hero-card-text .hero-card-desc { font-size: 14px; line-height: 1.55; }
     .hero-card-text .hero-card-cta { padding: 0 24px 24px; }
-    .hero-card-badge {
-      display: inline-flex;
-      align-items: center;
-      height: 20px;
-      padding: 0 8px;
-      border-radius: 100px;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      background: var(--bg);
-      color: var(--mid);
-      margin-bottom: 8px;
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .hero-card.is-placeholder:hover {
-        transform: rotate(2deg);
-        box-shadow: 0 8px 24px rgba(20,17,13,0.08);
-      }
-    }
     .hero-card-media { position: relative; aspect-ratio: 4 / 3; background: var(--border); }
     .hero-card-img {
       position: absolute;
@@ -1025,6 +1027,8 @@
         max-width: 300px;
         scroll-snap-align: start;
       }
+      /* The flame peeks above the card, which the scroll strip would clip */
+      .hero-card-flame { display: none; }
       /* The edge fades exist only to soften the desktop hover push-apart spill —
          there's no hover on touch, so on mobile they just wash out the first/last
          card in the scroll-snap strip. Bottom fade isn't needed either since the
@@ -1224,6 +1228,7 @@
     <div class="nav-pill">
       <ul class="nav-links">
         <li class="hide-sm"><a href="#work">Work</a></li>
+        <li class="hide-sm"><a href="apps.html">Apps</a></li>
         <li class="hide-sm"><a href="about.html">About</a></li>
         <li><a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a></li>
       </ul>
@@ -1233,6 +1238,7 @@
   <div class="nav-mobile-menu" id="nav-mobile-menu">
     <a href="#">Home</a>
     <a href="#work">Work</a>
+    <a href="apps.html">Apps</a>
     <a href="about.html">About</a>
     <a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a>
   </div>
@@ -1301,13 +1307,14 @@
           </div>
         </a>
 
-        <div class="hero-card hero-card-apps hero-card-text is-placeholder">
+        <a href="apps.html" class="hero-card hero-card-apps hero-card-text" aria-label="Apps — things I design, build, and ship">
           <div class="hero-card-body">
-            <span class="hero-card-badge">Coming soon</span>
             <p class="hero-card-title">Apps</p>
-            <p class="hero-card-desc">Indie apps and side projects — in the works.</p>
+            <p class="hero-card-desc">Things I design, build, and ship.</p>
           </div>
-        </div>
+          <span class="hero-card-cta">Explore apps</span>
+          <div class="hero-card-flame" aria-hidden="true"></div>
+        </a>
 
       </div>
 
@@ -1593,6 +1600,67 @@
 
     initHeroCards();
     initWorkVideos();
+    initAppsFlame();
+  }
+
+  // Animated SVGs (CSS keyframes inside <object>): they rest on their finished frame
+  // and only animate when asked. stop() lets the current loop finish so it settles
+  // seamlessly instead of snapping.
+  function svgPlayer(obj) {
+    let root = null, timer = 0;
+    const queue = [];
+    function init() {
+      const doc = obj.contentDocument;
+      if (root || !doc || !doc.documentElement || doc.documentElement.localName !== 'svg') return;
+      root = doc.documentElement;
+      if (!root.classList.contains('is-rest')) {
+        const s = doc.createElementNS('http://www.w3.org/2000/svg', 'style');
+        s.textContent = '.is-rest,.is-rest *{animation:none !important}';
+        root.appendChild(s);
+        root.classList.add('is-rest');
+      }
+      queue.splice(0).forEach(fn => fn());
+    }
+    obj.addEventListener('load', init);
+    init();
+    const whenReady = fn => (root ? fn() : queue.push(fn));
+    return {
+      play() { whenReady(() => { clearTimeout(timer); root.classList.remove('is-rest'); }); },
+      stop() {
+        whenReady(() => {
+          clearTimeout(timer);
+          if (root.classList.contains('is-rest')) return;
+          const a = root.ownerDocument.getAnimations()[0];
+          const d = a ? a.effect.getTiming().duration : 0;
+          timer = setTimeout(() => root.classList.add('is-rest'), a ? d - ((a.currentTime || 0) % d) : 0);
+        });
+      }
+    };
+  }
+
+  // Apps card: the flame ignites above the card on hover (desktop only). The ~1MB
+  // animated SVG is only fetched on idle, after the page has settled.
+  function initAppsFlame() {
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wide     = window.matchMedia('(min-width: 721px)').matches;
+    const card = document.querySelector('.hero-card-apps');
+    const slot = card && card.querySelector('.hero-card-flame');
+    if (!slot || !canHover || reduced || !wide) return;
+
+    const load = () => {
+      const obj = document.createElement('object');
+      obj.type = 'image/svg+xml';
+      obj.data = './apps/apps-fire.svg';
+      obj.tabIndex = -1;
+      slot.appendChild(obj);
+      const flame = svgPlayer(obj);
+      let off = 0;
+      card.addEventListener('mouseenter', () => { clearTimeout(off); flame.play(); });
+      // Wait out the card's fade-out before settling the flame back to rest
+      card.addEventListener('mouseleave', () => { off = setTimeout(flame.stop, 450); });
+    };
+    'requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 4000 }) : setTimeout(load, 2500);
   }
 
   // Work-item videos: play on hover, paused/reset otherwise (desktop only)

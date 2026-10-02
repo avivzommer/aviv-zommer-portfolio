@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apps | Aviv Zommer</title>
+  <meta name="description" content="Products I design, build, and ship myself. Starting with Roastfolio, an AI-powered portfolio reviewer for product designers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="./favicon-2.svg">
+  <!-- Cloudflare Web Analytics -->
+  <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d8d33c0c494342078582a5e1784b4141"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #fffefe;
+      --fg:      #14110d;
+      --mid:     #716c63;
+      --faint:   #b3ada1;
+      --surface: #f5f1ea;
+      --border:  #ebe6dc;
+      --font:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --nav-h:   64px;
+      --max-w:   1160px;
+      --pad-x:   48px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a   { color: inherit; text-decoration: none; }
+    ul  { list-style: none; }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+    }
+
+    /* ─── Cursor tooltip ─────────────────────────────────── */
+    #cursor-tip {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      background: #ffd96b;
+      color: #1d1a12;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translate(-50%, calc(-100% - 14px));
+      transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: left, top;
+    }
+    #cursor-tip.visible {
+      opacity: 1;
+      transform: translate(-50%, calc(-100% - 18px));
+    }
+
+    /* ─── Nav ─────────────────────────────────────────── */
+    #nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 200;
+      height: var(--nav-h);
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    #nav.scrolled {
+      background: rgba(255,254,254,0.82);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom-color: var(--border);
+    }
+
+    /* Brand: avatar + name */
+    .nav-brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px var(--bg);
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; transform: scale(1.8); transform-origin: 50% 30%; }
+    @media (hover: hover) and (pointer: fine) {
+      .nav-brand:hover .nav-avatar { transform: scale(1.06); }
+    }
+    .nav-logo { font-size: 15px; font-weight: 500; letter-spacing: -0.015em; }
+
+    /* Floating pill nav */
+    .nav-pill {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 5px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 8px 24px rgba(20,17,13,0.08), 0 0 0 1px rgba(20,17,13,0.04);
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+    }
+    .nav-links { display: flex; align-items: center; gap: 2px; }
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      height: 32px;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--mid);
+      transition: background 0.2s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-links a.active { background: var(--surface); color: var(--fg); font-weight: 500; }
+    @media (hover: hover) and (pointer: fine) {
+      .nav-links a:hover { background: var(--surface); color: var(--fg); }
+    }
+
+    /* CTA button, outside the pill */
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 20px;
+      border-radius: 999px;
+      background: var(--fg);
+      color: var(--bg);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+      transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.16s ease-out;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-cta:active { transform: scale(0.96); }
+    @media (hover: hover) and (pointer: fine) {
+      .nav-cta:hover { opacity: 0.8; }
+    }
+
+    /* Hamburger — hidden on desktop, shown in place of the avatar on mobile */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      border-radius: 1px;
+      background: var(--fg);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+    }
+    .nav-hamburger.is-open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .nav-hamburger.is-open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.is-open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    /* Mobile dropdown menu */
+    .nav-mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: rgba(255,254,254,0.98);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 4px 16px 12px;
+    }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-menu a {
+      padding: 14px 4px;
+      font-size: 15px;
+      color: var(--fg);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-mobile-menu a.active { font-weight: 600; }
+    .nav-mobile-menu a:last-child { border-bottom: none; }
+
+    /* ─── Shared ──────────────────────────────────────── */
+    .label {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 100px;
+      font-size: 11.5px;
+      color: var(--mid);
+      background: var(--surface);
+      white-space: nowrap;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.75s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 26px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      transition: opacity 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-dark { background: var(--fg); color: var(--bg); }
+    .btn-dark:hover { opacity: 0.78; }
+    .btn-light { background: var(--surface); color: var(--fg); }
+    .btn-light:hover { background: #ebe6dc; }
+
+    /* ─── Hero ────────────────────────────────────────── */
+    #hero {
+      padding-top: calc(var(--nav-h) + 88px);
+      padding-bottom: 64px;
+    }
+    .hero-label { margin-bottom: 28px; }
+    .hero-headline {
+      font-size: clamp(44px, 6.4vw, 80px);
+      font-weight: 500;
+      letter-spacing: -0.05em;
+      line-height: 1.02;
+      margin-bottom: 28px;
+    }
+    .hw {
+      background-image: linear-gradient(
+        to bottom,
+        transparent 0, transparent 52%,
+        #ffd96b 52%, #ffd96b 94%,
+        transparent 94%
+      );
+      background-repeat: no-repeat;
+      background-size: 0% 100%;
+      background-position: left center;
+      padding: 0 4px;
+      transition: background-size 0.85s cubic-bezier(0.7, 0.05, 0.35, 1) 0.4s;
+    }
+    .hero-headline.in .hw { background-size: 100% 100%; }
+    .hero-intro {
+      font-size: 17px;
+      line-height: 1.72;
+      color: var(--mid);
+      max-width: 520px;
+    }
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 22px;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .text-link svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .text-link:hover svg { transform: translate(3px, -3px); }
+    }
+
+
+    /* ─── Apps ────────────────────────────────────────── */
+    #apps { padding: 0 0 112px; }
+    .app-list { display: flex; flex-direction: column; gap: 20px; }
+
+    /* One app = one .app-item. To add the next app, duplicate the block in the HTML. */
+    .app-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "text visual"
+        "cta  visual";
+      column-gap: 56px;
+      padding: 48px;
+      background: var(--surface);
+      border-radius: 20px;
+    }
+    .app-text { grid-area: text; }
+    .app-cta  { grid-area: cta; align-self: start; margin-top: 36px; }
+
+    .app-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+    .app-meta-icon { width: 18px; height: 18px; border-radius: 50%; }
+    .app-meta-name {
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg);
+    }
+    .app-meta-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--faint); }
+    .app-meta .chip {
+      height: 22px;
+      padding: 0 9px;
+      font-size: 10.5px;
+      background: transparent;
+      border: 1px solid var(--border);
+    }
+    .chip-live { gap: 6px; color: var(--fg); }
+    .chip-live::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2f9e6d;
+    }
+
+    .app-title {
+      font-size: clamp(30px, 3.8vw, 46px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+      margin-bottom: 22px;
+    }
+    .app-lead {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--fg);
+      margin-bottom: 12px;
+    }
+    .app-desc {
+      font-size: 15.5px;
+      line-height: 1.72;
+      color: var(--mid);
+      margin-bottom: 0;
+    }
+
+    .btn svg {
+      width: 14px;
+      height: 14px;
+      margin-left: 8px;
+      flex-shrink: 0;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .btn:hover svg { transform: translateX(3px); }
+    }
+
+    .app-visual {
+      grid-area: visual;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background: var(--bg);
+      border-radius: 16px;
+      box-shadow: 0 24px 48px -12px rgba(20,17,13,0.12);
+    }
+    .app-visual object {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1334 / 869;
+      pointer-events: none;
+    }
+
+    /* ─── Contact ─────────────────────────────────────── */
+    #contact {
+      padding: 120px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .contact-inner { max-width: 560px; margin: 0 auto; }
+    .contact-label { margin-bottom: 20px; }
+    .contact-heading {
+      font-size: clamp(40px, 5.5vw, 64px);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .contact-marker {
+      background-image: linear-gradient(to bottom, transparent 0, transparent 56%, #ffd96b 56%, #ffd96b 95%, transparent 95%);
+      background-repeat: no-repeat;
+      background-size: 0% 100%;
+      background-position: left center;
+      padding: 0 4px;
+      transition: background-size 0.85s cubic-bezier(0.7, 0.05, 0.35, 1) 0.25s;
+    }
+    .contact-heading.in .contact-marker { background-size: 100% 100%; }
+    .contact-sub {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--mid);
+      margin-bottom: 48px;
+    }
+    .contact-sub { text-wrap: balance; }
+    .contact-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+    /* ─── Footer ──────────────────────────────────────── */
+    footer { padding: 44px 0; border-top: 1px solid var(--border); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+    .footer-name { font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+    .footer-desc { font-size: 12.5px; line-height: 1.6; color: var(--faint); max-width: 360px; }
+    .footer-links { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
+    .footer-links a { font-size: 13px; color: var(--mid); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--fg); }
+
+    /* ─── Responsive ──────────────────────────────────── */
+    @media (max-width: 1024px) {
+      :root { --pad-x: 32px; }
+      .app-item { padding: 36px; column-gap: 40px; }
+    }
+
+    @media (max-width: 860px) {
+      .app-item {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        grid-template-areas:
+          "text"
+          "visual"
+          "cta";
+      }
+      .app-visual { margin-top: 32px; }
+      .app-cta { margin-top: 28px; }
+    }
+
+    @media (max-width: 720px) {
+      :root { --pad-x: 20px; }
+      .nav-inner { padding: 0 16px; gap: 8px; }
+      .nav-brand { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-pill { display: none; }
+      .nav-cta { height: 36px; padding: 0 16px; font-size: 13px; }
+
+      #hero { padding-top: calc(var(--nav-h) + 40px); padding-bottom: 40px; }
+      .hero-headline { font-size: clamp(40px, 12vw, 56px); }
+
+      #apps { padding-bottom: 72px; }
+      .app-item { padding: 28px 22px; }
+      .app-visual { padding: 16px; }
+
+      #contact { padding: 80px 0; }
+      .contact-heading { font-size: clamp(34px, 9vw, 52px); }
+
+      footer { padding: 32px 0; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .footer-links { flex-wrap: wrap; gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Nav ───────────────────────────────────────────── -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-brand">
+      <span class="nav-avatar"><img src="./aviv-portrait.jpeg" alt="" loading="eager"></span>
+      <span class="nav-logo">Aviv Zommer</span>
+    </a>
+    <button type="button" class="nav-hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-pill">
+      <ul class="nav-links">
+        <li class="hide-sm"><a href="index.html#work">Work</a></li>
+        <li class="hide-sm"><a href="apps.html" class="active">Apps</a></li>
+        <li class="hide-sm"><a href="about.html">About</a></li>
+        <li><a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a></li>
+      </ul>
+    </div>
+    <a href="index.html#contact" class="nav-cta">Say hello</a>
+  </div>
+  <div class="nav-mobile-menu" id="nav-mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="index.html#work">Work</a>
+    <a href="apps.html" class="active">Apps</a>
+    <a href="about.html">About</a>
+    <a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a>
+  </div>
+</nav>
+
+
+<!-- ─── Hero ──────────────────────────────────────────── -->
+<section id="hero" aria-label="Introduction">
+  <div class="container">
+    <div class="hero-inner">
+
+      <div class="hero-text">
+        <p class="label hero-label reveal">Apps</p>
+        <h1 class="hero-headline reveal" style="transition-delay:.06s">
+          Things I <span class="hw">build</span>.
+        </h1>
+        <p class="hero-intro reveal" style="transition-delay:.12s">
+          I build these for myself first. When one turns out to be useful, I share it with the community.
+        </p>
+        <a href="index.html#work" class="text-link reveal" style="transition-delay:.16s">
+          Looking for case studies? See my work
+          <svg viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 11L11 2M11 2H4.5M11 2V8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── Apps ──────────────────────────────────────────── -->
+<section id="apps" aria-label="Apps">
+  <div class="container">
+    <div class="app-list">
+
+      <!-- Roastfolio -->
+      <article class="app-item reveal">
+        <div class="app-text">
+          <div class="app-meta">
+            <img src="./apps/roastfolio-favicon.svg" alt="" class="app-meta-icon">
+            <span class="app-meta-name">Roastfolio</span>
+            <div class="app-meta-sep"></div>
+            <span class="chip chip-live">Live</span>
+            <span class="chip">AI-powered</span>
+            <span class="chip">For product designers</span>
+          </div>
+          <h2 class="app-title">Your portfolio deserves a good roast.</h2>
+          <p class="app-lead">An AI-powered portfolio reviewer built specifically for product designers.</p>
+          <p class="app-desc">Give it your portfolio URL and get a structured critique: what works, what doesn't, and what to fix next.</p>
+        </div>
+
+        <!-- Mouse shortcut to the same destination as the button below, so it stays out of the tab order -->
+        <a href="https://roastfolio.up.railway.app" class="app-visual" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+          <object type="image/svg+xml" data="./apps/roastfolio-hero.svg" tabindex="-1"></object>
+        </a>
+
+        <div class="app-cta">
+          <a href="https://roastfolio.up.railway.app" class="btn btn-dark" target="_blank" rel="noopener">
+            Roast my portfolio
+            <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── Contact CTA ───────────────────────────────────── -->
+<section id="contact" aria-label="Contact">
+  <div class="container">
+    <div class="contact-inner">
+      <p class="label contact-label reveal">Contact</p>
+      <h2 class="contact-heading reveal" style="transition-delay:.06s"><span class="contact-marker">Say hello</span>.</h2>
+      <p class="contact-sub reveal" style="transition-delay:.10s">
+        Tried an app, or have an idea for the next one? I'd love to hear it.
+      </p>
+      <div class="contact-actions reveal" style="transition-delay:.14s">
+        <a href="mailto:avivzommer@gmail.com" class="btn btn-dark">Email</a>
+        <a href="https://www.linkedin.com/in/avivzommer/" class="btn btn-light" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://adplist.org/mentors/aviv-zommer" class="btn btn-light" target="_blank" rel="noopener">Mentoring</a>
+        <a href="./resume/aviv-zommer-resume.pdf" class="btn btn-light" target="_blank" rel="noopener">Resume</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Cursor tooltip -->
+<div id="cursor-tip" aria-hidden="true">Roast my portfolio</div>
+
+
+<!-- ─── Footer ────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-name">Aviv Zommer</p>
+        <p class="footer-desc">Senior Product Designer focused on complex B2B SaaS, AI, and thoughtful product experiences.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="mailto:avivzommer@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/avivzommer/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://adplist.org/mentors/aviv-zommer" target="_blank" rel="noopener">Mentoring</a>
+        <a href="./resume/aviv-zommer-resume.pdf" target="_blank" rel="noopener">Resume</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+
+  // Mobile hamburger menu
+  const hamburger = document.querySelector('.nav-hamburger');
+  const mobileMenu = document.querySelector('.nav-mobile-menu');
+  if (hamburger && mobileMenu) {
+    const closeMenu = () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('is-open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    };
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('is-open', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Hero fires immediately
+  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
+
+  // Animated SVGs (CSS keyframes inside <object>): they rest on their finished frame
+  // and only animate when asked. stop() lets the current loop finish so it settles
+  // seamlessly instead of snapping.
+  function svgPlayer(obj) {
+    let root = null, timer = 0;
+    const queue = [];
+    function init() {
+      const doc = obj.contentDocument;
+      if (root || !doc || !doc.documentElement || doc.documentElement.localName !== 'svg') return;
+      root = doc.documentElement;
+      if (!root.classList.contains('is-rest')) {
+        const s = doc.createElementNS('http://www.w3.org/2000/svg', 'style');
+        s.textContent = '.is-rest,.is-rest *{animation:none !important}';
+        root.appendChild(s);
+        root.classList.add('is-rest');
+      }
+      queue.splice(0).forEach(fn => fn());
+    }
+    obj.addEventListener('load', init);
+    init();
+    const whenReady = fn => (root ? fn() : queue.push(fn));
+    const api = {
+      play() { whenReady(() => { clearTimeout(timer); root.classList.remove('is-rest'); }); },
+      stop() {
+        whenReady(() => {
+          clearTimeout(timer);
+          if (root.classList.contains('is-rest')) return;
+          const a = root.ownerDocument.getAnimations()[0];
+          const d = a ? a.effect.getTiming().duration : 0;
+          timer = setTimeout(() => root.classList.add('is-rest'), a ? d - ((a.currentTime || 0) % d) : 0);
+        });
+      },
+      once() { api.play(); api.stop(); }
+    };
+    return api;
+  }
+
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduced) {
+    // App thumbnails: build themselves once when scrolled into view, replay on hover
+    document.querySelectorAll('.app-item').forEach(item => {
+      const thumb = svgPlayer(item.querySelector('.app-visual object'));
+      new IntersectionObserver((entries, obs) => {
+        if (entries[0].isIntersecting) { thumb.once(); obs.disconnect(); }
+      }, { threshold: 0.5 }).observe(item);
+      if (canHover) {
+        item.addEventListener('mouseenter', thumb.play);
+        item.addEventListener('mouseleave', thumb.stop);
+      }
+    });
+  }
+
+  // Cursor tooltip on the app thumbnail
+  const tip = document.getElementById('cursor-tip');
+  if (tip) {
+    document.addEventListener('mousemove', e => {
+      tip.style.left = e.clientX + 'px';
+      tip.style.top  = e.clientY + 'px';
+    }, { passive: true });
+    document.querySelectorAll('.app-visual').forEach(el => {
+      el.addEventListener('mouseenter', () => tip.classList.add('visible'));
+      el.addEventListener('mouseleave', () => tip.classList.remove('visible'));
+    });
+  }
+</script>
+
+</body>
+</html>
