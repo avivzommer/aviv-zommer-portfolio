@@ -1004,31 +1004,82 @@
       .nav-pill { display: none; }
       .nav-cta { height: 36px; padding: 0 16px; font-size: 13px; }
 
-      /* Hero */
-      .hero-subtitle { font-size: 15px; }
+      /* Hero: big type, cards peeking up from the fold, centered swipe carousel */
+      #hero {
+        --hero-card-w: min(75vw, 340px);
+        --hero-peek: calc(var(--hero-card-w) * 1.3333 * 0.16);
+        display: block;
+        min-height: 0;
+        padding: 0 0 40px;
+      }
+      .hero-surface { padding: 0; }
+      .hero-copy {
+        min-height: calc(100svh - var(--hero-peek));
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: calc(var(--nav-h) + 12px) 0 44px;
+        position: relative;
+        z-index: 2;
+      }
+      .hero-greet { font-size: clamp(40px, 12.8vw, 54px); margin-bottom: 24px; }
+      .hero-subtitle { font-size: 18px; line-height: 1.6; }
+      .hero-pill { height: 34px; }
       .hero-cards {
-        margin-top: 32px;
+        margin: -146px calc(var(--pad-x) * -1) 0;
+        padding: 150px 0 8px;
         display: flex;
         justify-content: flex-start;
         width: auto;
         max-width: none;
+        gap: 12px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        gap: 14px;
-        margin-left: calc(var(--pad-x) * -1);
-        margin-right: calc(var(--pad-x) * -1);
-        padding: 4px var(--pad-x) 8px;
+        scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
+      }
+      .hero-cards::-webkit-scrollbar { display: none; }
+      /* Spacers let the first/last card center with neighbors peeking at the edges */
+      .hero-cards::before,
+      .hero-cards::after {
+        content: '';
+        flex: 0 0 calc((100vw - var(--hero-card-w)) / 2 - 12px);
       }
       .hero-card {
         transform: none !important;
         margin-left: 0 !important;
-        flex: 0 0 78vw;
-        max-width: 300px;
-        scroll-snap-align: start;
+        flex: 0 0 var(--hero-card-w);
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
       }
-      /* The flame peeks above the card, which the scroll strip would clip */
-      .hero-card-flame { display: none; }
+      /* No hover on touch: the card in front (.is-active, set by initHeroCarousel) gets the
+         hover treatment instead, and its neighbors dim back */
+      .hero-cards:has(.is-active) .hero-card:not(.is-active)::after { opacity: 0.5; }
+      .hero-card-work.is-active .hero-card-peek-img { opacity: 1; }
+      .hero-card-work.is-active .hero-card-peek-img:nth-child(1) { transform: scale(1) translateY(0) rotate(-9deg); transition-delay: 0s; }
+      .hero-card-work.is-active .hero-card-peek-img:nth-child(2) { transform: scale(1) translateY(0) rotate(5deg);  transition-delay: 0.1s; }
+      .hero-card-work.is-active .hero-card-peek-img:nth-child(3) { transform: scale(1) translateY(0) rotate(-3deg); transition-delay: 0.2s; }
+      .hero-card-mentor.is-active .hero-card-trophy { opacity: 1; }
+      .hero-card-mentor.is-active .hero-card-trophy:nth-child(1) { transform: scale(1) translateY(0) rotate(-10deg); transition-delay: 0s; }
+      .hero-card-mentor.is-active .hero-card-trophy:nth-child(2) { transform: scale(1) translateY(0) rotate(6deg);   transition-delay: 0.1s; }
+      .hero-card-mentor.is-active .hero-card-trophy:nth-child(3) { transform: scale(1) translateY(0) rotate(-4deg);  transition-delay: 0.2s; }
+      .hero-card-video.is-active .hero-card-bg-video { transform: scale(1.06); }
+      .hero-card-video.is-active .hero-card-video-cta { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      /* The caption can't sit beside the card here (neighbors are in the way), so it rises above it */
+      .hero-card-side-caption {
+        left: 50%;
+        top: auto;
+        bottom: 100%;
+        width: 224px;
+        margin: 0 0 14px;
+        transform: translate(-50%, 16px);
+      }
+      .hero-card-research.is-active .hero-card-side-caption {
+        opacity: 1;
+        transform: translate(-50%, 0);
+        transition-delay: 0.15s;
+      }
+      .hero-card-apps.is-active .hero-card-flame { opacity: 1; transform: scale(1) translateY(0) rotate(-6deg); }
       /* The edge fades exist only to soften the desktop hover push-apart spill —
          there's no hover on touch, so on mobile they just wash out the first/last
          card in the scroll-snap strip. Bottom fade isn't needed either since the
@@ -1599,6 +1650,70 @@
     initHeroCards();
     initWorkVideos();
     initAppsFlame();
+    initHeroCarousel();
+  }
+
+  // Mobile hero carousel: centered card with neighbors peeking at the edges. The card in
+  // front gets the hover treatment (touch has no hover), once it's fully in the viewport.
+  // Autoplays every 4s under the same condition, pauses while touched, rewinds to the first card after the last.
+  function initHeroCarousel() {
+    const strip = document.querySelector('.hero-cards');
+    const mq = window.matchMedia('(max-width: 720px)');
+    if (!strip) return;
+    const cards = [...strip.querySelectorAll('.hero-card')];
+    const centerOf = el => { const r = el.getBoundingClientRect(); return r.left + r.width / 2; };
+    const closest = () => {
+      const mid = centerOf(strip);
+      return cards.reduce((b, c, i) => Math.abs(centerOf(c) - mid) < Math.abs(centerOf(cards[b]) - mid) ? i : b, 0);
+    };
+
+    // Cards only count once they're fully in the viewport (not while just peeking above the fold)
+    const full = new Set();
+    const inFront = () => { const c = cards[closest()]; return full.has(c) ? c : null; };
+
+    let active = -1;
+    function syncActive() {
+      const front = mq.matches ? inFront() : null;
+      const next = front ? cards.indexOf(front) : -1;
+      if (next === active) return;
+      cards.forEach((c, i) => {
+        if ((i === next) !== (i === active)) {
+          c.classList.toggle('is-active', i === next);
+          c.dispatchEvent(new Event(i === next ? 'card-active' : 'card-inactive'));
+        }
+      });
+      active = next;
+    }
+    let raf = 0;
+    strip.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(syncActive); }, { passive: true });
+    mq.addEventListener('change', syncActive);
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let touching = false, timer = 0, hadFront = false;
+    function advance() {
+      if (!mq.matches || !inFront() || touching) return;
+      const nxt = (closest() + 1) % cards.length;
+      // scroll-snap-stop would halt a multi-card rewind after one card, so lift snapping for it
+      if (nxt === 0) { strip.style.scrollSnapType = 'none'; setTimeout(() => { strip.style.scrollSnapType = ''; }, 1500); }
+      strip.scrollBy({ left: centerOf(cards[nxt]) - centerOf(strip), behavior: 'smooth' });
+    }
+    const restart = () => { clearInterval(timer); if (!reduced) timer = setInterval(advance, 4000); };
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => (e.intersectionRatio >= 0.98 ? full.add(e.target) : full.delete(e.target)));
+      // The first card gets its full 4s when the row first comes fully into view
+      const now = mq.matches && !!inFront();
+      if (now && !hadFront) restart();
+      hadFront = now;
+      syncActive();
+    }, { threshold: [0, 0.5, 0.98, 1] });
+    cards.forEach(c => io.observe(c));
+
+    strip.addEventListener('touchstart', () => { touching = true; }, { passive: true });
+    const release = () => { touching = false; restart(); };
+    strip.addEventListener('touchend', release, { passive: true });
+    strip.addEventListener('touchcancel', release, { passive: true });
+    restart();
   }
 
   // Animated SVGs (CSS keyframes inside <object>): they rest on their finished frame
@@ -1641,10 +1756,10 @@
   function initAppsFlame() {
     const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const wide     = window.matchMedia('(min-width: 721px)').matches;
+    const mobile   = window.matchMedia('(max-width: 720px)').matches;
     const card = document.querySelector('.hero-card-apps');
     const slot = card && card.querySelector('.hero-card-flame');
-    if (!slot || !canHover || reduced || !wide) return;
+    if (!slot || reduced || !(canHover || mobile)) return;
 
     const load = () => {
       const obj = document.createElement('object');
@@ -1654,9 +1769,14 @@
       slot.appendChild(obj);
       const flame = svgPlayer(obj);
       let off = 0;
-      card.addEventListener('mouseenter', () => { clearTimeout(off); flame.play(); });
+      const on  = () => { clearTimeout(off); flame.play(); };
       // Wait out the card's fade-out before settling the flame back to rest
-      card.addEventListener('mouseleave', () => { off = setTimeout(flame.stop, 450); });
+      const out = () => { off = setTimeout(flame.stop, 450); };
+      card.addEventListener('mouseenter', on);
+      card.addEventListener('mouseleave', out);
+      card.addEventListener('card-active', on);
+      card.addEventListener('card-inactive', out);
+      if (card.classList.contains('is-active')) on();
     };
     'requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 4000 }) : setTimeout(load, 2500);
   }
