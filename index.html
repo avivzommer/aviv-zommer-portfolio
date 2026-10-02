@@ -266,6 +266,13 @@
       padding-top: calc(var(--nav-h) + 40px);
       padding-bottom: 48px;
       position: relative;
+      /* The glow below is wider than a phone (max-width: 150%); clip it sideways so it
+         can't widen the page. `clip` (unlike `hidden`) leaves vertical overflow visible,
+         so the glow still fades out freely above and below. */
+      overflow-x: clip;
+    }
+    @supports not (overflow: clip) {
+      @media (max-width: 720px) { #hero::before { max-width: 100%; } }
     }
     /* Ambient glow lives on #hero itself (not inside the overflow:hidden .container
        below) so it can fade all the way to transparent without ever hitting a hard
