@@ -310,40 +310,6 @@
       filter: grayscale(6%);
     }
 
-    /* ─── Stats row ───────────────────────────────────── */
-    #stats {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .stats-inner {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .stat-item {
-      padding: 40px 0;
-      border-right: 1px solid var(--border);
-    }
-    .stat-item:first-child { border-left: 1px solid var(--border); }
-    .stat-item:last-child { border-right: none; }
-    .stat-num {
-      font-size: clamp(40px, 5vw, 60px);
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .stat-unit {
-      display: inline;
-      font-size: clamp(20px, 2.5vw, 28px);
-      font-weight: 500;
-      letter-spacing: -0.03em;
-    }
-    .stat-label {
-      font-size: 13px;
-      color: var(--mid);
-      line-height: 1.5;
-    }
-
     /* ─── Bio ─────────────────────────────────────────── */
     #bio {
       padding: 96px 0;
@@ -379,7 +345,6 @@
       font-weight: 500;
       letter-spacing: -0.04em;
       line-height: 1.1;
-      margin-bottom: 20px;
     }
     .exp-em {
       background-image: linear-gradient(
@@ -395,11 +360,6 @@
       transition: background-size 0.85s cubic-bezier(0.7, 0.05, 0.35, 1) 0.4s;
     }
     .exp-head.in .exp-em { background-size: 100% 100%; }
-    .exp-subtitle {
-      font-size: 16px;
-      line-height: 1.7;
-      color: var(--mid);
-    }
 
     .exp-timeline {
       list-style: none;
@@ -592,6 +552,13 @@
       margin-bottom: 6px;
       color: var(--fg);
     }
+    /* Institute logos: a fixed-height slot keeps the headings aligned across columns,
+       while each logo gets its own height so they read at a similar visual weight */
+    .edu-logo { height: 48px; display: flex; align-items: center; margin-bottom: 22px; }
+    .edu-logo img { display: block; width: auto; max-width: 100%; }
+    .edu-logo--bezalel img { height: 38px; }
+    .edu-logo--haifa img { height: 34px; }
+    .edu-logo--studio img { height: 48px; }
     .edu-prose-block .edu-school-line {
       font-size: 13.5px;
       color: var(--faint);
@@ -781,11 +748,6 @@
       .hero-inner { grid-template-columns: 1fr; gap: 32px; }
       .hero-photo { aspect-ratio: 4/5; order: -1; }
 
-      .stats-inner { grid-template-columns: 1fr 1fr; }
-      .stat-item { padding: 28px 0; }
-      .stat-item:nth-child(2) { border-right: none; }
-      .stat-item:last-child { border-top: 1px solid var(--border); border-right: none; grid-column: 1 / -1; }
-
       #bio { padding: 64px 0; }
 
       #experience { padding: 32px 0; }
@@ -873,26 +835,6 @@
 </section>
 
 
-<!-- ─── Stats ─────────────────────────────────────────── -->
-<div id="stats">
-  <div class="container">
-    <div class="stats-inner">
-      <div class="stat-item reveal">
-        <div class="stat-num">10<span class="stat-unit"> yrs</span></div>
-        <div class="stat-label">of product design experience</div>
-      </div>
-      <div class="stat-item reveal" style="transition-delay:.05s">
-        <div class="stat-num">5</div>
-        <div class="stat-label">B2B product companies</div>
-      </div>
-      <div class="stat-item reveal" style="transition-delay:.10s">
-        <div class="stat-num">2</div>
-        <div class="stat-label">academic degrees in design</div>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <!-- ─── Bio ───────────────────────────────────────────── -->
 <section id="bio">
@@ -915,7 +857,6 @@
       <div class="exp-head reveal">
         <p class="label">Experience</p>
         <h2 class="exp-headline">My <span class="exp-em">journey</span>.</h2>
-        <p class="exp-subtitle">Ten years across creative direction, branding, and complex B2B SaaS. From visual systems to systems thinking.</p>
       </div>
 
       <ol class="exp-timeline">
@@ -1050,12 +991,14 @@
 
     <div class="edu-prose reveal" style="transition-delay:.06s">
       <div class="edu-prose-block edu-prose-block--featured">
+        <div class="edu-logo edu-logo--bezalel"><img src="./baloop/Bezalel_academy_of_arts_and_design_new_logo.svg" alt="" loading="lazy"></div>
         <h3>M.Des, Design &amp; Innovation Management.</h3>
         <p class="edu-school-line">Bezalel Academy of Arts and Design</p>
         <p>A research-led master's program at Israel's leading design school, exploring design at the intersection of organizational strategy, systems thinking, and product innovation. My graduation project, <a href="baloop.html">Baloop</a>, became a reflective support system for youth mentors experiencing burnout and emotional strain during wartime.</p>
       </div>
 
       <div class="edu-prose-block">
+        <div class="edu-logo edu-logo--haifa"><img src="./about/haifa-school-of-design-logo.webp" alt="" loading="lazy"></div>
         <h3>B.Ed.Des, Visual Communication.</h3>
         <p class="edu-school-line">NB Haifa School of Design (Wizo)</p>
         <details class="edu-details">
@@ -1065,6 +1008,7 @@
       </div>
 
       <div class="edu-prose-block">
+        <div class="edu-logo edu-logo--studio"><img src="./about/studio-6b-logo.png" alt="" loading="lazy"></div>
         <h3>Product Design - UI/UX, Sprint Master.</h3>
         <p class="edu-school-line">Studio 6b · Sagi Shrieber · 2020</p>
         <details class="edu-details">
@@ -1188,8 +1132,8 @@
   }, { threshold: 0.06, rootMargin: '0px 0px -32px 0px' });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // Hero + stats fire immediately
-  document.querySelectorAll('#hero .reveal, #stats .reveal').forEach(el => el.classList.add('in'));
+  // Hero fires immediately
+  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
 
   // Experience pill click-to-toggle (drives mobile, locks open on desktop)
   document.querySelectorAll('.exp-pill').forEach(pill => {
