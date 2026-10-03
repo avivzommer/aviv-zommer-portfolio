@@ -334,11 +334,11 @@
     .exp-card {
       background: var(--surface);
       border-radius: 28px;
-      padding: 64px 64px 72px;
+      padding: 64px 64px 36px;
       position: relative;
     }
     .section-header { margin-bottom: 48px; }
-    .exp-head { margin-bottom: 56px; max-width: 760px; }
+    .exp-head { margin-bottom: 28px; max-width: 760px; }
     .exp-head .label { margin-bottom: 24px; }
     .exp-headline {
       font-size: clamp(32px, 4vw, 52px);
@@ -361,119 +361,110 @@
     }
     .exp-head.in .exp-em { background-size: 100% 100%; }
 
-    .exp-timeline {
-      list-style: none;
-      position: relative;
-      padding: 0;
-      display: flex;
-      flex-direction: column-reverse;
-    }
-    .exp-entry {
-      position: relative;
-      margin-top: 14px;
-      padding-left: calc(var(--i, 0) * 56px);
-    }
-    .exp-entry:last-child { margin-top: 0; }
+    /* Full-length rows, newest first: logo, company + role, dates on the right.
+       Hover (or tap) opens the detail: text on the left, screenshot on the right. */
+    .exp-timeline { list-style: none; margin: 0; padding: 0; }
+    .exp-entry + .exp-entry { border-top: 1px solid rgba(20,17,13,0.1); }
 
-    .exp-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 18px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--fg);
-      padding: 14px 30px;
-      border-radius: 100px;
-      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1),
-                  border-color 0.35s, box-shadow 0.35s, background 0.35s;
+    .exp-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      column-gap: 20px;
+      align-items: start;
+      width: 100%;
+      padding: 28px 0;
+      background: none;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      text-align: left;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      transition: padding-bottom 0.45s cubic-bezier(0.22,1,0.36,1);
     }
-    .exp-entry:hover .exp-pill,
-    .exp-entry.is-open .exp-pill {
-      transform: translateY(-2px);
-      border-color: var(--mid);
-      box-shadow: 0 8px 22px rgba(20,17,13,0.10);
+    .exp-entry:hover .exp-row,
+    .exp-entry.is-open .exp-row,
+    .exp-entry:has(.exp-row:focus-visible) .exp-row { padding-bottom: 14px; }
+    .exp-row:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; border-radius: 8px; }
+    .exp-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(20,17,13,0.06);
     }
-    .exp-entry--current .exp-pill {
-      background: #fff5d6;
-      border-color: #ffd96b;
-    }
-    .exp-entry--current:hover .exp-pill,
-    .exp-entry--current.is-open .exp-pill {
-      background: #ffefb8;
-      border-color: #ffce47;
-      box-shadow: 0 8px 22px rgba(255,206,71,0.25);
-    }
-    .exp-year {
-      font-size: 12.5px;
-      letter-spacing: 0.02em;
-      color: var(--mid);
-      white-space: nowrap;
-    }
-    .exp-sep {
-      display: inline-block;
-      width: 1px;
-      height: 30px;
-      background: var(--border);
-    }
-    .exp-meta {
-      display: inline-flex;
-      flex-direction: column;
-      gap: 3px;
-      min-width: 0;
+    .exp-logo img { display: block; width: 100%; height: 100%; }
+    .exp-logo--zoom img { object-fit: cover; transform: scale(1.25); }
+    .exp-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .exp-title { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
+    .exp-type {
+      height: 24px;
+      padding: 0 11px;
+      font-size: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
     }
     .exp-company {
-      font-size: 15px;
+      font-size: 22px;
       font-weight: 500;
-      letter-spacing: -0.015em;
+      letter-spacing: -0.025em;
       line-height: 1.2;
       color: var(--fg);
-      white-space: nowrap;
     }
-    .exp-role {
-      font-size: 12.5px;
-      line-height: 1.3;
+    .exp-role { font-size: 14.5px; line-height: 1.35; color: var(--mid); }
+    .exp-year {
+      font-size: 14px;
+      line-height: 26px;
+      letter-spacing: 0.01em;
       color: var(--mid);
       white-space: nowrap;
+    }
+    .exp-entry--current .exp-year {
+      padding: 0 12px;
+      border-radius: 100px;
+      background: #fff5d6;
+      border: 1px solid #ffd96b;
+      color: var(--fg);
+      line-height: 24px;
     }
 
     .exp-detail {
       display: grid;
       grid-template-rows: 0fr;
-      transition: grid-template-rows 0.45s cubic-bezier(0.22,1,0.36,1), margin-top 0.45s;
-      margin-top: 0;
+      transition: grid-template-rows 0.45s cubic-bezier(0.22,1,0.36,1);
     }
     .exp-detail > * { overflow: hidden; min-height: 0; }
     .exp-entry:hover .exp-detail,
-    .exp-entry.is-open .exp-detail {
-      grid-template-rows: 1fr;
-      margin-top: 14px;
-    }
+    .exp-entry.is-open .exp-detail,
+    .exp-entry:has(.exp-row:focus-visible) .exp-detail { grid-template-rows: 1fr; }
 
+    /* Left padding = logo width + column gap, so the text lines up under the company name.
+       No vertical padding here: padding would stay visible while collapsed. The bottom
+       spacing is a margin on the children, which the collapse clips away. */
     .exp-detail-inner {
       display: flex;
+      justify-content: space-between;
       align-items: flex-start;
       gap: 40px;
-      padding-left: 14px;
-      padding-top: 2px;
+      padding: 0 0 0 68px;
     }
-
     .exp-bullets {
       list-style: none;
       margin: 0;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      flex: 0 1 380px;
-      max-width: 380px;
+      flex: 0 1 520px;
+      max-width: 520px;
+      margin-bottom: 28px;
       opacity: 0;
       transition: opacity 0.4s ease 0.1s;
     }
     .exp-entry:hover .exp-bullets,
-    .exp-entry.is-open .exp-bullets { opacity: 1; }
+    .exp-entry.is-open .exp-bullets,
+    .exp-entry:has(.exp-row:focus-visible) .exp-bullets { opacity: 1; }
     .exp-bullets li {
-      font-size: 14px;
+      font-size: 14.5px;
       line-height: 1.65;
       color: var(--mid);
       padding-left: 14px;
@@ -487,28 +478,26 @@
     }
 
     .exp-sticker {
-      flex: 0 0 auto;
-      height: 140px;
+      flex: 0 0 min(360px, 42%);
+      margin-left: auto;
+      margin-bottom: 28px;
       opacity: 0;
       pointer-events: none;
-      transform: rotate(var(--rot, -5deg)) scale(0.88);
-      transform-origin: top left;
-      transition: opacity 0.4s, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: scale(0.94);
+      transform-origin: top right;
+      transition: opacity 0.4s, transform 0.45s cubic-bezier(0.22,1,0.36,1);
     }
     .exp-sticker img {
-      height: 100%;
-      width: auto;
-      max-width: none;
       display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
     }
     .exp-entry:hover .exp-sticker,
-    .exp-entry.is-open .exp-sticker {
-      opacity: 1;
-      transform: rotate(var(--rot, -5deg)) scale(1);
-    }
+    .exp-entry.is-open .exp-sticker,
+    .exp-entry:has(.exp-row:focus-visible) .exp-sticker { opacity: 1; transform: scale(1); }
     @media (prefers-reduced-motion: reduce) {
-      .exp-sticker { transition: opacity 0.2s; transform: rotate(0deg) scale(1); }
-      .exp-entry:hover .exp-sticker { transform: rotate(0deg) scale(1); }
+      .exp-detail, .exp-bullets, .exp-sticker { transition: none; }
     }
 
     /* ─── Education ───────────────────────────────────── */
@@ -733,7 +722,6 @@
     @media (max-width: 1024px) {
       :root { --pad-x: 32px; }
       .hero-inner { grid-template-columns: 1fr 240px; gap: 48px; }
-      .exp-sticker { height: 130px; }
     }
 
     @media (max-width: 720px) {
@@ -751,16 +739,26 @@
       #bio { padding: 64px 0; }
 
       #experience { padding: 32px 0; }
-      .exp-card { padding: 36px 24px 44px; border-radius: 20px; }
-      .exp-head { margin-bottom: 36px; }
+      .exp-card { padding: 36px 24px 20px; border-radius: 20px; }
+      .exp-head { margin-bottom: 16px; }
       .exp-head .label { margin-bottom: 18px; }
-      .exp-entry { padding-left: 0; margin-top: 12px; }
-      .exp-pill { padding: 14px 22px; gap: 14px; }
-      .exp-sep { height: 28px; }
-      .exp-bullets { margin: 0 0 0 8px; max-width: none; }
-      .exp-sticker { display: none; }
+      .exp-row { grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; padding: 20px 0; }
+      .exp-entry:hover .exp-row, .exp-entry.is-open .exp-row, .exp-entry:has(.exp-row:focus-visible) .exp-row { padding-bottom: 12px; }
+      .exp-logo { width: 40px; height: 40px; border-radius: 9px; }
+      .exp-company { font-size: 18px; }
+      .exp-type { height: 22px; padding: 0 10px; font-size: 11.5px; }
+      .exp-role { font-size: 13.5px; }
+      .exp-year { grid-column: 2; justify-self: start; margin-top: 8px; font-size: 13px; line-height: 22px; }
+      .exp-entry--current .exp-year { line-height: 20px; }
+      .exp-detail-inner { flex-direction: column; gap: 18px; padding: 0; }
+      .exp-bullets { max-width: none; flex: none; margin-bottom: 0; }
+      .exp-sticker { flex: none; width: 100%; margin: 0 0 22px; transform-origin: top left; }
+      .exp-sticker img { width: 100%; height: auto; }
 
       #education { padding: 64px 0; }
+      /* Logos sit after the text on mobile (they lead on desktop) */
+      .edu-prose-block { display: flex; flex-direction: column; }
+      .edu-logo { order: 1; margin: 22px 0 0; }
       .edu-head { margin-bottom: 36px; }
       .edu-head .label { margin-bottom: 18px; }
       .edu-prose { grid-template-columns: 1fr; gap: 36px; margin-bottom: 40px; }
@@ -861,21 +859,24 @@
 
       <ol class="exp-timeline">
 
-        <li class="exp-entry exp-entry--current reveal" style="--i:4;--rot:-5deg">
-          <div class="exp-pill">
-            <span class="exp-year">2025 - Now</span>
-            <span class="exp-sep"></span>
+        <li class="exp-entry exp-entry--current reveal">
+          <button type="button" class="exp-row" aria-expanded="false">
+            <span class="exp-logo exp-logo--zoom"><img src="./about/sysaid-logo.jpeg" alt="" loading="lazy"></span>
             <span class="exp-meta">
-              <span class="exp-company">SysAid</span>
+              <span class="exp-title">
+                <span class="exp-company">SysAid</span>
+                <span class="chip exp-type">B2B ITSM</span>
+              </span>
               <span class="exp-role">Senior Product Designer</span>
             </span>
-          </div>
+            <span class="exp-year">2025 - Now</span>
+          </button>
           <div class="exp-detail">
             <div class="exp-detail-inner">
               <ul class="exp-bullets">
-            <li>Led design of the first self-serve trial, introducing a Product-Led Sales motion to a historically sales-only product.</li>
-            <li>Led the company's design system, improving consistency and scalability across the product.</li>
-            <li>Introduced AI-driven design workflows connecting Figma, Claude, and the design system.</li>
+                <li>Led design of the first self-serve trial, introducing a Product-Led Sales motion to a historically sales-only product.</li>
+                <li>Led the company's design system, improving consistency and scalability across the product.</li>
+                <li>Introduced AI-driven design workflows connecting Figma, Claude, and the design system.</li>
               </ul>
               <div class="exp-sticker" aria-hidden="true">
                 <img src="./sysaid-screenshot.png" alt="" loading="lazy">
@@ -884,21 +885,24 @@
           </div>
         </li>
 
-        <li class="exp-entry reveal" style="--i:3;--rot:4deg">
-          <div class="exp-pill">
-            <span class="exp-year">2024 - 2025</span>
-            <span class="exp-sep"></span>
+        <li class="exp-entry reveal">
+          <button type="button" class="exp-row" aria-expanded="false">
+            <span class="exp-logo"><img src="./groundcover-logo.svg" alt="" loading="lazy"></span>
             <span class="exp-meta">
-              <span class="exp-company">groundcover</span>
+              <span class="exp-title">
+                <span class="exp-company">groundcover</span>
+                <span class="chip exp-type">B2B Observability, DevOps</span>
+              </span>
               <span class="exp-role">Product Designer</span>
             </span>
-          </div>
+            <span class="exp-year">2024 - 2025</span>
+          </button>
           <div class="exp-detail">
             <div class="exp-detail-inner">
               <ul class="exp-bullets">
-            <li>Simplified data ingestion workflows, enabling self-serve configuration and reducing dependency on support.</li>
-            <li>Designed RBAC system enabling scalable self-serve permission management.</li>
-            <li>Led integration of proactive AI-powered insights into the product experience.</li>
+                <li>Simplified data ingestion workflows, enabling self-serve configuration and reducing dependency on support.</li>
+                <li>Designed RBAC system enabling scalable self-serve permission management.</li>
+                <li>Led integration of proactive AI-powered insights into the product experience.</li>
               </ul>
               <div class="exp-sticker" aria-hidden="true">
                 <img src="./groundcover-screenshot.png" alt="" loading="lazy">
@@ -907,21 +911,24 @@
           </div>
         </li>
 
-        <li class="exp-entry reveal" style="--i:2;--rot:-3deg">
-          <div class="exp-pill">
-            <span class="exp-year">2022 - 2024</span>
-            <span class="exp-sep"></span>
+        <li class="exp-entry reveal">
+          <button type="button" class="exp-row" aria-expanded="false">
+            <span class="exp-logo"><img src="./about/onebeat-logo.svg" alt="" loading="lazy"></span>
             <span class="exp-meta">
-              <span class="exp-company">Onebeat</span>
+              <span class="exp-title">
+                <span class="exp-company">Onebeat</span>
+                <span class="chip exp-type">B2B Retail tech</span>
+              </span>
               <span class="exp-role">Product Designer</span>
             </span>
-          </div>
+            <span class="exp-year">2022 - 2024</span>
+          </button>
           <div class="exp-detail">
             <div class="exp-detail-inner">
               <ul class="exp-bullets">
-            <li>Designed workflows for a supply chain management platform serving retail and distribution.</li>
-            <li>Conducted user research and mapped journeys to improve usability.</li>
-            <li>Built and scaled a cross-product design system.</li>
+                <li>Designed workflows for a supply chain management platform serving retail and distribution.</li>
+                <li>Conducted user research and mapped journeys to improve usability.</li>
+                <li>Built and scaled a cross-product design system.</li>
               </ul>
               <div class="exp-sticker" aria-hidden="true">
                 <img src="./about/onebeat-1.avif" alt="" loading="lazy">
@@ -930,20 +937,23 @@
           </div>
         </li>
 
-        <li class="exp-entry reveal" style="--i:1;--rot:6deg">
-          <div class="exp-pill">
-            <span class="exp-year">2021 - 2022</span>
-            <span class="exp-sep"></span>
+        <li class="exp-entry reveal">
+          <button type="button" class="exp-row" aria-expanded="false">
+            <span class="exp-logo"><img src="./about/transmit-security-logo.svg" alt="" loading="lazy"></span>
             <span class="exp-meta">
-              <span class="exp-company">Transmit Security</span>
+              <span class="exp-title">
+                <span class="exp-company">Transmit Security</span>
+                <span class="chip exp-type">B2B Cybersecurity</span>
+              </span>
               <span class="exp-role">Senior Marketing Designer</span>
             </span>
-          </div>
+            <span class="exp-year">2021 - 2022</span>
+          </button>
           <div class="exp-detail">
             <div class="exp-detail-inner">
               <ul class="exp-bullets">
-            <li>Led design of marketing assets for a B2B cybersecurity company.</li>
-            <li>Ensured brand and product consistency across all touchpoints.</li>
+                <li>Led design of marketing assets for a B2B cybersecurity company.</li>
+                <li>Ensured brand and product consistency across all touchpoints.</li>
               </ul>
               <div class="exp-sticker" aria-hidden="true">
                 <img src="./about/transmit-security.avif" alt="" loading="lazy">
@@ -952,20 +962,23 @@
           </div>
         </li>
 
-        <li class="exp-entry reveal" style="--i:0;--rot:-7deg">
-          <div class="exp-pill">
-            <span class="exp-year">2016 - 2021</span>
-            <span class="exp-sep"></span>
+        <li class="exp-entry reveal">
+          <button type="button" class="exp-row" aria-expanded="false">
+            <span class="exp-logo"><img src="./about/david-yosef-logo.svg" alt="" loading="lazy"></span>
             <span class="exp-meta">
-              <span class="exp-company">David &amp; Yosef</span>
+              <span class="exp-title">
+                <span class="exp-company">David &amp; Yosef</span>
+                <span class="chip exp-type">Branding agency</span>
+              </span>
               <span class="exp-role">Creative Director</span>
             </span>
-          </div>
+            <span class="exp-year">2016 - 2021</span>
+          </button>
           <div class="exp-detail">
             <div class="exp-detail-inner">
               <ul class="exp-bullets">
-            <li>Led a team of designers delivering branding and visual communication for major clients.</li>
-            <li>Defined design direction and ensured high-quality execution across all creative output.</li>
+                <li>Led a team of designers delivering branding and visual communication for major clients.</li>
+                <li>Defined design direction and ensured high-quality execution across all creative output.</li>
               </ul>
               <div class="exp-sticker" aria-hidden="true">
                 <img src="./about/david-yosef.png" alt="" loading="lazy">
@@ -1135,10 +1148,11 @@
   // Hero fires immediately
   document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('in'));
 
-  // Experience pill click-to-toggle (drives mobile, locks open on desktop)
-  document.querySelectorAll('.exp-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      pill.parentElement.classList.toggle('is-open');
+  // Experience rows: click toggles the detail (drives touch, locks open on desktop)
+  document.querySelectorAll('.exp-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const open = row.parentElement.classList.toggle('is-open');
+      row.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   });
 
