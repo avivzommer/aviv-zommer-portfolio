@@ -13,3 +13,11 @@
 [[edge_functions]]
   path = "/groundcover"
   function = "case-study-gate"
+
+[[edge_functions]]
+  path = "/sysaid/paywall-v2.html"
+  function = "case-study-gate"
+
+[[edge_functions]]
+  path = "/sysaid/paywall-v2"
+  function = "case-study-gate"

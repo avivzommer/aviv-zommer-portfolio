@@ -295,12 +295,20 @@
       background: var(--surface);
       padding: 24px;
     }
-    .media-frame img {
+    .media-frame img,
+    .media-frame video {
       width: 100%;
       height: auto;
       display: block;
       border-radius: 6px;
     }
+    /* Same drop shadow on every video here as on the homepage work cards */
+    .media-frame video,
+    .flow-shot--video,
+    .iter-f-video { box-shadow: 0 24px 48px -12px rgba(20,17,13,0.18); }
+    /* The video's rounded UI window sits on black corner pixels (MP4 has no alpha), so the
+       clip radius must be at least the window's own radius (~10px of the 1400px frame) */
+    .media-frame video { border-radius: 12px; }
 
     /* ════════════════════════════════════════════════════════
        HERO
@@ -445,6 +453,12 @@
       gap: 72px;
     }
     .iter-f-item {}
+    .iter-f-video {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
     .iter-f-img {
       width: 100%;
       height: auto;
@@ -464,6 +478,269 @@
       color: var(--mid);
     }
     .iter-f-caption-text strong { color: var(--fg); font-weight: 500; }
+
+    /* ─── Paywall iteration ──────────────────────────────── */
+    .pw-tabs {
+      display: inline-flex;
+      align-self: flex-start;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 100px;
+      background: rgba(20,17,13,0.06);
+    }
+    .pw-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 100px;
+      background: transparent;
+      font: inherit;
+      font-size: 13.5px;
+      color: var(--mid);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .25s ease, color .25s ease, box-shadow .25s ease;
+    }
+    .pw-tab-num { font-weight: 500; color: inherit; }
+    .pw-tab-name { color: var(--faint); transition: color .25s ease; }
+    .pw-tab.is-active {
+      background: var(--bg);
+      color: var(--fg);
+      box-shadow: 0 1px 2px rgba(20,17,13,0.08), 0 4px 12px -4px rgba(20,17,13,0.12);
+    }
+    .pw-tab.is-active .pw-tab-name { color: var(--mid); }
+    .pw-tab:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+    @media (hover: hover) and (pointer: fine) {
+      .pw-tab:not(.is-active):hover { color: var(--fg); }
+    }
+    .pw-panel { margin-top: 28px; }
+    .pw-panel[hidden] { display: none; }
+    .pw-panel.is-active { animation: pw-in .45s cubic-bezier(.22,1,.36,1); }
+    @keyframes pw-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: none; }
+    }
+    /* Paywall compare: both versions sit in the same app frame; drag to wipe between them */
+    .pw-cmp-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .pw-cmp-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 100px;
+      background: rgba(20,17,13,0.06);
+      font: inherit;
+      font-size: 13px;
+      color: var(--mid);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .25s ease, color .25s ease;
+    }
+    .pw-cmp-label strong { font-weight: 500; color: var(--fg); }
+    .pw-cmp-label:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+    .pw-cmp-hint { font-size: 12.5px; color: var(--faint); white-space: nowrap; }
+    @media (hover: hover) and (pointer: fine) {
+      .pw-cmp-label:hover { background: rgba(20,17,13,0.1); }
+    }
+    .pw-cmp {
+      --pos: 50%;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1400 / 800;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f5f5f5;
+      box-shadow: 0 24px 48px -12px rgba(20,17,13,0.18);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .pw-cmp-layer { position: absolute; inset: 0; }
+    /* Version 2: the prototype laid into the empty app layout at its design size */
+    .pw-cmp-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1400px;
+      height: 800px;
+      transform-origin: 0 0;
+      transform: scale(var(--pw-scale, 1));
+      background: url("./sysaid/app-layout-empty.png") 0 0 / 1400px 800px no-repeat;
+    }
+    .pw-cmp-screen {
+      position: absolute;
+      left: 89px;
+      top: 61px;
+      width: 1294px;
+      height: 722px;
+      overflow: hidden;
+      border-radius: 0 8px 8px 0;
+    }
+    .pw-cmp-screen iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1406.5px;
+      height: 840px;
+      border: 0;
+      transform-origin: 0 0;
+      transform: scale(0.92) translateY(-37px);
+    }
+    .pw-cmp-before { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+    .pw-cmp-scroll {
+      overflow-y: auto;
+      overscroll-behavior: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(20,17,13,0.25) transparent;
+      background: #fffefe;
+    }
+    .pw-cmp-scroll img { display: block; width: 100%; height: auto; }
+    .pw-cmp-scroll:focus-visible { outline: 2px solid var(--fg); outline-offset: -2px; }
+    .pw-cmp.is-dragging .pw-cmp-scroll { pointer-events: none; }
+    .pw-cmp.is-dragging iframe { pointer-events: none; }
+    .pw-cmp.is-snapping .pw-cmp-before { transition: clip-path .5s cubic-bezier(.22,1,.36,1); }
+    .pw-cmp.is-snapping .pw-cmp-handle { transition: left .5s cubic-bezier(.22,1,.36,1); }
+    .pw-cmp-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--pos);
+      width: 44px;
+      margin-left: -22px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: ew-resize;
+      touch-action: none;
+    }
+    .pw-cmp-handle::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      margin-left: -1px;
+      background: var(--fg);
+    }
+    .pw-cmp-knob {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 40px;
+      height: 40px;
+      margin: -20px 0 0 -20px;
+      border-radius: 50%;
+      background: var(--fg);
+      color: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px -4px rgba(20,17,13,0.4);
+      transition: transform .2s ease;
+    }
+    .pw-cmp-knob svg { width: 16px; height: 16px; }
+    .pw-cmp-handle:focus-visible { outline: none; }
+    .pw-cmp-handle:focus-visible .pw-cmp-knob { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--fg); }
+    @media (hover: hover) and (pointer: fine) {
+      .pw-cmp-handle:hover .pw-cmp-knob { transform: scale(1.08); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pw-cmp.is-snapping .pw-cmp-before, .pw-cmp.is-snapping .pw-cmp-handle { transition: none; }
+    }
+    .pw-notes-title { font-size: 17px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .pw-notes--pair { grid-template-columns: 1fr 1fr; }
+    .pw-notes--pair .pw-notes-text { margin-bottom: 20px; }
+    .pw-notes {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 56px;
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+    }
+    .pw-notes-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 14px;
+    }
+    .pw-notes-text { font-size: 15px; line-height: 1.72; color: var(--mid); }
+    .pw-notes-text strong { color: var(--fg); font-weight: 500; }
+    .pw-notes-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      font-size: 12.5px;
+      color: var(--mid);
+    }
+    .pw-notes-hint::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #2f9e5b;
+      box-shadow: 0 0 0 4px rgba(47,158,91,0.16);
+    }
+    .pw-notes-hint a { color: var(--fg); font-weight: 500; }
+    .pw-points { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .pw-points li {
+      position: relative;
+      padding-left: 22px;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--mid);
+    }
+    .pw-points li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 10px;
+      height: 2px;
+      border-radius: 2px;
+      background: #ffd96b;
+    }
+    .pw-points strong { color: var(--fg); font-weight: 500; }
+    .pw-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      margin-top: 24px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 100px;
+      background: var(--fg);
+      color: var(--bg);
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .pw-next svg { width: 12px; height: 12px; transition: transform .25s ease; }
+    .pw-next--back { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1px rgba(20,17,13,0.18); }
+    @media (hover: hover) and (pointer: fine) {
+      .pw-next:hover svg { transform: translateX(3px); }
+      .pw-next--back:hover svg { transform: translateX(-3px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pw-panel.is-active { animation: none; }
+    }
 
     /* ─── Onboarding carousel ────────────────────────────── */
     .ob-wrap {
@@ -517,6 +794,7 @@
       transition: background 0.2s, transform 0.2s;
     }
     .ob-dot.active { background: var(--fg); transform: scale(1.25); }
+    .ob-captions { max-width: 720px; margin: 18px auto 0; text-align: center; min-height: 3.4em; }
     .ob-caption-text { display: none; }
     .ob-caption-text.active { display: block; }
 
@@ -721,73 +999,153 @@
       .next-project-grid { grid-template-columns: 1fr; gap: 40px; }
     }
 
-    /* ── Trial Flow Matrix ───────────────────────────────── */
-    .trial-flow-matrix {
-      display: grid;
-      grid-template-columns: 110px repeat(4, 1fr);
-      margin-top: 56px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-    }
-    /* Column headers */
-    .tfm-header {
-      padding: 18px 20px 16px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    /* ── Trial flow: animated stepper ────────────────────── */
+    .flow { margin-top: 56px; }
+
+    /* Phase tabs double as the progress track (a thin line per phase that fills as its screens play) */
+    .flow-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .flow-tab {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      padding: 0;
+      background: none;
+      border: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
-    .tfm-header:last-child { border-right: none; }
-    .tfm-row-label-blank {
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .tf-phase-num {
+    .flow-num {
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.13em;
-      text-transform: uppercase;
       color: var(--faint);
     }
-    .tf-phase-name {
-      font-size: 13px;
+    .flow-name {
+      margin-bottom: 14px;
+      font-size: 17px;
       font-weight: 500;
-      color: var(--fg);
+      letter-spacing: -0.02em;
+      color: var(--faint);
+      transition: color 0.3s;
     }
-    /* Row labels */
-    .tfm-row-label {
-      padding: 18px 14px;
-      background: var(--bg);
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    .flow-tab.is-active .flow-name { color: var(--fg); }
+    @media (hover: hover) and (pointer: fine) {
+      .flow-tab:not(.is-active):hover .flow-name { color: var(--mid); }
+    }
+    .flow-bar {
+      display: block;
+      height: 2px;
+      border-radius: 2px;
+      background: rgba(20,17,13,0.1);
+      overflow: hidden;
+    }
+    .flow-bar i { display: block; width: 0; height: 100%; border-radius: 2px; background: var(--fg); }
+    .flow-bar i.is-running { animation: flow-fill var(--dur, 3400ms) linear forwards; }
+    @keyframes flow-fill { from { width: var(--from, 0%); } to { width: var(--to, 100%); } }
+    .flow.is-paused .flow-bar i.is-running { animation-play-state: paused; }
+
+    .flow-body {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 56px;
+      align-items: start;
+      margin-top: 40px;
+    }
+
+    /* Step list: panels share one grid cell so the column never changes height */
+    .flow-panels { display: grid; }
+    .flow-panel {
+      grid-area: 1 / 1;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition: opacity 0.4s, transform 0.4s, visibility 0s 0.4s;
+    }
+    .flow-panel.is-active {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition: opacity 0.45s 0.1s, transform 0.45s 0.1s, visibility 0s;
+    }
+    .flow-group + .flow-group { margin-top: 28px; }
+    .flow-group-label {
       display: flex;
-      align-items: flex-start;
-    }
-    .tfm-row-label span {
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.11em;
       text-transform: uppercase;
       color: var(--faint);
-      line-height: 1.4;
     }
-    .tfm-row-label:last-of-type,
-    .tfm-row-label + .tfm-cell--last ~ .tfm-cell--last { border-bottom: none; }
-    /* Cells */
-    .tfm-cell {
-      padding: 18px 20px;
-      background: var(--bg);
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    .flow-group-label svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .flow-panel .tf-items { gap: 10px; }
+    .flow-panel .tf-items li { font-size: 16px; line-height: 1.4; color: var(--fg); padding-left: 16px; }
+    .flow-panel .tf-items li::before { top: 9px; }
+
+    /* Stage */
+    .flow-stage { min-width: 0; }
+    .flow-screen {
+      position: relative;
+      aspect-ratio: 1000 / 540;
+      background: var(--surface);
+      border-radius: 16px;
+      overflow: hidden;
     }
-    .tfm-cell:nth-child(5n) { border-right: none; }
-    .tfm-cell--last { border-bottom: none; }
-    /* Remove bottom border from last row */
-    .tfm-row-label:last-of-type { border-bottom: none; }
+    .flow-shot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      max-width: calc(100% - 40px);
+      max-height: calc(100% - 40px);
+      border-radius: 8px;
+      box-shadow: 0 14px 34px -14px rgba(20,17,13,0.28);
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.97);
+      transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .flow-shot.is-active { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    /* Video screens have black corner pixels (MP4 has no alpha), so they need a corner clip */
+    .flow-shot--video { width: auto; height: auto; border-radius: 10px; box-shadow: 0 24px 48px -12px rgba(20,17,13,0.18); }
+
+    .flow-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 54px;
+      margin-top: 18px;
+    }
+    .flow-caption { font-size: 14px; line-height: 1.5; color: var(--mid); transition: opacity 0.25s; }
+    .flow-caption.is-swapping { opacity: 0; }
+    .flow-thumbs { display: flex; gap: 8px; margin-left: auto; }
+    .flow-thumbs[hidden] { display: none; }
+    .flow-thumb {
+      width: 84px;
+      aspect-ratio: 16 / 9;
+      padding: 0;
+      border: 0;
+      border-radius: 8px;
+      background: var(--surface);
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.3s, box-shadow 0.3s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .flow-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .flow-thumb.is-active { opacity: 1; box-shadow: 0 0 0 2px var(--fg); }
+    @media (hover: hover) and (pointer: fine) {
+      .flow-thumb:not(.is-active):hover { opacity: 0.85; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .flow-panel, .flow-shot { transition: opacity 0.2s; }
+    }
+
     .tf-items {
       list-style: none;
       padding: 0;
@@ -870,8 +1228,7 @@
     @media (max-width: 1024px) {
       :root { --pad-x: 32px; }
       .stat-grid { grid-template-columns: repeat(2, 1fr); }
-      .trial-flow-matrix { grid-template-columns: 90px repeat(4, 1fr); }
-      .tfm-header, .tfm-cell { padding: 14px 14px; }
+      .flow-body { grid-template-columns: 220px minmax(0, 1fr); gap: 36px; }
     }
 
     @media (max-width: 720px) {
@@ -889,14 +1246,24 @@
       .footer-links { flex-wrap: wrap; gap: 16px; }
       .research-loop { gap: 8px; }
       .rl-loop-back { display: none; }
-      .trial-flow-matrix { grid-template-columns: 1fr; border-radius: 10px; }
-      .tfm-header { display: none; }
-      .tfm-row-label-blank { display: none; }
-      .tfm-row-label { border-right: none; padding: 14px 16px 8px; background: var(--surface); }
-      .tfm-row-label:last-of-type { border-bottom: 1px solid var(--border); }
-      .tfm-cell { border-right: none; padding: 10px 16px 18px; }
-      .tfm-cell:nth-child(5n) { border-right: none; }
-      .tfm-cell--last { border-bottom: 1px solid var(--border); }
+      .pw-tabs { align-self: stretch; }
+      .pw-tab { flex: 1; justify-content: center; padding: 0 12px; }
+      .pw-tab-name { display: none; }
+      .pw-panel { margin-top: 20px; }
+      .pw-notes { grid-template-columns: 1fr; gap: 32px; margin-top: 28px; }
+      .pw-notes--pair { grid-template-columns: 1fr; }
+      .pw-cmp-hint { display: none; }
+      .pw-cmp-label span { display: none; }
+      .pw-cmp-knob { width: 32px; height: 32px; margin: -16px 0 0 -16px; }
+      .flow { margin-top: 40px; }
+      .flow-tabs { gap: 10px; }
+      .flow-name { font-size: 13px; margin-bottom: 10px; }
+      .flow-body { grid-template-columns: 1fr; gap: 24px; margin-top: 28px; }
+      .flow-stage { order: -1; }
+      .flow-screen { border-radius: 12px; }
+      .flow-meta { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .flow-thumbs { margin-left: 0; gap: 6px; }
+      .flow-thumb { width: 58px; border-radius: 6px; }
     }
 
   </style>
@@ -967,7 +1334,7 @@
 
     <div class="hero-media reveal" style="transition-delay:.2s">
       <div class="media-frame">
-        <img src="./sysaid-screenshot.png" alt="SysAid License Manager product interface">
+        <video src="./sysaid/sysaid-home-applications-banner.mp4" autoplay muted loop playsinline preload="auto" aria-label="SysAid License Manager product interface"></video>
       </div>
     </div>
 
@@ -1048,130 +1415,192 @@
 
     <p class="iter-intro-text reveal" style="transition-delay:.06s">The trial experience was built across four parallel workstreams — not sequential iterations. Pre-trial, onboarding, in-trial, and post-trial each had a distinct design challenge, but all four were anchored to the same central insight: make the limitation visible, make the value undeniable, make the path to sales feel like the natural next step.</p>
 
-    <div class="trial-flow-matrix reveal" style="transition-delay:.09s">
+    <div class="flow reveal" id="trial-flow" style="transition-delay:.09s">
 
-      <!-- Column headers -->
-      <div class="tfm-header tfm-row-label-blank"></div>
-      <div class="tfm-header">
-        <span class="tf-phase-num">01</span>
-        <span class="tf-phase-name">Pre-Trial</span>
-      </div>
-      <div class="tfm-header">
-        <span class="tf-phase-num">02</span>
-        <span class="tf-phase-name">Onboarding</span>
-      </div>
-      <div class="tfm-header">
-        <span class="tf-phase-num">03</span>
-        <span class="tf-phase-name">In-Trial</span>
-      </div>
-      <div class="tfm-header">
-        <span class="tf-phase-num">04</span>
-        <span class="tf-phase-name">Post-Trial</span>
-      </div>
-
-      <!-- Row: Product -->
-      <div class="tfm-row-label">
-        <span>Product</span>
-      </div>
-      <div class="tfm-cell">
-        <ul class="tf-items">
-          <li>Trial start paywall</li>
-        </ul>
-      </div>
-      <div class="tfm-cell">
-        <ul class="tf-items">
-          <li>Product intro</li>
-          <li>Scan setup</li>
-          <li>In-product guidance</li>
-        </ul>
-      </div>
-      <div class="tfm-cell">
-        <ul class="tf-items">
-          <li>App list (limited)</li>
-          <li>App detail view</li>
-        </ul>
-      </div>
-      <div class="tfm-cell">
-        <ul class="tf-items">
-          <li>Trial expiry paywall</li>
-        </ul>
+      <div class="flow-tabs" role="tablist" aria-label="Trial phases">
+        <button type="button" class="flow-tab is-active" role="tab" aria-selected="true" data-phase="0">
+          <span class="flow-num">01</span>
+          <span class="flow-name">Pre-Trial</span>
+          <span class="flow-bar"><i></i></span>
+        </button>
+        <button type="button" class="flow-tab" role="tab" aria-selected="false" data-phase="1">
+          <span class="flow-num">02</span>
+          <span class="flow-name">Onboarding</span>
+          <span class="flow-bar"><i></i></span>
+        </button>
+        <button type="button" class="flow-tab" role="tab" aria-selected="false" data-phase="2">
+          <span class="flow-num">03</span>
+          <span class="flow-name">In-Trial</span>
+          <span class="flow-bar"><i></i></span>
+        </button>
+        <button type="button" class="flow-tab" role="tab" aria-selected="false" data-phase="3">
+          <span class="flow-num">04</span>
+          <span class="flow-name">Post-Trial</span>
+          <span class="flow-bar"><i></i></span>
+        </button>
       </div>
 
-      <!-- Row: Marketing & Sales -->
-      <div class="tfm-row-label">
-        <span>Marketing &amp; Sales</span>
-      </div>
-      <div class="tfm-cell tfm-cell--last">
-        <ul class="tf-items">
-          <li>Audience targeting</li>
-        </ul>
-      </div>
-      <div class="tfm-cell tfm-cell--last">
-        <ul class="tf-items">
-          <li>Welcome email</li>
-        </ul>
-      </div>
-      <div class="tfm-cell tfm-cell--last">
-        <ul class="tf-items">
-          <li>Mid-trial check-in</li>
-          <li>Expiry reminder</li>
-        </ul>
-      </div>
-      <div class="tfm-cell tfm-cell--last">
-        <ul class="tf-items">
-          <li>Sales outreach</li>
-          <li>Lead qualification</li>
-        </ul>
-      </div>
+      <div class="flow-body">
 
-    </div><!-- /.trial-flow-matrix -->
+        <div class="flow-panels">
+          <div class="flow-panel is-active" role="tabpanel" aria-label="Pre-Trial">
+            <div class="flow-group">
+              <span class="flow-group-label"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M6 6.5V13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Product</span>
+              <ul class="tf-items">
+                <li>Trial start paywall</li>
+              </ul>
+            </div>
+            <div class="flow-group">
+              <span class="flow-group-label"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6.5h2.2L10 3.5v9L4.7 9.5H2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.7 9.5l.8 3h1.6l-.5-2.6M12.3 6.3a2.4 2.4 0 0 1 0 3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Marketing &amp; Sales</span>
+              <ul class="tf-items">
+                <li>Audience targeting</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flow-panel" role="tabpanel" aria-label="Onboarding">
+            <div class="flow-group">
+              <span class="flow-group-label"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M6 6.5V13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Product</span>
+              <ul class="tf-items">
+                <li>Product intro</li>
+                <li>Scan setup</li>
+                <li>In-product guidance</li>
+              </ul>
+            </div>
+            <div class="flow-group">
+              <span class="flow-group-label"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6.5h2.2L10 3.5v9L4.7 9.5H2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.7 9.5l.8 3h1.6l-.5-2.6M12.3 6.3a2.4 2.4 0 0 1 0 3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Marketing &amp; Sales</span>
+              <ul class="tf-items">
+                <li>Welcome email</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flow-panel" role="tabpanel" aria-label="In-Trial">
+            <div class="flow-group">
+              <span class="flow-group-label"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M6 6.5V13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Product</span>
+              <ul class="tf-items">
+                <li>App list (limited)</li>
+                <li>App detail view</li>
+              </ul>
+            </div>
+            <div class="flow-group">
+              <span class="flow-group-label"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6.5h2.2L10 3.5v9L4.7 9.5H2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.7 9.5l.8 3h1.6l-.5-2.6M12.3 6.3a2.4 2.4 0 0 1 0 3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Marketing &amp; Sales</span>
+              <ul class="tf-items">
+                <li>Mid-trial check-in</li>
+                <li>Expiry reminder</li>
+              </ul>
+            </div>
+          </div>
+          <div class="flow-panel" role="tabpanel" aria-label="Post-Trial">
+            <div class="flow-group">
+              <span class="flow-group-label"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 6.5h12M6 6.5V13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Product</span>
+              <ul class="tf-items">
+                <li>Trial expiry paywall</li>
+              </ul>
+            </div>
+            <div class="flow-group">
+              <span class="flow-group-label"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6.5h2.2L10 3.5v9L4.7 9.5H2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M4.7 9.5l.8 3h1.6l-.5-2.6M12.3 6.3a2.4 2.4 0 0 1 0 3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Marketing &amp; Sales</span>
+              <ul class="tf-items">
+                <li>Sales outreach</li>
+                <li>Lead qualification</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow-stage">
+          <div class="flow-screen">
+            <video class="flow-shot flow-shot--video is-active" src="./sysaid/sysaid-trial-paywall.mp4" muted loop playsinline preload="auto" aria-label="License Manager Advanced trial entry page with product value preview" data-phase="0" data-caption="The trial entry page" data-duration="5030"></video>
+            <img class="flow-shot" src="./sysaid/onboarding-new-1-method.png" alt="Onboarding: choose your application discovery method" data-phase="1" data-caption="Choose a discovery method" loading="lazy" decoding="async">
+            <img class="flow-shot" src="./sysaid/onboarding-new-2-entra-progress.png" alt="Onboarding: set up the Microsoft Entra ID connection in two steps" data-phase="1" data-caption="Connect Microsoft Entra ID" loading="lazy" decoding="async">
+            <img class="flow-shot" src="./sysaid/onboarding-new-4-connected.png" alt="Onboarding: Microsoft Entra ID is connected, what to expect next" data-phase="1" data-caption="Connected · What to expect next" loading="lazy" decoding="async">
+            <img class="flow-shot" src="./sysaid/figma-userflow-1.png" alt="UserFlow tooltip: Your applications are ready, start 1-minute walkthrough" data-phase="1" data-caption="UserFlow · The walkthrough trigger" loading="lazy" decoding="async">
+            <img class="flow-shot" src="./sysaid/figma-userflow-2.png" alt="UserFlow guided side panel: Set up applications with step-by-step checklist" data-phase="1" data-caption="UserFlow · The guided setup panel" loading="lazy" decoding="async">
+            <img class="flow-shot" src="./sysaid/figma-apps-table.png" alt="License Manager in-trial state: applications table with 14-day countdown banner" data-phase="2" data-caption="The in-trial state" loading="lazy" decoding="async">
+            <img class="flow-shot" src="./sysaid/figma-241-banner.png" alt="241 applications discovered scroll reveal at the bottom of the apps table" data-phase="2" data-caption="The scroll reveal" loading="lazy" decoding="async">
+            <img class="flow-shot" src="./sysaid/figma-end-paywall.png" alt="Trial complete page: Your free trial is complete, upgrade to License Manager Advanced" data-phase="3" data-caption="The trial end page" loading="lazy" decoding="async">
+          </div>
+          <div class="flow-meta">
+            <p class="flow-caption" aria-live="polite">The trial entry page</p>
+            <div class="flow-thumbs" data-phase="0" hidden>
+              <button type="button" class="flow-thumb" data-step="0" aria-label="Show screen 1: The trial entry page"><img src="./sysaid/figma-start-paywall.png" alt="" loading="lazy" decoding="async"></button>
+            </div>
+            <div class="flow-thumbs" data-phase="1" hidden>
+              <button type="button" class="flow-thumb" data-step="1" aria-label="Show screen 2: Choose a discovery method"><img src="./sysaid/onboarding-new-1-method.png" alt="" loading="lazy" decoding="async"></button>
+              <button type="button" class="flow-thumb" data-step="2" aria-label="Show screen 3: Connect Microsoft Entra ID"><img src="./sysaid/onboarding-new-2-entra-progress.png" alt="" loading="lazy" decoding="async"></button>
+              <button type="button" class="flow-thumb" data-step="3" aria-label="Show screen 4: Connected · What to expect next"><img src="./sysaid/onboarding-new-4-connected.png" alt="" loading="lazy" decoding="async"></button>
+              <button type="button" class="flow-thumb" data-step="4" aria-label="Show screen 5: UserFlow · The walkthrough trigger"><img src="./sysaid/figma-userflow-1.png" alt="" loading="lazy" decoding="async"></button>
+              <button type="button" class="flow-thumb" data-step="5" aria-label="Show screen 6: UserFlow · The guided setup panel"><img src="./sysaid/figma-userflow-2.png" alt="" loading="lazy" decoding="async"></button>
+            </div>
+            <div class="flow-thumbs" data-phase="2" hidden>
+              <button type="button" class="flow-thumb" data-step="6" aria-label="Show screen 7: The in-trial state"><img src="./sysaid/figma-apps-table.png" alt="" loading="lazy" decoding="async"></button>
+              <button type="button" class="flow-thumb" data-step="7" aria-label="Show screen 8: The scroll reveal"><img src="./sysaid/figma-241-banner.png" alt="" loading="lazy" decoding="async"></button>
+            </div>
+            <div class="flow-thumbs" data-phase="3" hidden>
+              <button type="button" class="flow-thumb" data-step="8" aria-label="Show screen 9: The trial end page"><img src="./sysaid/figma-end-paywall.png" alt="" loading="lazy" decoding="async"></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /.flow -->
 
     <!-- Workstream 01 -->
     <div class="iter-f-chapter reveal" style="transition-delay:.08s">
       <div class="iter-f-eyebrow">
         <span class="iter-f-big-num">Workstream 01</span>
-        <h3 class="iter-f-title">Trial start experience</h3>
+        <h3 class="iter-f-title">The pre-trial paywall, designed twice</h3>
       </div>
-      <p class="iter-f-body">Two screens make up the trial start experience. The first is a within-product marketing page that prospects see before committing to the trial. It shows the full value proposition: cost savings, compliance visibility, shadow IT detection, with a scrollable preview of the actual product. The decision to start the trial is informed, not blind. The second screen is a 3-step onboarding wizard that runs immediately after clicking "Start trial now." Step 1 asks how the user wants to discover their applications: connect Microsoft Entra ID (the recommended path, which automatically surfaces the top 20 apps in minutes), deploy a browser extension, or add apps manually. The goal was to get users to their first real data as fast as possible, without tutorials or forced configuration.</p>
+      <p class="iter-f-body">The paywall is the first thing a prospect sees and the one screen every trial has to pass through. I designed a first version, took in what customer success was hearing from customers, and redesigned it to convert better. The second version says less, shows more, and fits on one screen. Drag across the frame below to compare them.</p>
     </div>
 
   </div>
 
-  <div class="iter-f-band reveal" style="transition-delay:.1s">
-    <div class="iter-f-band-inner">
+  <div class="iter-f-band reveal" id="paywall-iter" style="transition-delay:.1s">
+    <div class="iter-f-band-inner" style="gap:0">
 
-      <div class="iter-f-item">
-        <img class="iter-f-img" src="./sysaid/figma-start-paywall.png" alt="License Manager Advanced trial entry page with product value preview">
-        <div class="iter-f-caption">
-          <p class="iter-f-caption-text"><strong>The trial entry page.</strong> Before starting the 14-day trial, prospects see the full value proposition alongside a live preview of the product. The decision to start is informed before they've clicked anything.</p>
-        </div>
+      <div class="pw-cmp-head">
+        <button type="button" class="pw-cmp-label" data-pos="100"><strong>Version 1</strong><span>The long pitch</span></button>
+        <span class="pw-cmp-hint">Drag the handle to compare. Scroll inside Version 1, hover Version 2.</span>
+        <button type="button" class="pw-cmp-label" data-pos="0"><strong>Version 2</strong><span>One interactive screen</span></button>
       </div>
 
-      <div class="iter-f-item">
-        <div class="ob-wrap">
-          <div class="ob-track">
-            <img class="ob-slide" src="./sysaid/step-1-discover-method.png" alt="Onboarding step 1: Discover your applications">
-            <img class="ob-slide" src="./sysaid/step-2-entra-id-setup.png" alt="Onboarding step 2: Connect Microsoft Entra ID">
-            <img class="ob-slide" src="./sysaid/step-3-entra-id-permissions.png" alt="Onboarding step 3: Enable Advanced Insights">
+      <div class="pw-cmp">
+        <div class="pw-cmp-layer pw-cmp-after">
+          <div class="pw-cmp-stage">
+            <div class="pw-cmp-screen">
+              <iframe src="./sysaid/paywall-v2.html" title="Version 2 of the License Manager paywall, interactive prototype" loading="lazy" scrolling="no"></iframe>
+            </div>
           </div>
         </div>
-        <div class="ob-controls">
-          <button class="ob-btn ob-prev" aria-label="Previous step">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <div class="ob-dots">
-            <button class="ob-dot active" aria-label="Step 1"></button>
-            <button class="ob-dot" aria-label="Step 2"></button>
-            <button class="ob-dot" aria-label="Step 3"></button>
+        <div class="pw-cmp-layer pw-cmp-before">
+          <div class="pw-cmp-stage">
+            <div class="pw-cmp-screen pw-cmp-scroll" tabindex="0" role="region" aria-label="Version 1 of the paywall, a long page you can scroll">
+              <img src="./sysaid/paywall-v1-full.webp" width="1296" height="2490" alt="Version 1 of the License Manager Advanced paywall: a headline and two buttons, then sections on savings, one source of truth and audit readiness, ending with a second call to action" loading="lazy" decoding="async">
+            </div>
           </div>
-          <button class="ob-btn ob-next" aria-label="Next step">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
         </div>
-        <div class="iter-f-caption" style="margin-top:16px">
-          <p class="iter-f-caption-text ob-caption-text active"><strong>Step 1: Discover your applications.</strong> Choose how to connect: Microsoft Entra ID (recommended, finds top 20 apps automatically), a browser extension, or manual entry. Skipping is always an option.</p>
-          <p class="iter-f-caption-text ob-caption-text"><strong>Step 2: Connect Microsoft Entra ID.</strong> A focused 2-step guide: read the setup documentation, then connect the add-on in configuration settings. The right panel shows a preview of what the data will look like.</p>
-          <p class="iter-f-caption-text ob-caption-text"><strong>Step 3: Enable Advanced Insights.</strong> Read-only Entra ID access lets SysAid calculate savings from usage and seat counts. Privacy-first messaging ("we never modify your settings") is built directly into the step.</p>
+        <button type="button" class="pw-cmp-handle" role="slider" aria-label="Compare version 1 and version 2" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+          <span class="pw-cmp-knob"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4L2.5 8 6 12M10 4l3.5 4-3.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+      </div>
+
+      <div class="pw-notes pw-notes--pair">
+        <div>
+          <span class="pw-notes-label">Version 1 · What I learned</span>
+          <p class="pw-notes-text">A landing page inside the product: a headline, two calls to action, then section after section of value in one long scroll.</p>
+          <ul class="pw-points">
+            <li><strong>Thorough is not the same as convincing.</strong> The strongest proof sat far below the button asking for the commitment.</li>
+            <li><strong>Two buttons split the ask.</strong> "Start trial now" and "Contact us" had equal weight, so the page never said which one mattered.</li>
+            <li><strong>It described the product instead of showing it.</strong> Prospects had to read about savings and take my word for them.</li>
+          </ul>
+        </div>
+        <div>
+          <span class="pw-notes-label">Version 2 · What I learned</span>
+          <p class="pw-notes-text">Rebuilt around one constraint: no scrolling. One headline, one action, and the product itself in the middle. It is live, so hover the applications. <a href="./sysaid/paywall-v2.html" target="_blank" rel="noopener" style="color:var(--fg);font-weight:500">Open it full size</a></p>
+          <ul class="pw-points">
+            <li><strong>Show the value, don't describe it.</strong> A row that reveals $91,200 in potential savings when you touch it needs no paragraph to back it up.</li>
+            <li><strong>A constraint is a prioritization tool.</strong> One screen forced a question for every element: does this earn its place before the click?</li>
+            <li><strong>The people closest to customers are research.</strong> Customer success feedback was the brief for this version.</li>
+          </ul>
         </div>
       </div>
 
@@ -1184,6 +1613,96 @@
     <div class="iter-f-chapter reveal" style="transition-delay:.08s">
       <div class="iter-f-eyebrow">
         <span class="iter-f-big-num">Workstream 02</span>
+        <h3 class="iter-f-title">Onboarding, from a checklist to a guided setup</h3>
+      </div>
+      <p class="iter-f-body">Starting the trial is only worth something once real data shows up, and that depends on connecting a discovery source. The first onboarding was a checklist with a single path. I redesigned it as a short guided setup with a choice of method and a clear picture of what happens next. The full flow covers 25 screens, including every error and timeout state. These three are the happy path.</p>
+    </div>
+
+  </div>
+
+  <div class="iter-f-band reveal" id="onboarding-iter" data-pw-switch style="transition-delay:.1s">
+    <div class="iter-f-band-inner" style="gap:0">
+
+      <div class="pw-tabs" role="tablist" aria-label="Onboarding versions">
+        <button type="button" class="pw-tab is-active" role="tab" aria-selected="true" aria-controls="ob-panel-1" id="ob-tab-1">
+          <span class="pw-tab-num">Before</span><span class="pw-tab-name">The checklist</span>
+        </button>
+        <button type="button" class="pw-tab" role="tab" aria-selected="false" aria-controls="ob-panel-2" id="ob-tab-2" tabindex="-1">
+          <span class="pw-tab-num">After</span><span class="pw-tab-name">The guided setup</span>
+        </button>
+      </div>
+
+      <div class="pw-panel is-active" role="tabpanel" id="ob-panel-1" aria-labelledby="ob-tab-1">
+        <img class="iter-f-img" src="./sysaid/onboarding-old-checklist.png" alt="The original onboarding: a full-page three-step checklist for connecting Microsoft Entra ID" loading="lazy" decoding="async">
+        <div class="pw-notes">
+          <div>
+            <span class="pw-notes-label">The design</span>
+            <p class="pw-notes-text">A full-page checklist that replaced the Applications page until setup was finished. Three steps, Microsoft Entra ID only, and a separate "Start the discovery process" button at the end. <strong>One path, and nothing else to see until it was done.</strong></p>
+          </div>
+          <div>
+            <span class="pw-notes-label">What I learned</span>
+            <ul class="pw-points">
+              <li><strong>A step that is already done is noise.</strong> "Enable License Manager Advanced" arrived ticked. It made a two-step task read like three, plus one more button to actually begin.</li>
+              <li><strong>One path means one way to get stuck.</strong> Entra ID was the only option, so anyone who couldn't complete it had nowhere else to go.</li>
+              <li><strong>Blocking the page hides the product.</strong> The checklist stood in place of the applications table, so people set things up without seeing what they were setting up for.</li>
+            </ul>
+            <button type="button" class="pw-next" data-goto="1">See the redesign<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6h8M6.5 2.5L10 6l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pw-panel" role="tabpanel" id="ob-panel-2" aria-labelledby="ob-tab-2" hidden>
+        <div class="ob-wrap">
+          <div class="ob-track">
+            <img class="ob-slide" src="./sysaid/onboarding-new-1-method.png" alt="Choose your application discovery method: Microsoft Entra ID or the SysAid Browser Extension" loading="lazy" decoding="async">
+            <img class="ob-slide" src="./sysaid/onboarding-new-2-entra-progress.png" alt="Set up the Microsoft Entra ID connection: step one complete, step two in progress" loading="lazy" decoding="async">
+            <img class="ob-slide" src="./sysaid/onboarding-new-4-connected.png" alt="Microsoft Entra ID is connected: what to expect next" loading="lazy" decoding="async">
+          </div>
+        </div>
+        <div class="ob-controls">
+          <button class="ob-btn ob-prev" aria-label="Previous screen">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="ob-dots">
+            <button class="ob-dot active" aria-label="Screen 1"></button>
+            <button class="ob-dot" aria-label="Screen 2"></button>
+            <button class="ob-dot" aria-label="Screen 3"></button>
+          </div>
+          <button class="ob-btn ob-next" aria-label="Next screen">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="ob-captions">
+          <p class="iter-f-caption-text ob-caption-text active"><strong>1 · Choose a method.</strong> Two ways to discover applications, each with what it requires stated before the user commits. "Set up later" keeps the product open.</p>
+          <p class="iter-f-caption-text ob-caption-text"><strong>2 · Two steps, tracked in place.</strong> Each step ticks off when it is complete, so the user always knows where they are, even after leaving to grant a permission in Microsoft.</p>
+          <p class="iter-f-caption-text ob-caption-text"><strong>3 · What happens next.</strong> Connection confirmed, with honest timing: data within an hour, refreshed daily. Then an invitation to widen coverage with the second method.</p>
+        </div>
+        <div class="pw-notes">
+          <div>
+            <span class="pw-notes-label">The design</span>
+            <p class="pw-notes-text">A split modal over the real Applications page. Pick a method, follow two steps, and see a preview of the result beside them the whole way. <strong>Setup became something you can start, pause, and finish.</strong></p>
+          </div>
+          <div>
+            <span class="pw-notes-label">What I learned</span>
+            <ul class="pw-points">
+              <li><strong>Say what it takes before asking for it.</strong> Putting each method's requirement on the first screen moves the bad surprise to the moment it costs nothing.</li>
+              <li><strong>Keep the reward in view.</strong> A preview of the applications table sits beside every step, so the effort of connecting always has its payoff next to it.</li>
+              <li><strong>Finishing setup is not the finish line.</strong> Discovery takes time, so the last screen sets expectations for the wait instead of leaving an empty table to explain itself.</li>
+            </ul>
+            <button type="button" class="pw-next pw-next--back" data-goto="0"><svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M10 6H2M5.5 2.5L2 6l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to the checklist</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Workstream 03 -->
+    <div class="iter-f-chapter reveal" style="transition-delay:.08s">
+      <div class="iter-f-eyebrow">
+        <span class="iter-f-big-num">Workstream 03</span>
         <h3 class="iter-f-title">In-trial limitation UI</h3>
       </div>
       <p class="iter-f-body">The core design decision of the entire project. Once inside the trial, users see the full applications table with rich data: total estimated savings, newly discovered apps, utilization rates. A persistent trial countdown banner at the top reminds them of the 14-day window. But the real conversion moment is at the bottom of the table. After scrolling through their 20 visible apps, users hit a banner: "241 applications discovered. You're currently viewing the top 20. Upgrade to explore your full application ecosystem and uncover hidden savings." It's not a popup or an interrupt. It appears naturally as a scroll reveal at the end of the list, at the exact moment the user has already seen the value and is looking for more. The placement was deliberate: earn the user's attention first, then show them what they're missing.</p>
@@ -1213,10 +1732,10 @@
 
   <div class="container">
 
-    <!-- Workstream 03 -->
+    <!-- Workstream 04 -->
     <div class="iter-f-chapter reveal" style="transition-delay:.08s">
       <div class="iter-f-eyebrow">
-        <span class="iter-f-big-num">Workstream 03</span>
+        <span class="iter-f-big-num">Workstream 04</span>
         <h3 class="iter-f-title">Trial end and expiry experience</h3>
       </div>
       <p class="iter-f-body">When the 14-day trial ends, the user sees a single page: "Your free trial is complete. Upgrade to License Manager Advanced for full access to: Manage your 241 discovered applications. Track usage and reclaim licenses. Ensure license compliance. Detect Shadow IT." Then: "Ready to continue?" with a "Request pricing" button. Below that, a quiet link to share trial feedback. The design challenge was making this feel like a natural handoff, not a wall. The specific number (241 applications) is pulled from the user's own scan, so it's personal. The list of locked features is exactly what they explored during the trial. The ask is clear but not coercive, because the user already knows what they're missing.</p>
@@ -1500,7 +2019,7 @@
     const n = dots.length;
     function go(idx) {
       cur = (idx + n) % n;
-      track.style.transform = 'translateX(-' + (cur * wrap.offsetWidth) + 'px)';
+      track.style.transform = 'translateX(-' + (cur * 100) + '%)';
       dots.forEach(function(d, i) { d.classList.toggle('active', i === cur); });
       captions.forEach(function(c, i) { c.classList.toggle('active', i === cur); });
     }
@@ -1510,6 +2029,195 @@
     // Re-snap on resize so it doesn't get stuck mid-slide
     window.addEventListener('resize', function() { go(cur); });
   })();
+
+  // Trial flow stepper: plays the screens in order, phase by phase; pauses on hover/focus
+  // or when off-screen; tabs and thumbnails jump to a step. Reduced motion: manual only.
+  (function () {
+    const flow = document.getElementById('trial-flow');
+    if (!flow) return;
+    const STEP_MS = 3400;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const tabs = [...flow.querySelectorAll('.flow-tab')];
+    const panels = [...flow.querySelectorAll('.flow-panel')];
+    const shots = [...flow.querySelectorAll('.flow-shot')];
+    const thumbGroups = [...flow.querySelectorAll('.flow-thumbs')];
+    const caption = flow.querySelector('.flow-caption');
+    const phaseOf = shots.map(sh => +sh.dataset.phase);
+    const count = tabs.map((_, p) => phaseOf.filter(x => x === p).length);
+    let cur = 0, started = false, hovered = false, inView = false;
+
+    function setBars(i, mode) { // mode: 'run' | 'static' | 'empty'
+      const phase = phaseOf[i];
+      const idx = phaseOf.slice(0, i).filter(x => x === phase).length;
+      tabs.forEach((tab, p) => {
+        const bar = tab.querySelector('.flow-bar i');
+        bar.classList.remove('is-running');
+        if (mode === 'empty') { bar.style.width = '0%'; return; }
+        if (p < phase) { bar.style.width = '100%'; return; }
+        if (p > phase) { bar.style.width = '0%'; return; }
+        const from = (idx / count[p]) * 100, to = ((idx + 1) / count[p]) * 100;
+        if (mode === 'run') {
+          bar.style.width = '';
+          bar.style.setProperty('--from', from + '%');
+          bar.style.setProperty('--to', to + '%');
+          bar.style.setProperty('--dur', (+shots[i].dataset.duration || STEP_MS) + 'ms');
+          void bar.offsetWidth;
+          bar.classList.add('is-running');
+        } else {
+          bar.style.width = to + '%';
+        }
+      });
+    }
+
+    function show(i, mode) {
+      const phase = phaseOf[i];
+      cur = i;
+      shots.forEach((sh, k) => {
+        sh.classList.toggle('is-active', k === i);
+        if (sh.tagName === 'VIDEO') {
+          if (k === i && !reduced) { sh.currentTime = 0; sh.play().catch(() => {}); } else { sh.pause(); }
+        }
+      });
+      tabs.forEach((t, p) => { t.classList.toggle('is-active', p === phase); t.setAttribute('aria-selected', p === phase ? 'true' : 'false'); });
+      panels.forEach((pn, p) => pn.classList.toggle('is-active', p === phase));
+      thumbGroups.forEach((g, p) => {
+        g.hidden = p !== phase || count[p] < 2;
+        g.querySelectorAll('.flow-thumb').forEach(th => th.classList.toggle('is-active', +th.dataset.step === i));
+      });
+      const text = shots[i].dataset.caption;
+      if (caption.textContent !== text) {
+        caption.classList.add('is-swapping');
+        setTimeout(() => { caption.textContent = text; caption.classList.remove('is-swapping'); }, 180);
+      }
+      setBars(i, mode);
+    }
+
+    const playMode = () => (reduced ? 'static' : 'run');
+    const next = () => show((cur + 1) % shots.length, playMode());
+    const syncPause = () => {
+      const paused = hovered || !inView;
+      flow.classList.toggle('is-paused', paused);
+      const v = shots[cur];
+      if (v && v.tagName === 'VIDEO' && !reduced) { if (paused) v.pause(); else v.play().catch(() => {}); }
+    };
+
+    tabs.forEach((tab, p) => tab.addEventListener('click', () => show(phaseOf.indexOf(p), playMode())));
+    flow.querySelectorAll('.flow-thumb').forEach(th => th.addEventListener('click', () => show(+th.dataset.step, playMode())));
+    tabs.forEach(tab => tab.querySelector('.flow-bar i').addEventListener('animationend', e => {
+      if (e.target.classList.contains('is-running')) next();
+    }));
+    flow.addEventListener('pointerenter', () => { hovered = true; syncPause(); });
+    flow.addEventListener('pointerleave', () => { hovered = false; syncPause(); });
+    flow.addEventListener('focusin', () => { hovered = true; syncPause(); });
+    flow.addEventListener('focusout', () => { hovered = false; syncPause(); });
+
+    show(0, 'empty');
+    new IntersectionObserver(entries => {
+      inView = entries[0].isIntersecting;
+      syncPause();
+      if (inView && !started) { started = true; show(0, playMode()); }
+    }, { threshold: 0.4 }).observe(flow);
+    syncPause();
+  })();
+
+  // Before/after switchers (paywall versions, onboarding redesign)
+  document.querySelectorAll('[data-pw-switch]').forEach(root => {
+    const tabs = [...root.querySelectorAll('.pw-tab')];
+    const panels = [...root.querySelectorAll('.pw-panel')];
+    const frame = root.querySelector('.pw-proto');
+    const video = root.querySelector('video');
+
+    // Keep the prototype at its design size and scale it to the frame
+    const fit = () => { if (frame && frame.clientWidth) frame.style.setProperty('--pw-scale', frame.clientWidth / 960); };
+    if (frame) new ResizeObserver(fit).observe(frame);
+
+    function select(i, focus) {
+      tabs.forEach((t, n) => {
+        t.classList.toggle('is-active', n === i);
+        t.setAttribute('aria-selected', n === i);
+        t.tabIndex = n === i ? 0 : -1;
+      });
+      panels.forEach((p, n) => {
+        p.hidden = n !== i;
+        p.classList.toggle('is-active', n === i);
+      });
+      if (video && i !== 0) video.pause();
+      fit();
+      if (focus) {
+        tabs[i].focus({ preventScroll: true });
+        const top = root.getBoundingClientRect().top;
+        if (top < 0 || top > window.innerHeight * 0.5) window.scrollTo({ top: top + window.scrollY - 96, behavior: 'smooth' });
+      }
+    }
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', e => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        select((i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length, true);
+      });
+    });
+    root.querySelectorAll('.pw-next').forEach(b => b.addEventListener('click', () => select(+b.dataset.goto, true)));
+  });
+
+  // Paywall compare slider: drag, click a version label, or use the arrow keys
+  document.querySelectorAll('.pw-cmp').forEach(cmp => {
+    const handle = cmp.querySelector('.pw-cmp-handle');
+    const labels = cmp.parentElement.querySelectorAll('.pw-cmp-label');
+    let pos = 50, dragging = false;
+
+    // Keep the app frame at its design size and scale it to the slider
+    const fit = () => { if (cmp.clientWidth) cmp.style.setProperty('--pw-scale', cmp.clientWidth / 1400); };
+    new ResizeObserver(fit).observe(cmp);
+    fit();
+
+    function set(p, snap) {
+      pos = Math.max(0, Math.min(100, p));
+      cmp.classList.toggle('is-snapping', !!snap);
+      cmp.style.setProperty('--pos', pos + '%');
+      handle.setAttribute('aria-valuenow', Math.round(pos));
+    }
+    const fromEvent = e => {
+      const r = cmp.getBoundingClientRect();
+      return (e.clientX - r.left) / r.width * 100;
+    };
+    handle.addEventListener('pointerdown', e => {
+      dragging = true;
+      handle.setPointerCapture(e.pointerId);
+      cmp.classList.add('is-dragging');
+      set(fromEvent(e));
+      e.preventDefault();
+    });
+    handle.addEventListener('pointermove', e => { if (dragging) set(fromEvent(e)); });
+    const end = () => { dragging = false; cmp.classList.remove('is-dragging'); };
+    handle.addEventListener('pointerup', end);
+    handle.addEventListener('pointercancel', end);
+    handle.addEventListener('keydown', e => {
+      const step = e.shiftKey ? 10 : 2;
+      if (e.key === 'ArrowLeft') set(pos - step);
+      else if (e.key === 'ArrowRight') set(pos + step);
+      else if (e.key === 'Home') set(0, true);
+      else if (e.key === 'End') set(100, true);
+      else return;
+      e.preventDefault();
+    });
+    labels.forEach(l => l.addEventListener('click', () => set(pos === +l.dataset.pos ? 50 : +l.dataset.pos, true)));
+  });
+
+  // Videos tagged data-view-play play only while visible (and never with reduced motion)
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('video[data-view-play]').forEach(v => {
+      new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) v.play().catch(() => {}); else v.pause();
+      }, { threshold: 0.25 }).observe(v);
+    });
+  }
+
+  // Reduced motion: hold the hero video on its first frame
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const heroVideo = document.querySelector('.media-frame video');
+    if (heroVideo) { heroVideo.removeAttribute('autoplay'); heroVideo.pause(); }
+  }
 </script>
 
 </body>
