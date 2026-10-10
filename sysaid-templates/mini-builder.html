@@ -352,6 +352,7 @@
   .demo button { height: 32px; padding: 0 14px; border-radius: 999px; background: rgba(255,255,255,.14); color: #fff; font-weight: 600; }
   .demo button:hover { background: rgba(255,255,255,.26); }
   .demo .dot { width: 8px; height: 8px; border-radius: 50%; background: #5fd08a; margin-right: 2px; }
+  body.loop .frame { pointer-events: none; }
   body.playing .frame { pointer-events: none; }
   body.bare .demo, body.embedded .demo { display: none; }
   body.s-fields .demo, body.s-publish .demo { left: 412px; }
@@ -862,6 +863,8 @@
   // When embedded in the case study, the status and the Replay / Reset controls live on the page
   // outside this frame, so nothing that is not the product sits on top of it.
   const EMBED = window.parent !== window;
+  // ?loop: plays again by itself and takes no input, for the case study's hero
+  const LOOP = q.has('loop'); if (LOOP) document.body.classList.add('loop');
   if (EMBED) document.body.classList.add('embedded');
   const tell = () => { if (EMBED) window.parent.postMessage({ type: 'mb-status', text: $('#bar-text').textContent, playing: document.body.classList.contains('playing') }, location.origin); };
   const setBar = t => { $('#bar-text').textContent = t; tell(); };
@@ -913,6 +916,7 @@
     if (token !== run) return;
     cur.classList.remove('on'); document.body.classList.remove('playing');
     setBar(DEMO.end);
+    if (LOOP) setTimeout(() => { if (token === run) play(); }, 2600);
   }
   function stop() { run++; clearTimeout(pubTimer); stopCreate(); cur.classList.remove('on'); document.body.classList.remove('playing'); closePop(); }
   $('#replay').addEventListener('click', ev => { ev.stopPropagation(); play(); });

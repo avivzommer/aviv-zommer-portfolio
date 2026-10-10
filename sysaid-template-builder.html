@@ -1647,9 +1647,9 @@
     </dl>
 
     <div class="hero-media reveal" style="transition-delay:.2s">
-      <div class="zoom-frame zoom-frame--shot is-static">
-          <img src="./sysaid-templates/builder-onboarding.webp" width="1440" height="900" alt="The new template builder: an onboarding form on a canvas with a field drawer on the left" loading="eager" decoding="async">
-        </div>
+      <div class="mb-frame mb-frame--auto">
+        <iframe src="./sysaid-templates/mini-builder.html?scene=fields&amp;loop" title="The new template builder: a field being dragged onto a form, named and given its values" scrolling="no" tabindex="-1"></iframe>
+      </div>
     </div>
 
   </div>
@@ -2425,6 +2425,7 @@
     new ResizeObserver(fit).observe(frame);
     fit();
     const iframe = frame.querySelector('iframe');
+    if (frame.classList.contains('mb-frame--auto')) return;
     const head = document.createElement('div');
     head.className = 'mb-head';
     head.innerHTML = '<span class="mb-status" aria-live="polite"><i></i><span>Scroll here to watch it play.</span></span>' +
