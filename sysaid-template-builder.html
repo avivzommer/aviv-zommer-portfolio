@@ -695,6 +695,8 @@
     }
     .pw-notes-hint a { color: var(--fg); font-weight: 500; }
     .pw-points { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .pw-notes--solo { grid-template-columns: 1fr; }
+    .pw-notes--solo .pw-points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
     .pw-points li {
       position: relative;
       padding-left: 22px;
@@ -1248,6 +1250,14 @@
     .tb-mach-tag { font-size: 10.5px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--faint); }
     .tb-mach-title { font-size: 17px; font-weight: 500; letter-spacing: -0.02em; }
     .tb-mach-desc { font-size: 14px; line-height: 1.65; color: var(--mid); }
+    .tb-loop { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 32px; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; counter-reset: loop; }
+    .tb-loop li { padding: 24px 24px 26px; border-left: 1px solid var(--border); background: var(--bg); }
+    .tb-loop li:first-child { border-left: 0; }
+    .tb-loop li:last-child { background: var(--surface); }
+    .tb-loop-when { display: block; font-size: 10.5px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--faint); }
+    .tb-loop h4 { font-size: 17px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.3; margin: 10px 0 8px; }
+    .tb-loop p { font-size: 14px; line-height: 1.65; color: var(--mid); }
+    .mb-ctrls button.is-on { background: var(--fg); color: var(--bg); }
     .tb-mach-layer--top .tb-mach-tag { color: #ffd96b; }
     .tb-mach-layer--top .tb-mach-desc { color: rgba(255,254,254,0.72); }
 
@@ -1538,6 +1548,11 @@
       .tb-strip img { height: 440px; }
       .tb-strip--tall img { height: 520px; }
       .tb-mach-layer { grid-template-columns: 1fr; gap: 6px; padding: 18px 20px; }
+      .tb-loop { grid-template-columns: 1fr; }
+      .tb-loop li { border-left: 0; border-top: 1px solid var(--border); }
+      .tb-loop li:first-child { border-top: 0; }
+      .pw-notes--solo .pw-points { grid-template-columns: 1fr; gap: 14px; }
+      .mb-head { flex-wrap: wrap; }
       .hero-facts { grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; }
       .stat-grid.stat-grid--3 { grid-template-columns: 1fr; }
       .stat-grid--3 .stat-card { border-right: none; border-bottom: 1px solid var(--border); }
@@ -1815,9 +1830,9 @@
 
     <div class="stat-grid reveal" style="transition-delay:.1s">
       <div class="stat-card">
-        <div class="stat-num">6</div>
-        <div class="stat-label">Weeks</div>
-        <div class="stat-sub">From first commit to the current design</div>
+        <div class="stat-num">22</div>
+        <div class="stat-label">Commits in one day</div>
+        <div class="stat-sub">17 September, the day the three options were compared</div>
       </div>
       <div class="stat-card">
         <div class="stat-num">172</div>
@@ -1835,6 +1850,19 @@
         <div class="stat-sub">Compared live on a switch, then two were removed</div>
       </div>
     </div>
+
+    <div class="ap-sub reveal">
+      <span class="label">One decision, start to finish</span>
+      <h3 class="ap-sub-title">17 September: where should a rule live?</h3>
+      <p class="iter-f-body">The agent writes the code. What stays on screen, what a control is called and which option wins is my call, and each one is recorded with its reason. This is one of them, from the commit history.</p>
+    </div>
+
+    <ol class="tb-loop reveal" style="transition-delay:.06s">
+      <li><span class="tb-loop-when">11:45 · I asked</span><h4>Build option B from my board</h4><p>Rules as a strip on the canvas, under the field they affect.</p></li>
+      <li><span class="tb-loop-when">What came back</span><h4>The right name on the wrong design</h4><p>The first build put the rule list in the side panel. That is option A, the thing B exists to replace.</p></li>
+      <li><span class="tb-loop-when">12:09 to 12:29 · What I changed</span><h4>All three, on real logic</h4><p>Rebuilt to the wireframes, then filled with the form's real rules, because an empty option can't be judged on how it reads.</p></li>
+      <li><span class="tb-loop-when">16:51 · The call</span><h4>B comes off the switch</h4><p>Using it showed the cost: a form with many rules stops reading as a layout. Five days later the tab was the design.</p></li>
+    </ol>
 
     <div class="ap-sub reveal">
       <span class="label">What it changed</span>
@@ -1855,7 +1883,7 @@
       <div class="dir-card">
         <span class="dir-num">03</span>
         <h3 class="dir-title">Hand over working states, not pictures</h3>
-        <p class="dir-desc">Empty, loading, error and conflict states exist because the prototype needs them to run. Engineering starts from code built on the product's own components, so the path to production is weeks instead of months, with no handoff redesign.</p>
+        <p class="dir-desc">Empty, loading, error and conflict states exist because the prototype needs them to run. Handoff isn't finished yet, but engineering starts from code built on the product's own components, so I expect it to be a continuation and not a redesign.</p>
       </div>
     </div>
 
@@ -1875,33 +1903,6 @@
     </div>
 
     <p class="iter-intro-text reveal" style="transition-delay:.06s">The four parts follow the four jobs from the as-is journey. The still screens are the prototype running in the product's code, and the ones you can play with are recreations of it built for this page.</p>
-
-    <div class="ws-map reveal" style="transition-delay:.09s">
-        <a class="ws-map-step" href="#ws-1">
-          <span class="ws-map-num">01</span>
-          <span class="ws-map-name">Fields</span>
-          <span class="ws-map-desc">Create a field and its values without leaving the builder.</span>
-          <span class="ws-map-go">See the design<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2v8M2.5 6.5L6 10l3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
-        <a class="ws-map-step" href="#ws-2">
-          <span class="ws-map-num">02</span>
-          <span class="ws-map-name">Logic</span>
-          <span class="ws-map-desc">Rules and value filters that read as sentences.</span>
-          <span class="ws-map-go">See the design<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2v8M2.5 6.5L6 10l3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
-        <a class="ws-map-step" href="#ws-3">
-          <span class="ws-map-num">03</span>
-          <span class="ws-map-name">AI</span>
-          <span class="ws-map-desc">Start a template from a prompt, set up rules in chat.</span>
-          <span class="ws-map-go">See the design<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2v8M2.5 6.5L6 10l3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
-        <a class="ws-map-step" href="#ws-4">
-          <span class="ws-map-num">04</span>
-          <span class="ws-map-name">Publish</span>
-          <span class="ws-map-desc">Preview as the audience, catch conflicts, publish safely.</span>
-          <span class="ws-map-go">See the design<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 2v8M2.5 6.5L6 10l3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </a>
-    </div>
 
     <div class="ap-sub reveal">
       <span class="label">Same screen, before and after</span>
@@ -1948,8 +1949,7 @@
           <iframe src="./sysaid-templates/mini-builder.html?scene=fields" title="Interactive recreation of the template builder: adding a new field" loading="lazy" scrolling="no"></iframe>
         </div>
         <div class="iter-f-caption">
-          <p class="iter-f-caption-text"><strong>New fields are dragged in from tiles, and you can drag one.</strong> Watch a Select field being dropped into the form, then press Reset and try it: drag the Select tile over the form, and a dashed slot shows where it will land while the other fields move aside. Drop it, name it, type its values. Clicking a tile adds the field at the end.</p>
-          <p class="mb-note">Interactive recreation, simplified for this page. It is hand-built for the case study to match the prototype, and contains no product code.</p>
+          <p class="iter-f-caption-text"><strong>New fields are dragged in from tiles, and you can drag one.</strong> A dashed slot shows where the field will land while the others move aside. Drop it, name it, type its values. Clicking a tile adds the field at the end.</p>
         </div>
       </div>
 
@@ -1962,11 +1962,7 @@
         </div>
       </div>
 
-      <div class="pw-notes" style="margin-top:0">
-        <div>
-          <span class="pw-notes-label">What it replaces</span>
-          <p class="pw-notes-text">Eight inputs to create one field, five of them technical ("Compatibility Mode", "DB Field Name"), then a silent wait for the server to provision a column, then a separate page with <strong>135 lists in one unsearchable dropdown</strong> to add its values.</p>
-        </div>
+      <div class="pw-notes pw-notes--solo" style="margin-top:0">
         <div>
           <span class="pw-notes-label">Decisions</span>
           <ul class="pw-points">
@@ -1999,8 +1995,16 @@
           <iframe src="./sysaid-templates/mini-builder.html" title="Interactive recreation of the template builder: adding a rule to a field" loading="lazy" scrolling="no"></iframe>
         </div>
         <div class="iter-f-caption">
-          <p class="iter-f-caption-text"><strong>A rule is a sentence, and you can write one.</strong> Watch the rule being added, then try it: select a field, press Add rule, and complete "Show and require Licence key when Licence already owned is Yes". The chip on the canvas marks every field that carries logic.</p>
-          <p class="mb-note">Interactive recreation, simplified for this page. It is hand-built for the case study to match the prototype, and contains no product code.</p>
+          <p class="iter-f-caption-text"><strong>A rule is a sentence, and you can write one.</strong> "Show and require Licence key when Licence already owned is Yes." The action comes first, and the chip on the canvas marks every field that carries logic.</p>
+        </div>
+      </div>
+
+      <div class="iter-f-item">
+        <div class="mb-frame" data-switch>
+          <iframe src="./sysaid-templates/mini-builder.html?scene=options" title="The three places a rule could live, as they were compared in the prototype" loading="lazy" scrolling="no"></iframe>
+        </div>
+        <div class="iter-f-caption">
+          <p class="iter-f-caption-text"><strong>Three options were built and compared on a switch, not argued from wireframes.</strong> On 17 September all three ran in the prototype on the same form with the same rules. The strip shows the whole chain without a click, but it spends the canvas and has no room for a longer rule. The workspace answers "what depends on this field?" at a glance, but rules are written away from the fields they affect. The tab won, and it kept the strip's best idea as the chip on the canvas. Recreated here from the prototype's history.</p>
         </div>
       </div>
 
@@ -2021,7 +2025,6 @@
         <div>
           <span class="pw-notes-label">Decisions</span>
           <ul class="pw-points">
-            <li><strong>Three options were built, not drawn.</strong> A tab on the field, a strip on the canvas, and a separate rules workspace all ran in the prototype behind a switch. The tab won; the canvas chip was borrowed from the strip.</li>
             <li><strong>Our word is not the author's word.</strong> Nothing on screen says "cascade". It says "Offer … when …" and "Decides these fields".</li>
             <li><strong>Fields every ticket carries have no logic.</strong> Priority and Status are on every ticket whatever the template says, so a template cannot make them decide anything.</li>
           </ul>
@@ -2050,8 +2053,7 @@
           <iframe src="./sysaid-templates/mini-builder.html?scene=create" title="Interactive recreation of the template builder: creating a template from a prompt" loading="lazy" scrolling="no"></iframe>
         </div>
         <div class="iter-f-caption">
-          <p class="iter-f-caption-text"><strong>Creating a template starts with a sentence.</strong> Pick the Software installation card and it fills the box instead of sending it, because the detail that makes a template useful is the part only the author knows. Press Create template: the AI Chatbot opens and says what it is building, and the form arrives one field at a time so it can be read as it lands.</p>
-          <p class="mb-note">Interactive recreation, simplified for this page. It is hand-built for the case study to match the prototype, and contains no product code.</p>
+          <p class="iter-f-caption-text"><strong>Creating a template starts with a sentence.</strong> A starter card fills the box instead of sending it, because the detail that makes a template useful is the part only the author knows. The AI Chatbot says what it is building, and the form arrives one field at a time so it can be read as it lands.</p>
         </div>
       </div>
 
@@ -2101,17 +2103,7 @@
           <iframe src="./sysaid-templates/mini-builder.html?scene=preview" title="Interactive recreation of the template builder: previewing the form as a requester" loading="lazy" scrolling="no"></iframe>
         </div>
         <div class="iter-f-caption">
-          <p class="iter-f-caption-text"><strong>Preview runs the form, so try it.</strong> Answer "Licence already owned". Yes brings in the licence key and requires it. No asks for a business justification instead. Nobody is asked for both. The switch is named by where the form is seen, Portal or Ticket, not by who is looking.</p>
-          <p class="mb-note">Interactive recreation, simplified for this page. It is hand-built for the case study to match the prototype, and contains no product code.</p>
-        </div>
-      </div>
-
-      <div class="iter-f-item">
-        <div class="zoom-frame zoom-frame--shot is-static">
-          <img src="./sysaid-templates/preview-ticket.webp" width="1440" height="900" alt="Preview in Ticket mode: the same form as an admin sees it on the ticket, with the header band and Direct manager" loading="lazy" decoding="async">
-        </div>
-        <div class="iter-f-caption">
-          <p class="iter-f-caption-text"><strong>The same form, as the ticket.</strong> The header band with priority, category and assignment stays where it is on a real ticket, and the admin-only Direct manager field appears.</p>
+          <p class="iter-f-caption-text"><strong>Preview runs the form, so try it.</strong> Yes brings in the licence key and requires it. No asks for a business justification instead. Nobody is asked for both. The switch is named by where the form is seen, Portal or Ticket, not by who is looking.</p>
         </div>
       </div>
 
@@ -2120,16 +2112,11 @@
           <iframe src="./sysaid-templates/mini-builder.html?scene=publish" title="Interactive recreation of the template builder: publishing the template" loading="lazy" scrolling="no"></iframe>
         </div>
         <div class="iter-f-caption">
-          <p class="iter-f-caption-text"><strong>Publishing is one decision, and a job you can walk away from.</strong> Press Publish changes, choose who gets it, and publish. The window closes at once, the header shows the status, and the canvas stays usable while the job runs.</p>
-          <p class="mb-note">Interactive recreation, simplified for this page. It is hand-built for the case study to match the prototype, and contains no product code.</p>
+          <p class="iter-f-caption-text"><strong>Publishing is one decision, and a job you can walk away from.</strong> Choose who gets it and publish. The window closes at once, the header shows the status, and the canvas stays usable while the job runs.</p>
         </div>
       </div>
 
-      <div class="pw-notes" style="margin-top:0">
-        <div>
-          <span class="pw-notes-label">What it replaces</span>
-          <p class="pw-notes-text">A portal form designer that opens in a separate window, picks from <strong>141 templates in a dropdown with no search</strong>, and hides a field by moving every other field into a "Visible" list.</p>
-        </div>
+      <div class="pw-notes pw-notes--solo" style="margin-top:0">
         <div>
           <span class="pw-notes-label">Decisions</span>
           <ul class="pw-points">
@@ -2173,9 +2160,9 @@
         <div class="stat-sub">Onboarding, software installation, access request and the default incident form, each running its logic in preview</div>
       </div>
       <div class="stat-card">
-        <div class="stat-num">0</div>
-        <div class="stat-label">Redesign at handoff</div>
-        <div class="stat-sub">Built from the product's own components, with the design decisions and the rule model written down beside the code</div>
+        <div class="stat-num">Live</div>
+        <div class="stat-label">Tested as a working prototype</div>
+        <div class="stat-sub">Inside the company, with the PMs and our IT manager. Real admins are next.</div>
       </div>
     </div>
 
@@ -2197,14 +2184,14 @@
       </div>
       <div class="dir-card">
         <span class="dir-num">03</span>
-        <h3 class="dir-title">The AI builds, the designer still decides</h3>
-        <p class="dir-desc">The agent wrote the code. Every call about what stays on screen, what a control is named and which option wins was mine, and each one is recorded with its reason.</p>
+        <h3 class="dir-title">A live prototype is easier to test</h3>
+        <p class="dir-desc">We tested it inside the company with the PMs and our IT manager. Because it runs, the same build can go in front of real users next, with nothing extra to prepare.</p>
       </div>
     </div>
 
     <div class="cs-next reveal">
       <span class="rs-when">What's next</span>
-      <p class="rs-text" style="margin-top:10px">Handing the builder to engineering, putting it in front of admins to test the logic editor with their own forms, and connecting the chat to a real model in place of the scripted one.</p>
+      <p class="rs-text" style="margin-top:10px">Finishing the handoff to engineering, which should be far lighter than usual because the design already lives in the code. Then testing with real admins on their own forms, and connecting the chat to a real model in place of the scripted one.</p>
     </div>
 
   </div>
@@ -2426,6 +2413,20 @@
     fit();
     const iframe = frame.querySelector('iframe');
     if (frame.classList.contains('mb-frame--auto')) return;
+    if (frame.hasAttribute('data-switch')) {
+      const sw = document.createElement('div');
+      sw.className = 'mb-head';
+      sw.innerHTML = '<span class="mb-status"><i></i><span>The comparison switch. Pick an option.</span></span>' +
+        '<span class="mb-ctrls" role="group" aria-label="Where a rule lives"><button type="button" data-opt="A" class="is-on" aria-pressed="true">A · Tab on the field</button><button type="button" data-opt="B" aria-pressed="false">B · Strip on the canvas</button><button type="button" data-opt="C" aria-pressed="false">C · Its own workspace</button></span>';
+      frame.before(sw);
+      sw.addEventListener('click', e => {
+        const b = e.target.closest('[data-opt]');
+        if (!b || !iframe.contentWindow) return;
+        sw.querySelectorAll('[data-opt]').forEach(x => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', x === b); });
+        iframe.contentWindow.postMessage({ type: 'mb-cmd', cmd: 'opt', v: b.dataset.opt }, location.origin);
+      });
+      return;
+    }
     const head = document.createElement('div');
     head.className = 'mb-head';
     head.innerHTML = '<span class="mb-status" aria-live="polite"><i></i><span>Scroll here to watch it play.</span></span>' +

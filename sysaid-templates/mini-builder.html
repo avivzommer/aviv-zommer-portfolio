@@ -352,6 +352,29 @@
   .demo button { height: 32px; padding: 0 14px; border-radius: 999px; background: rgba(255,255,255,.14); color: #fff; font-weight: 600; }
   .demo button:hover { background: rgba(255,255,255,.26); }
   .demo .dot { width: 8px; height: 8px; border-radius: 50%; background: #5fd08a; margin-right: 2px; }
+  /* the three options for where a rule lives: B is a strip under the field, C its own workspace */
+  .cell.nested::before { content: ''; position: absolute; left: 14px; top: 4px; bottom: 4px; width: 2px; border-radius: 2px; background: var(--ring); }
+  .strip { position: absolute; left: 32px; right: 8px; bottom: 4px; height: 28px; border: 1px solid var(--ring); border-radius: 4px; background: oklch(0.9614 0.0119 184.08); display: flex; align-items: center; gap: 6px; padding: 0 8px; font-size: 12px; line-height: 18px; color: var(--ink87); white-space: nowrap; overflow: hidden; }
+  .strip > svg, .strip > .i12:first-child { color: var(--teal-d); flex: none; }
+  .strip > span:not(.s-ic) { min-width: 0; overflow: hidden; text-overflow: ellipsis; } .strip b { font-weight: 600; } .strip i { flex: 1; } .s-ic { color: var(--teal-d); flex: none; display: grid; place-items: center; width: 20px; height: 20px; }
+  .strip-ghost { position: absolute; left: 32px; right: 8px; top: 78px; height: 26px; border: 1px dashed var(--line2); border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 12px; color: var(--mid); background: var(--tint); opacity: 0; z-index: 2; }
+  .cell:hover .strip-ghost { opacity: 1; }
+  .rw { left: 0; top: 0; width: 1329px; height: 716px; background-image: radial-gradient(circle, var(--line2) 1px, transparent 1px); background-size: 20px 20px; }
+  .rw-seg { left: 50%; top: 20px; transform: translateX(-50%); }
+  .rw-card { top: 76px; width: 520px; background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 12px; font-size: 12px; line-height: 18px; color: var(--ink87); }
+  .rw-card p { color: var(--mid); margin: 4px 0 0; } .rw-card small { font-size: 12px; letter-spacing: 0.06em; color: var(--mid); }
+  .rw-filters { display: flex; gap: 8px; }
+  .rw-in { flex: 1; height: 36px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; gap: 8px; padding: 0 10px; color: var(--mid); font-size: 14px; }
+  .rw-in.sm { flex: none; width: 118px; justify-content: space-between; color: var(--ink87); }
+  .rw-rule { display: flex; align-items: flex-start; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+  .rw-rule.on { border-color: var(--ring); background: oklch(0.9614 0.0119 184.08); }
+  .rw-num { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--chip); color: var(--mid); display: grid; place-items: center; }
+  .rw-rule.on .rw-num { background: var(--white); }
+  .rw-body { flex: 1; display: flex; flex-direction: column; gap: 4px; } .rw-body b { font-weight: 600; color: oklch(0.45 0.11 150); }
+  .rw-new { height: 36px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--mid); opacity: .55; }
+  .rw-node { align-self: flex-start; padding: 8px 12px; border: 1px solid var(--line2); border-radius: 6px; font-weight: 600; background: var(--white); }
+  .rw-node.on { border-color: var(--ring); background: oklch(0.9614 0.0119 184.08); }
+  .rw-rank { margin-left: 24px; display: flex; flex-direction: column; gap: 6px; } .rw-edge { color: var(--mid); margin-top: 4px; }
   body.loop .frame { pointer-events: none; }
   body.playing .frame { pointer-events: none; }
   body.bare .demo, body.embedded .demo { display: none; }
@@ -400,13 +423,16 @@
   document.body.classList.add('s-' + SCENE);
   const WIDE = SCENE === 'fields' || SCENE === 'publish';                 // drawer layout: the form is 900 wide, not 892
   const CREATE = SCENE === 'create';
+  // 'options' shows the three places a rule could live, as they stood on the comparison switch
+  const OPTS = SCENE === 'options'; let OPT = OPTS ? (q.get('opt') || 'A') : null;
   const W = CREATE ? 881 : WIDE ? 900 : 892, CW = (W - 66 - 64) / 2, X2 = 8 + CW + 24;
   const ACT = { show: 'Show', require: 'Require', both: 'Show and require' };
   // The form is a two-column flow: half-width fields pair up, a text area takes a full row.
   // Positions are computed from the order, so a drop slot or a new field shifts the rest.
   const H = { cell: 81, area: 147, slotAlone: 39 }, GAP = 16;
   function layout() {
-    const items = S.fields.map(f => ({ id: f.id, wide: !!f.area, h: f.area ? H.area : (f.options ? 80 : H.cell) }));
+    const stripH = f => OPT === 'B' && (f.rules || []).length ? 38 : 0;
+    const items = S.fields.map(f => ({ id: f.id, wide: !!f.area, h: (f.area ? H.area : (f.options ? 80 : H.cell)) + stripH(f) }));
     if (S.draft) items.splice(Math.min(S.draft.index, items.length), 0, { id: 'draft', h: 80 });
     if (S.drag && S.drag.at != null) items.splice(Math.min(S.drag.at, items.length), 0, { id: 'slot', h: H.cell, slot: true });
     const pos = {}; let y = 85, row = [];
@@ -435,7 +461,7 @@
       ...(SCENE === 'publish' ? [{ ...TEAM }] : []),
     ],
     cr: { phase: 'idle', text: '', said: 0 },                               // create from a prompt
-    selected: SCENE === 'logic' ? 'key' : (SCENE === 'publish' ? 'team' : null), tab: 'logic', editing: null,
+    selected: SCENE === 'logic' || OPT === 'A' ? 'key' : (SCENE === 'publish' ? 'team' : null), tab: 'logic', editing: null,
     dirty: SCENE === 'publish', landed: null, draft: null, saving: null, drag: null,
     status: 'live', audience: 'everyone', modal: false, toast: null,       // publish
     pv: { tab: 'portal', app: '', machine: '', owned: '' },                 // preview
@@ -479,7 +505,9 @@
     const bd = $('#bd');
     document.querySelectorAll('#chat').forEach(n => n.remove());
     if (CREATE) bd.innerHTML = `<div class="abs setup" id="setup" style="width:1329px"></div>`;
-    else if (SCENE === 'logic') bd.innerHTML = `<div class="abs main">${formHtml()}</div><div class="abs handle"></div><aside class="abs panel" id="panel"></aside>`;
+    else if (OPT === 'C') bd.innerHTML = `<div class="abs rw" id="rw"></div>`;
+    else if (OPT === 'B') bd.innerHTML = `<div class="abs main" style="width:1329px"><div class="abs" style="left:194px;top:0">${formHtml()}</div></div>`;
+    else if (SCENE === 'logic' || OPTS) bd.innerHTML = `<div class="abs main">${formHtml()}</div><div class="abs handle"></div><aside class="abs panel" id="panel"></aside>`;
     else if (SCENE === 'preview') bd.innerHTML = `<div class="abs pv" id="pv"></div>`;
     else bd.innerHTML = `${drawerHtml()}<div class="abs main2" id="main2">${formHtml()}<button class="newsec i16" id="newsec" tabindex="-1">${IC.newSec}New section</button><div id="tail" style="position:absolute;left:0;width:1px;height:1px"></div></div>`;
     // header buttons differ in preview
@@ -492,14 +520,17 @@
   function renderCanvas() {
     if (SCENE === 'preview') return renderPreview();
     if (CREATE && S.cr.phase !== 'done') return renderSetup();
+    if (OPT === 'C') return renderWorkspace();
     const L = layout(); let html = '';
     for (const f of S.fields) {
       const [x, y, w, h] = L.pos[f.id], n = (f.rules || []).length, sel = S.selected === f.id;
-      html += `<div class="cell${sel ? ' sel' : ''}${S.landed === f.id ? ' glow' : ''}" data-id="${f.id}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px">
+      const strips = OPT === 'B' && n;
+      html += `<div class="cell${sel ? ' sel' : ''}${S.landed === f.id ? ' glow' : ''}${strips ? ' nested' : ''}" data-id="${f.id}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px">
         <span class="grip i12">${IC.grip}</span>
         <span class="lab"><span>${esc(f.label)}</span>${f.req ? '<span class="req">*</span>' : ''}</span>
-        ${S.saving === f.id ? `<span class="saving"><span class="spin" style="width:19px;height:19px">${IC.spinner}</span>Saving…</span>` : (n ? `<span class="rchip chip ic i12${S.landed === f.id ? ' new' : ''}" data-act="chip">${IC.bolt}<span>${n} rule${n > 1 ? 's' : ''}</span></span>` : '')}
+        ${S.saving === f.id ? `<span class="saving"><span class="spin" style="width:19px;height:19px">${IC.spinner}</span>Saving…</span>` : (n && OPT !== 'B' ? `<span class="rchip chip ic i12${S.landed === f.id ? ' new' : ''}" data-act="chip">${IC.bolt}<span>${n} rule${n > 1 ? 's' : ''}</span></span>` : '')}
         <div class="ctl${f.area ? ' area' : ''}"><span${f.options ? '' : ' style="position:relative;top:1px"'}>${esc(f.ph)}</span>${f.options ? `<span class="caret i16">${IC.caret}</span>` : ''}</div>
+        ${strips ? f.rules.map(r => `<div class="strip i12">${IC.bolt}<span>When <b>${esc(field(r.field).label)}</b> ${r.op} ${esc(list(r.values))} → ${ACT[r.action].toLowerCase()} this field</span><i></i><span class="i12 s-ic">${IC.edit}</span><span class="i12 s-ic">${IC.trash}</span></div>`).join('') : (OPT === 'B' ? `<div class="strip-ghost i12">${IC.plus}<span>Add rule</span></div>` : '')}
       </div>`;
       if (sel) html += `<div class="bar" style="left:${x + w - 379.4}px;top:${y - 40}px">
         <span class="tb">${ic('settings')}Field settings</span><span class="tb">${ic('aiSet')}Set up with AI</span><span class="split"></span>
@@ -518,6 +549,25 @@
     $('#addf').style.top = L.addf + 'px';
     $('#form').style.height = (sh + 195) + 'px';
     if (WIDE) { $('#newsec').style.top = (24 + sh + 195 + 41) + 'px'; $('#tail').style.top = (24 + sh + 195 + 41 + 36 + 23) + 'px'; }
+    renderHeader();
+  }
+  function renderWorkspace() {
+    const rules = S.fields.flatMap(f => (f.rules || []).map(r => ({ f, r })));
+    const lit = id => rules[0] && (rules[0].f.id === id || rules[0].r.field === id);
+    const roots = [...new Set(rules.map(e => e.r.field))];
+    $('#rw').innerHTML = `<div class="abs seg rw-seg"><button>Build</button><button class="on">Rules</button></div>
+      <div class="abs rw-card" style="left:132px">
+        <div class="rw-filters"><div class="rw-in i16">${IC.search}<span>Search rules</span></div><div class="rw-in sm">All fields<span class="i16">${IC.caret}</span></div><div class="rw-in sm">All actions<span class="i16">${IC.caret}</span></div></div>
+        ${rules.map((e, i) => `<div class="rw-rule${i ? '' : ' on'}"><span class="rw-num">${i + 1}</span><span class="rw-body"><span>WHEN ${esc(field(e.r.field).label)} ${e.r.op} "${esc(e.r.values.join('" or "'))}"</span><b>${ACT[e.r.action].toUpperCase()} ${esc(e.f.label)}</b></span><span class="i12 s-ic">${IC.trash}</span></div>`).join('')}
+        <div class="rw-new i12">${IC.plus}New rule</div>
+        <p>Every rule on the template in one list, searchable, filterable by field or action, and readable by an admin who did not build it.</p>
+      </div>
+      <div class="abs rw-card" style="left:676px">
+        <small>DEPENDENCY MAP</small>
+        ${roots.map(id => `<div class="rw-node${lit(id) ? ' on' : ''}">${esc(field(id).label)}</div>
+          <div class="rw-rank">${rules.filter(e => e.r.field === id).map(e => `<span class="rw-edge">↳ is ${esc(list(e.r.values))}</span><div class="rw-node${lit(e.f.id) ? ' on' : ''}">${esc(e.f.label)}</div>`).join('')}</div>`).join('')}
+        <p>Selecting a rule on the left highlights its nodes here. This is the only view that answers "what depends on this field?" in one glance.</p>
+      </div>`;
     renderHeader();
   }
   function renderHeader() {
@@ -872,6 +922,7 @@
     if (ev.origin !== location.origin || !ev.data || ev.data.type !== 'mb-cmd') return;
     if (ev.data.cmd === 'replay') $('#replay').click();
     if (ev.data.cmd === 'reset') $('#reset').click();
+    if (ev.data.cmd === 'opt' && OPTS && 'ABC'.includes(ev.data.v)) { OPT = ev.data.v; closePop(); S = seed(); shell(); render(); }
   });
   async function go(sel, token, pause = 300, click = true) {
     if (token !== run) throw 0;
@@ -905,7 +956,7 @@
       run: async t => { await go('#card-software', t, 900); await go('#cr-go', t, 400); await wait(9300); if (t !== run) throw 0; } },
     preview: { start: 'Your turn. Answer "Licence already owned".', watch: 'Watching: the form reacting to an answer', end: 'Your turn. Change the answers and watch the form.', at: [900, 560],
       run: async t => { await go('#pv-owned', t); await go(opt('Yes'), t, 1700); await go('#pv-owned', t); await go(opt('No'), t, 1700); } },
-  }[SCENE];
+  }[SCENE] || { start: '', watch: '', end: '', at: [0, 0], run: async () => {} };
   async function play() {
     const token = ++run;
     clearTimeout(pubTimer); stopCreate(); closePop(); S = seed(); shell(); render(); if ($('#main2')) $('#main2').scrollTop = 0;
@@ -954,7 +1005,7 @@
   if (st === 'D') $('#ed-action').click();
   if (st === 'E') $('#ed-values').click();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!st && !reduced && !q.has('noplay')) {
+  if (!st && !reduced && !q.has('noplay') && !OPTS) {
     let played = false;
     new IntersectionObserver(es => { if (es[0].isIntersecting && !played) { played = true; play(); } }, { threshold: 0.6 }).observe(document.body);
   }
