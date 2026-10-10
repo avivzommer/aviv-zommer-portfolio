@@ -21,3 +21,15 @@
 [[edge_functions]]
   path = "/sysaid/paywall-v2"
   function = "case-study-gate"
+
+[[edge_functions]]
+  path = "/sysaid-template-builder.html"
+  function = "case-study-gate"
+
+[[edge_functions]]
+  path = "/sysaid-template-builder"
+  function = "case-study-gate"
+
+[[edge_functions]]
+  path = "/sysaid-templates/*"
+  function = "case-study-gate"

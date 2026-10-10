@@ -1415,6 +1415,30 @@
         </span>
       </a>
 
+      <!-- SysAid Template Builder -->
+      <a href="sysaid-template-builder.html" class="work-item reveal" style="transition-delay:.06s">
+        <div class="work-meta">
+          <img src="./sysaid-logo.svg" alt="" class="work-meta-icon">
+          <span class="work-meta-co" style="font-size: 12px">SysAid</span>
+          <div class="work-meta-sep"></div>
+          <div class="work-meta-chips">
+            <span class="chip" style="font-size: 12px">B2B SaaS</span>
+            <span class="chip" style="font-size: 12px">Form builder</span>
+            <span class="chip" style="font-size: 12px">AI-assisted design</span>
+          </div>
+        </div>
+        <h2 class="work-item-title" style="font-size: 34px">Rebuilt SysAid's form builder, designed inside the product's own code</h2>
+        <div class="work-item-img">
+          <video class="work-item-video" src="./sysaid-template-builder-home.mp4" muted loop playsinline preload="metadata" aria-label="SysAid template builder interface"></video>
+        </div>
+        <span class="work-read-cta" style="font-size: 16px">
+          Read case study
+          <svg viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 11L11 2M11 2H4.5M11 2V8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
       <!-- groundcover -->
       <a href="groundcover.html" class="work-item reveal" style="transition-delay:.08s">
         <div class="work-meta">
@@ -1622,7 +1646,7 @@
       return document.cookie.split('; ').some(c => c.startsWith('cs_unlocked='));
     }
     if (!hasUnlockedCaseStudies()) {
-      document.querySelectorAll('.work-item[href="sysaid.html"], .work-item[href="groundcover.html"], .work-item[href="/sysaid"], .work-item[href="/groundcover"]').forEach(item => {
+      document.querySelectorAll('.work-item[href="sysaid.html"], .work-item[href="sysaid-template-builder.html"], .work-item[href="/sysaid-template-builder"], .work-item[href="groundcover.html"], .work-item[href="/sysaid"], .work-item[href="/groundcover"]').forEach(item => {
         const cta = item.querySelector('.work-read-cta');
         if (cta) {
           cta.innerHTML = 'Password required' +
